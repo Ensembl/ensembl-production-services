@@ -80,10 +80,14 @@ ensembl_version = os.getenv('ENS_RELEASE', '97')
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR + '/db.sqlite3',
+    },
+    'production': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ensembl_production_97', # + ensembl_version,
-        'USER': 'marc',
-        'PASSWORD': 'projet',
+        'NAME': 'ensembl_production_' + ensembl_version,
+        'USER': 'root',
+        'PASSWORD': '',
         'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'OPTIONS': {

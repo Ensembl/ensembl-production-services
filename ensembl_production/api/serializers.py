@@ -9,6 +9,7 @@ class WebDataElementSerializer(serializers.ModelSerializer):
         model = WebDataElement
         fields = '__all__'
 
+
 class WebDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebData

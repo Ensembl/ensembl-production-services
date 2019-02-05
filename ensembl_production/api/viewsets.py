@@ -8,4 +8,4 @@ from .serializers import WebDataSerializer
 
 class WebDataViewSet(viewsets.ModelViewSet):
     serializer_class = WebDataSerializer
-    queryset = WebData.objects.all()
+    queryset = WebData.objects.using('production').all()
