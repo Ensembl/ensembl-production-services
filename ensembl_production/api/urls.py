@@ -12,8 +12,11 @@ router.register(prefix=r'web_data',
                 viewset=viewsets.WebDataViewSet,
                 base_name='web-data')
 
-schema_view = get_swagger_view(title='Pastebin API')
+router.register(prefix=r'analysis',
+                viewset=viewsets.AnalysisDescriptionViewSet,
+                base_name='analysis')
 
+schema_view = get_swagger_view(title='Pastebin API')
 urlpatterns = [
     url(r'^', include(router.urls)),
 ]

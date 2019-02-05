@@ -20,6 +20,7 @@ class BaseTimestampedModel(models.Model):
 
     class Meta:
         abstract = True
+        app_label = 'production'
         ordering = ['-updated', '-created']
 
     #: created by user (external DB ID)
@@ -35,6 +36,7 @@ class BaseTimestampedModel(models.Model):
 class HasCurrent(models.Model):
     class Meta:
         abstract = True
+        app_label = 'production'
 
     is_current = models.IntegerField(default=1)
 
@@ -46,6 +48,7 @@ class WebData(BaseTimestampedModel):
 
     class Meta:
         managed = False
+        app_label = 'production'
         db_table = 'web_data'
 
 
@@ -57,6 +60,7 @@ class WebDataElement(BaseTimestampedModel):
     class Meta:
         managed = False
         db_table = 'web_data_element'
+        app_label = 'production'
 
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel):
@@ -72,6 +76,7 @@ class AnalysisDescription(HasCurrent, BaseTimestampedModel):
     class Meta:
         managed = False
         db_table = 'analysis_description'
+        app_label = 'production'
 
 
 class MasterAttrib(HasCurrent, BaseTimestampedModel):
@@ -83,6 +88,7 @@ class MasterAttrib(HasCurrent, BaseTimestampedModel):
         managed = False
         db_table = 'master_attrib'
         unique_together = (('attrib_type_id', 'value'),)
+        app_label = 'production'
 
 
 class MasterAttribSet(HasCurrent, BaseTimestampedModel):
@@ -93,6 +99,7 @@ class MasterAttribSet(HasCurrent, BaseTimestampedModel):
         managed = False
         db_table = 'master_attrib_set'
         unique_together = (('attrib_set_id', 'attrib_id'),)
+        app_label = 'production'
 
 
 class MasterAttribType(HasCurrent, BaseTimestampedModel):
@@ -104,6 +111,7 @@ class MasterAttribType(HasCurrent, BaseTimestampedModel):
     class Meta:
         managed = False
         db_table = 'master_attrib_type'
+        app_label = 'production'
 
 
 class MasterBiotype(HasCurrent, BaseTimestampedModel):
@@ -120,6 +128,7 @@ class MasterBiotype(HasCurrent, BaseTimestampedModel):
     class Meta:
         managed = False
         db_table = 'master_biotype'
+        app_label = 'production'
         unique_together = (('name', 'object_type'),)
 
 
@@ -138,6 +147,7 @@ class MasterExternalDb(HasCurrent, BaseTimestampedModel):
     class Meta:
         managed = False
         db_table = 'master_external_db'
+        app_label = 'production'
         unique_together = (('db_name', 'db_release', 'is_current'),)
 
 
@@ -150,6 +160,7 @@ class MasterMiscSet(HasCurrent, BaseTimestampedModel):
 
     class Meta:
         managed = False
+        app_label = 'production'
         db_table = 'master_misc_set'
 
 
@@ -160,6 +171,7 @@ class MasterUnmappedReason(HasCurrent, BaseTimestampedModel):
 
     class Meta:
         managed = False
+        app_label = 'production'
         db_table = 'master_unmapped_reason'
 
 
@@ -172,6 +184,7 @@ class Meta(models.Model):
     class Meta:
         managed = False
         db_table = 'meta'
+        app_label = 'production'
         unique_together = (('species_id', 'meta_key', 'meta_value'),)
 
 
@@ -186,3 +199,4 @@ class MetaKey(HasCurrent, BaseTimestampedModel):
     class Meta:
         managed = True
         db_table = 'meta_key'
+        app_label = 'production'
