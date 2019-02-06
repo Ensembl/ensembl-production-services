@@ -86,6 +86,15 @@ class WebDataSerializer(serializers.ModelSerializer):
 
     elements = WebDataElementSerializer(many=True)
 
+class BiotypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MasterBiotype
+        exclude = ('created_at', 'created_by')
+
+class AttribTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MasterAttribType
+        exclude = ('created_at', 'created_by')
 
 class AnalysisDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
