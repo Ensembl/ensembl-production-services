@@ -83,8 +83,16 @@ DATABASES = {
         'NAME': BASE_DIR + '/db.sqlite3',
     },
     'production': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR + '/db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ensembl_production_' + ensembl_version,
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
+        'OPTIONS': {
+            # Tell MySQLdb to connect with 'utf8mb4' character set
+            'charset': 'utf8mb4',
+        }
     }
 }
 
