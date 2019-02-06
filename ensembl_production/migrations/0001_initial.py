@@ -2,7 +2,6 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import django_mysql.models
 
 
 class Migration(migrations.Migration):
@@ -208,7 +207,7 @@ class Migration(migrations.Migration):
                 ('meta_key_id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=64, unique=True)),
                 ('is_optional', models.IntegerField(default=0)),
-                ('db_type', django_mysql.models.SetCharField(models.CharField(max_length=72), default='core', max_length=72, size=None)),
+                ('db_type', models.CharField(max_length=72)),
                 ('description', models.TextField(blank=True, null=True)),
                 ('is_multi_value', models.IntegerField()),
             ],
