@@ -4,7 +4,7 @@ from rest_framework import viewsets
 
 from ensembl_production.api.serializers import AnalysisDescriptionSerializer, BiotypeSerializer, AttribTypeSerializer
 from ensembl_production.models import WebData, AnalysisDescription, MasterBiotype, MasterAttribType
-from .serializers import WebDataSerializer,escape_perl_string, DataElementSerializer
+from .serializers import WebDataSerializer,escape_perl_string, PerlFieldElementSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
