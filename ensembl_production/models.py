@@ -20,48 +20,35 @@ class BaseTimestampedModel(models.Model):
 
     class Meta:
         abstract = True
-        app_label = 'production'
+        app_label = 'ensembl_production'
         ordering = ['-updated', '-created']
 
     #: created by user (external DB ID)
     created_by = models.IntegerField(blank=True, null=True)
     #: (auto_now_add): set when model object is created
-    created_at = models.DateTimeField('Created on', auto_now_add=True, editable=False, help_text='Creation timestamp')
+    created_at = models.DateTimeField('Created on', auto_now_add=True, editable=False, null=True, help_text='Creation timestamp')
     #: Modified by user (external DB ID)
     modified_by = models.IntegerField(blank=True, null=True)
     #: (auto_now): set each time model object is saved in database
-    modified_at = models.DateTimeField('Last Update', auto_now=True, editable=False, help_text='Last update timestamp')
-
+    modified_at = models.DateTimeField('Last Update', auto_now=True, editable=False, null=True, help_text='Last update timestamp')
 
 class HasCurrent(models.Model):
     class Meta:
         abstract = True
-        app_label = 'production'
+        app_label = 'ensembl_production'
 
     is_current = models.IntegerField(default=1)
 
 
 class WebData(BaseTimestampedModel):
     web_data_id = models.AutoField(primary_key=True)
+    data = models.TextField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
-        app_label = 'production'
+        app_label = 'ensembl_production'
         db_table = 'web_data'
-
-
-class WebDataElement(BaseTimestampedModel):
-    web_data = models.ForeignKey(WebData, primary_key=True, null=False, on_delete=models.CASCADE, related_name='elements')
-    data_key = models.CharField(max_length=32)
-    data_value = models.TextField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'web_data_element'
-        app_label = 'production'
-
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel):
     analysis_description_id = models.AutoField(primary_key=True)
@@ -69,26 +56,23 @@ class AnalysisDescription(HasCurrent, BaseTimestampedModel):
     description = models.TextField(blank=True, null=True)
     display_label = models.CharField(max_length=256)
     db_version = models.IntegerField()
-    # TODO check if SET_NULL should be replaced by CASCADE
-    web_data = models.ForeignKey(WebData, blank=False, null=True, on_delete=models.SET_NULL)
+    web_data = models.ForeignKey(WebData,null=True, on_delete=models.SET_NULL)
     displayable = models.IntegerField()
 
     class Meta:
-        managed = False
         db_table = 'analysis_description'
-        app_label = 'production'
+        app_label = 'ensembl_production'
 
 
 class MasterAttrib(HasCurrent, BaseTimestampedModel):
     attrib_id = models.AutoField(primary_key=True)
     attrib_type_id = models.PositiveSmallIntegerField()
-    value = models.TextField()
+    value = models.CharField(max_length=80)
 
     class Meta:
-        managed = False
         db_table = 'master_attrib'
         unique_together = (('attrib_type_id', 'value'),)
-        app_label = 'production'
+        app_label = 'ensembl_production'
 
 
 class MasterAttribSet(HasCurrent, BaseTimestampedModel):
@@ -96,22 +80,20 @@ class MasterAttribSet(HasCurrent, BaseTimestampedModel):
     attrib_id = models.PositiveIntegerField()
 
     class Meta:
-        managed = False
         db_table = 'master_attrib_set'
         unique_together = (('attrib_set_id', 'attrib_id'),)
-        app_label = 'production'
+        app_label = 'ensembl_production'
 
 
 class MasterAttribType(HasCurrent, BaseTimestampedModel):
-    attrib_type_id = models.PositiveSmallIntegerField(primary_key=True)
+    attrib_type_id = models.AutoField(primary_key=True)
     code = models.CharField(unique=True, max_length=20)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'master_attrib_type'
-        app_label = 'production'
+        app_label = 'ensembl_production'
 
 
 class MasterBiotype(HasCurrent, BaseTimestampedModel):
@@ -124,11 +106,11 @@ class MasterBiotype(HasCurrent, BaseTimestampedModel):
     description = models.TextField(blank=True, null=True)
     biotype_group = models.CharField(max_length=10, blank=True, null=True)
     so_acc = models.CharField(max_length=64, blank=True, null=True)
+    so_term = models.CharField(max_length=1023, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'master_biotype'
-        app_label = 'production'
+        app_label = 'ensembl_production'
         unique_together = (('name', 'object_type'),)
 
 
@@ -145,9 +127,8 @@ class MasterExternalDb(HasCurrent, BaseTimestampedModel):
     description = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'master_external_db'
-        app_label = 'production'
+        app_label = 'ensembl_production'
         unique_together = (('db_name', 'db_release', 'is_current'),)
 
 
@@ -159,8 +140,7 @@ class MasterMiscSet(HasCurrent, BaseTimestampedModel):
     max_length = models.PositiveIntegerField()
 
     class Meta:
-        managed = False
-        app_label = 'production'
+        app_label = 'ensembl_production'
         db_table = 'master_misc_set'
 
 
@@ -170,22 +150,8 @@ class MasterUnmappedReason(HasCurrent, BaseTimestampedModel):
     full_description = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
-        app_label = 'production'
+        app_label = 'ensembl_production'
         db_table = 'master_unmapped_reason'
-
-
-class Meta(models.Model):
-    meta_id = models.AutoField(primary_key=True)
-    species_id = models.PositiveIntegerField(blank=True, null=True)
-    meta_key = models.CharField(max_length=40)
-    meta_value = models.TextField()
-
-    class Meta:
-        managed = False
-        db_table = 'meta'
-        app_label = 'production'
-        unique_together = (('species_id', 'meta_key', 'meta_value'),)
 
 
 class MetaKey(HasCurrent, BaseTimestampedModel):
@@ -197,6 +163,5 @@ class MetaKey(HasCurrent, BaseTimestampedModel):
     is_multi_value = models.IntegerField()
 
     class Meta:
-        managed = True
         db_table = 'meta_key'
-        app_label = 'production'
+        app_label = 'ensembl_production'
