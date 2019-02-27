@@ -11,7 +11,7 @@ class ProductionRouter:
         """
         Attempts to read production models go to production.
         """
-        if model._meta.app_label == 'production':
+        if model._meta.app_label == 'ensembl_production':
             return 'production'
         return None
 
@@ -19,7 +19,7 @@ class ProductionRouter:
         """
         Attempts to write production models go to production.
         """
-        if model._meta.app_label == 'production':
+        if model._meta.app_label == 'ensembl_production':
             return 'production'
         return None
 
@@ -27,8 +27,8 @@ class ProductionRouter:
         """
         Allow relations if a model in the production app is involved.
         """
-        if obj1._meta.app_label == 'production' or \
-                obj2._meta.app_label == 'production':
+        if obj1._meta.app_label == 'ensembl_production' or \
+                obj2._meta.app_label == 'ensembl_production':
             return True
         return None
 
@@ -37,6 +37,6 @@ class ProductionRouter:
         Make sure the production app only appears in the 'production'
         database.
         """
-        if app_label == 'production':
+        if app_label == 'ensembl_production':
             return db == 'production'
         return None
