@@ -9,13 +9,10 @@ from ensembl_production.api import viewsets
 # API router setup
 router = routers.DefaultRouter(trailing_slash=False)
 # Services URIs configuration
-router.register(prefix=r'webdata',
-                viewset=viewsets.WebDataViewSet,
-                base_name='web-data')
 
-router.register(prefix=r'analysis',
+router.register(prefix=r'analysisdescription',
                 viewset=viewsets.AnalysisDescriptionViewSet,
-                base_name='analysis')
+                base_name='analysisdescription')
 
 router.register(prefix=r'attribtypes',
                 viewset=viewsets.AttribTypeViewSet,
