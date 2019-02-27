@@ -3,6 +3,7 @@
 import json
 
 from rest_framework import serializers
+
 from ensembl_production.models import *
 
 
@@ -17,7 +18,7 @@ def perl_string_to_python(s):
     return json.loads(s)
 
 
-class DataElementSerializer(serializers.CharField):
+class PerlFieldElementSerializer(serializers.CharField):
 
     def list_to_perl_string(self, input_list):
         """Transform the supplied array into a string representation of a Perl array"""
@@ -43,8 +44,8 @@ class DataElementSerializer(serializers.CharField):
     def to_internal_value(self, data):
         """Transform the supplied dict into a string representation of a Perl hash"""
         pairs = []
-        for k,v in [(k,v) for k,v in data.items() if v != None]:
-          #for k, v in sorted(filter((k, v) for k, v in data.items())):
+        for k, v in sorted([(k, v) for k, v in data.items() if v is not None], key=lambda x: x[0]):
+            # for k, v in sorted(filter((k, v) for k, v in data.items())):
             k = str(k)
             t = type(v).__name__
             if t == 'str':
@@ -75,7 +76,7 @@ class WebDataSerializer(serializers.ModelSerializer):
         model = WebData
         fields = '__all__'
 
-    data = DataElementSerializer()
+    data = PerlFieldElementSerializer()
 
 
 class BiotypeSerializer(serializers.ModelSerializer):
@@ -95,12 +96,12 @@ class AnalysisDescriptionSerializer(serializers.ModelSerializer):
         model = AnalysisDescription
         exclude = ('created_at', 'created_by')
 
-    web_data = WebDataSerializer(many=False,required=False)
+    web_data = WebDataSerializer(many=False, required=False)
 
     def create(self, validated_data):
         if 'web_data' in validated_data:
             web_data = validated_data.pop('web_data')
-            elem =  WebData.objects.filter(data=web_data.get('data', '')).first()
+            elem = WebData.objects.filter(data=web_data.get('data', '')).first()
             if not elem:
                 elem = WebData.objects.create(**web_data)
         else:
