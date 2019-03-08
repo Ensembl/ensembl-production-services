@@ -91,6 +91,21 @@ class AttribTypeSerializer(serializers.ModelSerializer):
         exclude = ('created_at', 'created_by')
 
 
+class AttribSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MasterAttrib
+        exclude = ('created_at', 'created_by','modified_by')
+    attrib_type = AttribTypeSerializer(many=False, required=True)
+
+    def create(self, validated_data):
+        attrib_type = validated_data.pop('attrib_type')
+        elem = MasterAttribType.objects.filter(code=attrib_type.get('code')).first()
+        if not elem:
+            elem = MasterAttribType.objects.create(**attrib_type)
+        attrib = MasterAttrib.objects.create(attrib_type=elem, **validated_data)
+        return attrib
+
+
 class AnalysisDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnalysisDescription
@@ -108,3 +123,13 @@ class AnalysisDescriptionSerializer(serializers.ModelSerializer):
             elem = None
         web_data = AnalysisDescription.objects.create(web_data=elem, **validated_data)
         return web_data
+
+    def update(self, instance, validated_data):
+        if 'web_data' in validated_data:
+            web_data = validated_data.pop('web_data')
+            elem = WebData.objects.filter(data=web_data.get('data', '')).first()
+            if not elem:
+                elem = WebData.objects.create(**web_data)
+                instance.web_data=elem
+                instance.save()
+        return super(AnalysisDescriptionSerializer, self).update(instance, validated_data)

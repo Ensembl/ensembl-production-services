@@ -64,17 +64,6 @@ class AnalysisDescription(HasCurrent, BaseTimestampedModel):
         app_label = 'ensembl_production'
 
 
-class MasterAttrib(HasCurrent, BaseTimestampedModel):
-    attrib_id = models.AutoField(primary_key=True)
-    attrib_type_id = models.PositiveSmallIntegerField()
-    value = models.CharField(max_length=80)
-
-    class Meta:
-        db_table = 'master_attrib'
-        unique_together = (('attrib_type_id', 'value'),)
-        app_label = 'ensembl_production'
-
-
 class MasterAttribSet(HasCurrent, BaseTimestampedModel):
     attrib_set_id = models.PositiveIntegerField()
     attrib_id = models.PositiveIntegerField()
@@ -87,12 +76,21 @@ class MasterAttribSet(HasCurrent, BaseTimestampedModel):
 
 class MasterAttribType(HasCurrent, BaseTimestampedModel):
     attrib_type_id = models.AutoField(primary_key=True)
-    code = models.CharField(unique=True, max_length=20)
+    code = models.CharField(max_length=20)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'master_attrib_type'
+        app_label = 'ensembl_production'
+
+class MasterAttrib(HasCurrent, BaseTimestampedModel):
+    attrib_id = models.AutoField(primary_key=True)
+    value = models.CharField(max_length=80)
+    attrib_type = models.ForeignKey(MasterAttribType, db_column='attrib_type_id', null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        db_table = 'master_attrib'
         app_label = 'ensembl_production'
 
 
