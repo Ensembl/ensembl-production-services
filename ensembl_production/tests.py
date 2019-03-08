@@ -46,18 +46,44 @@ class AnalysisTest(APITestCase):
         # Test bad put
         response = self.client.put(reverse('analysisdescription-detail', kwargs={'logic_name':'dontexist'}),{'logic_name': 'newtest', 'description': 'newtest2 analysis','display_label':'newtest2','db_version':1,'displayable':1})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # Test put changing webdata
+        valid_payload = {'logic_name': 'testwebtestdata2', 'description': 'testwebdata2 analysis','display_label':'testwebdata2','db_version':1,'displayable':1, 'web_data':{'description': 'test2', 'data': {'default' : {'contigviewbottom' : 'notnormal'},'dna_align_feature' : {'do_not_display' : '1'},'type' : 'cdna'}}}
+        response = self.client.put(reverse('analysisdescription-detail', kwargs={'logic_name':'testwebtestdata2'}),data=json.dumps(valid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Test bad put changing webdata
+        valid_payload = {'logic_name': 'testwebtestdata2', 'description': 'testwebdata2 analysis','display_label':'testwebdata2','db_version':1,'displayable':1, 'web_data':{'description': 'test2', 'data': {'default' : {'contigviewbottom' : 'notnormal'},'dna_align_feature' : {'do_not_display' : '1'},'type' : 'cdna'}}}
+        response = self.client.put(reverse('analysisdescription-detail', kwargs={'logic_name':'dontexistwebdata'}),data=json.dumps(valid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test patch
         response = self.client.patch(reverse('analysisdescription-detail', kwargs={'logic_name':'test2'}),{'logic_name': 'test3', 'description': 'test2 analysis updated','display_label':'test2','db_version':1,'displayable':1})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Test get
+        response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name':'test3'}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Test bad patch
         response = self.client.patch(reverse('analysisdescription-detail', kwargs={'logic_name':'dontexist2'}),{'logic_name': 'newtest', 'description': 'newtest2 analysis','display_label':'newtest2','db_version':1,'displayable':1})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # Test patch wth webdata
+        valid_payload = {'logic_name': 'testwebtestdata', 'description': 'testwebdata analysis','display_label':'testwebdata','db_version':1,'displayable':1,'web_data':{'description': 'test', 'data': {'default' : {'contigviewbottom' : 'normal'},'dna_align_feature' : {'do_not_display' : '1'},'type' : 'core'}}}
+        response = self.client.patch(reverse('analysisdescription-detail', kwargs={'logic_name':'testwebtestdata'}),data=json.dumps(valid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Test bad patch wth webdata
+        valid_payload = {'logic_name': 'testwebtestdata', 'description': 'testwebdata analysis','display_label':'testwebdata','db_version':1,'displayable':1,'web_data':{'description': 'test', 'data': {'default' : {'contigviewbottom' : 'normal'},'dna_align_feature' : {'do_not_display' : '1'},'type' : 'core'}}}
+        response = self.client.patch(reverse('analysisdescription-detail', kwargs={'logic_name':'dontexistwebdata'}),data=json.dumps(valid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test delete
         response = self.client.delete(reverse('analysisdescription-detail', kwargs={'logic_name':'test3'}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # Test post wth webdata, reusing existing webdata for delete
+        valid_payload = {'logic_name': 'testwebtestdata3', 'description': 'testwebdata3 analysis','display_label':'testwebdata3','db_version':1,'displayable':1,'web_data':{'description': 'test', 'data': {'default' : {'contigviewbottom' : 'normal'},'dna_align_feature' : {'do_not_display' : '1'},'type' : 'core'}}}
+        response = self.client.post(reverse('analysisdescription-list'), data=json.dumps(valid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         # Test delete with webdata
-        response = self.client.delete(reverse('analysisdescription-detail', kwargs={'logic_name':'testwebdata'}))
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response = self.client.delete(reverse('analysisdescription-detail', kwargs={'logic_name':'testwebtestdata'}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # Test get after deleted webdata
+        response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name':'testwebtestdata3'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Test bad delete
         response = self.client.delete(reverse('analysisdescription-detail', kwargs={'logic_name':'cantdeleteit'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -140,3 +166,20 @@ class AnalysisTest(APITestCase):
         response = self.client.delete(reverse('type-detail', kwargs={'biotype_name':'cantdeleteit','type':'gene'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         
+    # Test attrib endpoint
+    def test_Attrib(self):
+        # Check get all
+        response = self.client.get(reverse('attrib-list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Test post wth attrib_type
+        valid_payload = {'value': 'test', 'is_current': '1', 'attrib_type':{'code': 'test', 'name':'test','description':'test'}}
+        response = self.client.post(reverse('attrib-list'), data=json.dumps(valid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # Test post wth attrib_type, reusing existing attrib_type
+        valid_payload = {'value': 'test2', 'is_current': '1', 'attrib_type':{'code': 'test', 'name':'test','description':'test'} }
+        response = self.client.post(reverse('attrib-list'), data=json.dumps(valid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # Test bad post
+        valid_payload = {'value': '', 'is_current': '1', 'attrib_type':{'code': 'test', 'name':'test','description':'test'} }
+        response = self.client.post(reverse('attrib-list'),data=json.dumps(valid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

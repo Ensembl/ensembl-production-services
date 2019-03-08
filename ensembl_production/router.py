@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from rest_framework.routers import Route, SimpleRouter
 
 
 class ProductionRouter:
@@ -40,3 +41,17 @@ class ProductionRouter:
         if app_label == 'ensembl_production':
             return db == 'production'
         return None
+
+class CustomRouter(SimpleRouter):
+    """
+    A router for read-only APIs, which doesn't use trailing slashes.
+    """
+    routes = [
+        Route(
+            url=r'^{prefix}$',
+            mapping={'get': 'list','post':'create'},
+            name='{basename}-list',
+            detail=False,
+            initkwargs={'suffix': 'List'}
+        )
+    ]

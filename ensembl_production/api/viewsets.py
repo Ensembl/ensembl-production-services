@@ -2,8 +2,8 @@
 
 from rest_framework import viewsets
 
-from ensembl_production.api.serializers import AnalysisDescriptionSerializer, BiotypeSerializer, AttribTypeSerializer
-from ensembl_production.models import WebData, AnalysisDescription, MasterBiotype, MasterAttribType
+from ensembl_production.api.serializers import *
+from ensembl_production.models import *
 from .serializers import WebDataSerializer,escape_perl_string, PerlFieldElementSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -41,8 +41,13 @@ class BiotypeObjectTypeViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.data)
 
-
 class AttribTypeViewSet(viewsets.ModelViewSet):
     serializer_class = AttribTypeSerializer
-    queryset = MasterAttribType.objects.filter(is_current=1)
+    queryset = MasterAttribType.objects.all()
     lookup_field = 'code'
+
+
+class AttribViewSet(viewsets.ModelViewSet):
+    serializer_class = AttribSerializer
+    queryset = MasterAttrib.objects.all()
+    lookup_field = 'value'
