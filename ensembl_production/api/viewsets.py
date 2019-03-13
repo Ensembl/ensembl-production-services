@@ -19,7 +19,6 @@ class AnalysisDescriptionViewSet(viewsets.ModelViewSet):
     queryset = AnalysisDescription.objects.filter(is_current=1)
     lookup_field = 'logic_name'
 
-
 class BiotypeNameViewSet(viewsets.ModelViewSet):
     serializer_class = BiotypeSerializer
     queryset = MasterBiotype.objects.filter(is_current=1)
