@@ -80,18 +80,21 @@ class WebDataSerializer(serializers.ModelSerializer):
 
 
 class BiotypeSerializer(serializers.ModelSerializer):
+    is_current = serializers.BooleanField(default=True, initial=True)
     class Meta:
         model = MasterBiotype
         exclude = ('created_at', 'created_by')
 
 
 class AttribTypeSerializer(serializers.ModelSerializer):
+    is_current = serializers.BooleanField(default=True, initial=True)
     class Meta:
         model = MasterAttribType
         exclude = ('created_at', 'created_by')
 
 
 class AttribSerializer(serializers.ModelSerializer):
+    is_current = serializers.BooleanField(default=True, initial=True)
     class Meta:
         model = MasterAttrib
         exclude = ('created_at', 'created_by','modified_by')
@@ -107,6 +110,8 @@ class AttribSerializer(serializers.ModelSerializer):
 
 
 class AnalysisDescriptionSerializer(serializers.ModelSerializer):
+    is_current = serializers.BooleanField(default=True, initial=True)
+
     class Meta:
         model = AnalysisDescription
         exclude = ('created_at', 'created_by')
