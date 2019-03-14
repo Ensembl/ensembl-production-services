@@ -18,7 +18,7 @@ def perl_string_to_python(s):
     return json.loads(s)
 
 
-class DataElementSerializer(serializers.CharField):
+class PerlFieldElementSerializer(serializers.CharField):
 
     def list_to_perl_string(self, input_list):
         """Transform the supplied array into a string representation of a Perl array"""
@@ -44,7 +44,8 @@ class DataElementSerializer(serializers.CharField):
     def to_internal_value(self, data):
         """Transform the supplied dict into a string representation of a Perl hash"""
         pairs = []
-        for k, v in sorted(filter((k, v) for k, v in data.items())):
+        for k, v in sorted([(k, v) for k, v in data.items() if v is not None], key=lambda x: x[0]):
+            # for k, v in sorted(filter((k, v) for k, v in data.items())):
             k = str(k)
             t = type(v).__name__
             if t == 'str':
@@ -70,37 +71,70 @@ class DataElementSerializer(serializers.CharField):
         return perl_string_to_python(instance)
 
 
-class WebDataElementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WebDataElement
-        fields = '__all__'
-
-    data_value = DataElementSerializer()
-
-
 class WebDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebData
         fields = '__all__'
 
-    elements = WebDataElementSerializer(many=True)
+    data = PerlFieldElementSerializer()
 
 
 class BiotypeSerializer(serializers.ModelSerializer):
+    is_current = serializers.BooleanField(default=True, initial=True)
     class Meta:
         model = MasterBiotype
         exclude = ('created_at', 'created_by')
 
 
 class AttribTypeSerializer(serializers.ModelSerializer):
+    is_current = serializers.BooleanField(default=True, initial=True)
     class Meta:
         model = MasterAttribType
         exclude = ('created_at', 'created_by')
 
 
+class AttribSerializer(serializers.ModelSerializer):
+    is_current = serializers.BooleanField(default=True, initial=True)
+    class Meta:
+        model = MasterAttrib
+        exclude = ('created_at', 'created_by','modified_by')
+    attrib_type = AttribTypeSerializer(many=False, required=True)
+
+    def create(self, validated_data):
+        attrib_type = validated_data.pop('attrib_type')
+        elem = MasterAttribType.objects.filter(code=attrib_type.get('code')).first()
+        if not elem:
+            elem = MasterAttribType.objects.create(**attrib_type)
+        attrib = MasterAttrib.objects.create(attrib_type=elem, **validated_data)
+        return attrib
+
+
 class AnalysisDescriptionSerializer(serializers.ModelSerializer):
+    is_current = serializers.BooleanField(default=True, initial=True)
+
     class Meta:
         model = AnalysisDescription
         exclude = ('created_at', 'created_by')
 
-    web_data = WebDataSerializer(read_only=True, required=False)
+    web_data = WebDataSerializer(many=False, required=False)
+
+    def create(self, validated_data):
+        if 'web_data' in validated_data:
+            web_data = validated_data.pop('web_data')
+            elem = WebData.objects.filter(data=web_data.get('data', '')).first()
+            if not elem:
+                elem = WebData.objects.create(**web_data)
+        else:
+            elem = None
+        web_data = AnalysisDescription.objects.create(web_data=elem, **validated_data)
+        return web_data
+
+    def update(self, instance, validated_data):
+        if 'web_data' in validated_data:
+            web_data = validated_data.pop('web_data')
+            elem = WebData.objects.filter(data=web_data.get('data', '')).first()
+            if not elem:
+                elem = WebData.objects.create(**web_data)
+                instance.web_data=elem
+                instance.save()
+        return super(AnalysisDescriptionSerializer, self).update(instance, validated_data)

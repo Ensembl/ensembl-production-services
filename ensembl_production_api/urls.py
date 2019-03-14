@@ -18,7 +18,11 @@ from django.conf.urls import url, include
 from ensembl_production.api.urls import schema_view
 
 urlpatterns = [
-    #url(r'^admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
     url(r'^$', schema_view),
     url(r'^api/', include('ensembl_production.api.urls')),
 ]
+
+admin.site.site_header = "Ensembl ProductionDB Admin"
+admin.site.site_title = "Ensembl ProductionDB Admin"
+admin.site.index_title = "Welcome to ProductionDB Admin"
