@@ -1,42 +1,45 @@
-version: '3'
+version: '3.3'
 services:
-  web:
+  production_api:
     build: .
-    command: 'gunicorn ensembl_production_api.wsgi:application --bind 0.0.0.0:8000'
+    command: >
+      sh -c "python manage.py flush --no-input &&
+             python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py collectstatic --no-input &&
+             gunicorn ensembl_production_api.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - 'app:/usr/src/app/'
-      - 'static_volume:/usr/src/app//staticfiles'
+      - 'static_volume:/usr/src/app/staticfiles'
     expose:
       - 8000
     environment:
       - SECRET_KEY=ThisIsASampleSecretKeyLongEnoughForRun
-      - SQL_ENGINE=django.db.backends.mysql
-      - SQL_DATABASE=ensembl_production
-      - SQL_USER=ensembl
-      - SQL_PASSWORD=ensembl
-      - SQL_HOST=mysql
-      - SQL_PORT=3306
+      - PROD_ENGINE=django.db.backends.mysql
+      - PROD_DATABASE=ensembl_production_96
+      - PROD_USER=root
+      - PROD_PASSWORD=
+      - PROD_HOST=127.0.0.1
+      - PROD_PORT=3306
       - DATABASE=mysql
       - DEBUG=False
-    depends_on:
-      - mysql
     networks:
-      - mdr_network
+      - app_network
     ports:
-      - '8001:8000'
+      - '9000:8000'
   nginx:
     build: ./nginx
     volumes:
-      - 'static_volume:/usr/src/app//staticfiles'
+      - 'static_volume:/usr/src/app/staticfiles'
     ports:
       - '1337:80'
     depends_on:
-      - web
+      - production_api
     networks:
-      - mdr_network
+      - app_network
 volumes:
   static_volume: null
   app: null
 networks:
-  mdr_network:
+  app_network:
     driver: bridge
