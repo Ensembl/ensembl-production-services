@@ -1,7 +1,11 @@
 language: python
+sudo: required
+dist: xenial
 python:
   - "3.6"
   - "3.5"
+services:
+  - mysql
 env:
   -DJANGO=2.1.7
 install:

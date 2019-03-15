@@ -92,6 +92,10 @@ DATABASES = {
         'PASSWORD': os.getenv('PROD_PASSWORD', ''),
         'HOST': os.getenv('PROD_HOST', '127.0.0.1'),
         'PORT': os.getenv('PROD_PORT', '3306')
+        'OPTIONS': {
+            # Tell MySQLdb to connect with 'utf8mb4' character set
+            'charset': 'utf8mb4',
+        }
     }
 }
 
