@@ -6,8 +6,8 @@
 # Required-Stop:     $all
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: starts the nginx web server
-# Description:       starts nginx using start-stop-daemon
+# Short-Description: starts the gunicorn processes
+# Description:       starts gunicorn
 ### END INIT INFO
 
 SCRIPT=$(readlink -f $0)
@@ -20,7 +20,7 @@ DAEMON=`command -v gunicorn`
 NAME=${SCRIPT_PATH}/gunicorn
 DESC="Production DB Service"
 
-DAEMON_OPTS="-c $SCRIPT_PATH/gunicorn.conf.py ensembl_production_api.wsgi:application "
+DAEMON_OPTS="-c $SCRIPT_PATH/gunicorn.conf.py ensembl_production_api.wsgi:application --daemon"
 
 PYTHONPATH=${PYTHONPATH}:${SCRIPT_PATH}/../
 export PYTHONPATH
