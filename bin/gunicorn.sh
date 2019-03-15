@@ -52,22 +52,16 @@ case "$1" in
     # start-stop-daemon --stop --quiet --pidfile ${NAME}.pid --exec ${DAEMON}  -- ${DAEMON_OPTS}
     echo "$NAME."
     ;;
-  restart|force-reload)
+  restart)
     echo -n "Restarting $DESC: "
-    start-stop-daemon --stop --quiet --pidfile ${NAME}.pid --exec ${DAEMON}  -- ${DAEMON_OPTS}
+    kill -9 `ps aux | grep gunicorn | grep ensembl_production_api | awk '{ print $2 }'`
     sleep 1
-    init_django
-    start-stop-daemon --start --quiet --pidfile ${NAME}.pid --exec ${DAEMON} -- ${DAEMON_OPTS}
-    echo "$NAME."
-    ;;
-  reload)
-    echo -n "Reloading $DESC configuration: "
-    start-stop-daemon --stop --signal HUP --quiet --pidfile ${NAME}.pid --exec ${DAEMON}
+    ${DAEMON} ${DAEMON_OPTS}
     echo "$NAME."
     ;;
   *)
     #N=/etc/init.d/$NAME
-    echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
+    echo "Usage: $0 {start|stop|restart}" >&2
     exit 1
     ;;
 esac
