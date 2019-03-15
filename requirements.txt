@@ -1,4 +1,4 @@
-Django==2.1.5
+Django==2.1.7
 mysqlclient==1.4.1
 djangorestframework==3.9.1
 django-rest-swagger==2.2.0
@@ -6,3 +6,4 @@ django-filter==2.1.0
 drf-nested-routers==0.91
 gunicorn==19.9.0
 django-multiselectfield==0.1.8
+django-mysql==2.4.1
