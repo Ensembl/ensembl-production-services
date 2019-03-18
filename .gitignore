@@ -141,3 +141,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+/bin/nginx.conf
+/bin/gunicorn.conf.py
+/bin/nginx.pid
