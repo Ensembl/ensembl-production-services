@@ -15,10 +15,10 @@ SCRIPT_PATH=`dirname ${SCRIPT}`
 PATH=/opt/nginx/sbin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
 
 DAEMON=`command -v nginx`
-NAME=${SCRIPT_PATH}/nginx
 DESC="Production DB Service"
 
 DAEMON_OPTS="-q -c $SCRIPT_PATH/nginx.conf -p $SCRIPT_PATH "
+NAME="Run ${DAEMON} ${DAEMON_OPTS}"
 
 command -v nginx > /dev/null 2>&1 || { echo >&2 "no nginx available"; exit 1; }
 
@@ -32,28 +32,31 @@ set -e
 case "$1" in
   start)
     echo -n "Starting $DESC: "
-    start-stop-daemon --start --quiet --chdir `dirname ${SCRIPT_PATH}` --pidfile ${NAME}.pid --exec ${DAEMON} -- ${DAEMON_OPTS}
+    ${DAEMON} ${DAEMON_OPTS}
     echo "$NAME."
     ;;
   stop)
     echo -n "Stopping $DESC: "
-    start-stop-daemon --stop --quiet --pidfile ${NAME}.pid --exec ${DAEMON} -- ${DAEMON_OPTS}
-    echo "$NAME."
+    if [[ -e $SCRIPT_PATH/nginx.pid ]]
+    then
+        ${DAEMON} ${DAEMON_OPTS} -s quit
+    else
+        echo "No process detected"
+    fi
     ;;
-  restart|force-reload)
+  restart|force-reload|reload)
     echo -n "Restarting $DESC: "
-    start-stop-daemon --stop --quiet --pidfile ${NAME}.pid --exec ${DAEMON} -- ${DAEMON_OPTS}
-    sleep 1
-    start-stop-daemon --start --quiet --chdir `dirname ${SCRIPT_PATH}` --pidfile ${NAME}.pid --exec ${DAEMON} -- ${DAEMON_OPTS}
-    echo "$NAME."
-    ;;
-  reload)
-    echo -n "Reloading $DESC configuration: "
-    start-stop-daemon --stop --signal HUP --quiet --pidfile ${NAME}.pid --exec ${DAEMON} -- ${DAEMON_OPTS}
+    if [[ -e $SCRIPT_PATH/nginx.pid ]]
+    then
+        echo "Process detected - Reload gracefully"
+        ${DAEMON} ${DAEMON_OPTS} -s reload
+    else
+        echo "No process detected - Start fresh"
+        ${DAEMON} ${DAEMON_OPTS}
+    fi
     echo "$NAME."
     ;;
   *)
-    #N=/etc/init.d/$NAME
     echo "Usage: $0 {start|stop|restart|reload|force-reload}" >&2
     exit 1
     ;;
