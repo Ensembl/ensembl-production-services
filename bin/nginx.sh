@@ -12,7 +12,7 @@
 
 SCRIPT=$(readlink -f $0)
 SCRIPT_PATH=`dirname ${SCRIPT}`
-PATH=/opt/nginx/sbin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
+PATH=$PATH:/opt/nginx/sbin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
 
 DAEMON=`command -v nginx`
 DESC="Production DB Service"
