@@ -31,7 +31,6 @@ cd ${SCRIPT_PATH}/../
 
 function init_django() {
     echo "Check Django Updates / Upgrades"
-    python manage.py flush --no-input
     python manage.py makemigrations ensembl_production
     python manage.py migrate ensembl_production
     python manage.py makemigrations
