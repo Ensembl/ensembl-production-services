@@ -3,9 +3,9 @@
 from django.conf.urls import url, include
 from rest_framework_nested import routers
 from rest_framework_swagger.views import get_swagger_view
-from ensembl_production.router import CustomRouter
+from ensembl_production_api.router import CustomRouter
 
-from ensembl_production.api import viewsets
+from ensembl_production_api.api import viewsets
 
 
 # API router setup

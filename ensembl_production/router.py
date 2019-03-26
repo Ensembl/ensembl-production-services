@@ -1,57 +1,43 @@
 # -*- coding: utf-8 -*-
-from rest_framework.routers import Route, SimpleRouter
 
 
-class ProductionRouter:
+class AuthRouter:
     """
     A router to control all database operations on models in the
-    production application.
+    auth application.
     """
+    app_lists = ('auth', 'admin')
 
     def db_for_read(self, model, **hints):
         """
-        Attempts to read production models go to production.
+        Attempts to read auth models go to auth_db.
         """
-        if model._meta.app_label == 'ensembl_production':
-            return 'production'
+        if model._meta.app_label == 'auth':
+            return 'default'
         return None
 
     def db_for_write(self, model, **hints):
         """
-        Attempts to write production models go to production.
+        Attempts to write auth models go to auth_db.
         """
-        if model._meta.app_label == 'ensembl_production':
-            return 'production'
+        if model._meta.app_label == 'auth':
+            return 'default'
         return None
 
     def allow_relation(self, obj1, obj2, **hints):
         """
-        Allow relations if a model in the production app is involved.
+        Allow relations if a model in the auth production_services is involved.
         """
-        if obj1._meta.app_label == 'ensembl_production' or \
-                obj2._meta.app_label == 'ensembl_production':
+        if obj1._meta.app_label == 'auth' or \
+                obj2._meta.app_label == 'auth':
             return True
         return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         """
-        Make sure the production app only appears in the 'production'
+        Make sure the auth production_services only appears in the 'auth_db'
         database.
         """
-        if app_label == 'ensembl_production':
-            return db == 'production'
+        if app_label == 'auth':
+            return db == 'default'
         return None
-
-class CustomRouter(SimpleRouter):
-    """
-    A router for read-only APIs, which doesn't use trailing slashes.
-    """
-    routes = [
-        Route(
-            url=r'^{prefix}$',
-            mapping={'get': 'list','post':'create'},
-            name='{basename}-list',
-            detail=False,
-            initkwargs={'suffix': 'List'}
-        )
-    ]

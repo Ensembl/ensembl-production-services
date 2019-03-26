@@ -1,4 +1,4 @@
-"""ensembl_production_api URL Configuration
+"""production_services URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -15,14 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
-from ensembl_production.api.urls import schema_view
+from ensembl_production_api.api.urls import schema_view
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^$', schema_view),
-    url(r'^api/', include('ensembl_production.api.urls')),
+    # Production Admin
+    url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
+    url(r'^', admin.site.urls),
+    # Production DB API
+    url(r'^api/', include('ensembl_production_api.api.urls')),
+    url(r'^api/schema/', schema_view),
 ]
 
-admin.site.site_header = "Ensembl ProductionDB Admin"
-admin.site.site_title = "Ensembl ProductionDB Admin"
-admin.site.index_title = "Welcome to ProductionDB Admin"
+admin.site.site_header = "Ensembl Production Services"
+admin.site.site_title = "Ensembl Production Services"
+admin.site.index_title = "Welcome to Ensembl Production Services"

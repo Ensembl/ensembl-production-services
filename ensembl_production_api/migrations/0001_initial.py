@@ -84,7 +84,7 @@ class Migration(migrations.Migration):
                 ('biotype_group', django_mysql.models.EnumField(choices=[('coding', 'coding'), ('pseudogene', 'pseudogene'), ('snoncoding', 'snoncoding'), ('lnoncoding', 'lnoncoding'), ('mnoncoding', 'mnoncoding'), ('LRG', 'LRG'), ('undefined', 'undefined'), ('no_group', 'no_group')], default='no_group')),
                 ('so_acc', models.CharField(blank=True, max_length=64, null=True)),
                 ('so_term', models.CharField(blank=True, max_length=1023, null=True)),
-                ('attrib_type', models.ForeignKey(blank=True, db_column='attrib_type_id', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ensembl_production.MasterAttribType')),
+                ('attrib_type', models.ForeignKey(blank=True, db_column='attrib_type_id', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ensembl_production_api.MasterAttribType')),
             ],
             options={
                 'verbose_name': 'Biotype',
@@ -193,7 +193,7 @@ class Migration(migrations.Migration):
                 ('modified_at', models.DateTimeField(auto_now=True, help_text='Last update timestamp', null=True, verbose_name='Last Update')),
                 ('is_current', models.BooleanField(default=True)),
                 ('attrib_set_id', models.IntegerField()),
-                ('attrib', models.OneToOneField(db_column='attrib_id', on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='ensembl_production.MasterAttrib')),
+                ('attrib', models.OneToOneField(db_column='attrib_id', on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='ensembl_production_api.MasterAttrib')),
             ],
             options={
                 'verbose_name': 'AttribSet',
@@ -207,12 +207,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='masterattrib',
             name='attrib_type',
-            field=models.ForeignKey(db_column='attrib_type_id', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ensembl_production.MasterAttribType'),
+            field=models.ForeignKey(db_column='attrib_type_id', null=True, on_delete=django.db.models.deletion.SET_NULL, to='ensembl_production_api.MasterAttribType'),
         ),
         migrations.AddField(
             model_name='analysisdescription',
             name='web_data',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='ensembl_production.WebData'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='ensembl_production_api.WebData'),
         ),
         migrations.AlterUniqueTogether(
             name='masterbiotype',

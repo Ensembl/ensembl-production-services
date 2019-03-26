@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 ENV PYTHONUNBUFFERED 1
 
-ENV DJANGO_SETTINGS_MODULE=ensembl_production_api.settings
+ENV DJANGO_SETTINGS_MODULE=production_services.settings
 
 RUN apk update && apk add bash
 

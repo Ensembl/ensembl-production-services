@@ -2,8 +2,8 @@
 
 from rest_framework import viewsets
 
-from ensembl_production.api.serializers import *
-from ensembl_production.models import *
+from ensembl_production_api.api.serializers import *
+from ensembl_production_api.models import *
 from .serializers import WebDataSerializer,escape_perl_string, PerlFieldElementSerializer
 from rest_framework.response import Response
 from rest_framework import status

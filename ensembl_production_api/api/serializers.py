@@ -4,7 +4,7 @@ import json
 
 from rest_framework import serializers
 
-from ensembl_production.models import *
+from ensembl_production_api.models import *
 
 
 def escape_perl_string(v):

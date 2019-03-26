@@ -1,5 +1,5 @@
 """
-WSGI config for ensembl_production_api project.
+WSGI config for production_services project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ensembl_production_api.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "production_services.settings")
 
 application = get_wsgi_application()
