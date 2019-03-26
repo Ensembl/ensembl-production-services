@@ -1,21 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import json
-
 from rest_framework import serializers
 
-from ensembl_production_api.models import *
-
-
-def escape_perl_string(v):
-    """Escape characters with special meaning in perl"""
-    return str(v).replace("$", "\\$").replace("\"", "\\\"").replace("@", "\\@")
-
-
-def perl_string_to_python(s):
-    """Parse a Perl hash string into a Python dict"""
-    s = s.replace("=>", ":").replace("\\$", "$").replace("\\@", "@").replace('\'', '"')
-    return json.loads(s)
+from ensembl_production.utils import escape_perl_string, perl_string_to_python
+from ensembl_production_db.models import *
 
 
 class PerlFieldElementSerializer(serializers.CharField):
@@ -81,6 +69,7 @@ class WebDataSerializer(serializers.ModelSerializer):
 
 class BiotypeSerializer(serializers.ModelSerializer):
     is_current = serializers.BooleanField(default=True, initial=True)
+
     class Meta:
         model = MasterBiotype
         exclude = ('created_at', 'created_by')
@@ -88,6 +77,7 @@ class BiotypeSerializer(serializers.ModelSerializer):
 
 class AttribTypeSerializer(serializers.ModelSerializer):
     is_current = serializers.BooleanField(default=True, initial=True)
+
     class Meta:
         model = MasterAttribType
         exclude = ('created_at', 'created_by')
@@ -95,9 +85,11 @@ class AttribTypeSerializer(serializers.ModelSerializer):
 
 class AttribSerializer(serializers.ModelSerializer):
     is_current = serializers.BooleanField(default=True, initial=True)
+
     class Meta:
         model = MasterAttrib
-        exclude = ('created_at', 'created_by','modified_by')
+        exclude = ('created_at', 'created_by', 'modified_by')
+
     attrib_type = AttribTypeSerializer(many=False, required=True)
 
     def create(self, validated_data):
@@ -135,6 +127,6 @@ class AnalysisDescriptionSerializer(serializers.ModelSerializer):
             elem = WebData.objects.filter(data=web_data.get('data', '')).first()
             if not elem:
                 elem = WebData.objects.create(**web_data)
-                instance.web_data=elem
+                instance.web_data = elem
                 instance.save()
         return super(AnalysisDescriptionSerializer, self).update(instance, validated_data)

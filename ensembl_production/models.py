@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.core import exceptions
 from django.db import models
 from django.db.models.fields.related import ForeignKey
 from django.db.utils import ConnectionHandler, ConnectionRouter
-from django.core import exceptions
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
@@ -44,10 +44,10 @@ class UserForeignKey(models.IntegerField):
 
 NOT_PROVIDED = object()
 
+
 class SpanningForeignKey(ForeignKey):
 
     def validate(self, value, model_instance):
-        print('in validate')
         if self.remote_field.parent_link:
             return
         # Call the grandparent rather than the parent to skip validation
@@ -101,7 +101,6 @@ class SpanningForeignKey(ForeignKey):
         })
 
     def get_cached_value(self, instance, default=NOT_PROVIDED):
-        print(instance)
         cache_name = self.get_cache_name()
         try:
             return instance._state.fields_cache[cache_name]

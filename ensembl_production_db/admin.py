@@ -35,33 +35,50 @@ class AnalysisDescriptionInline(ProductionTabularInline):
 # Register your models here.
 class AttribTypeAdmin(ProductionModelAdmin):
     list_display = ('code', 'name', 'description')
+    fields = ('code', 'name', 'description',
+              ('created_by', 'created_at'),
+              ('modified_by', 'modified_at')
+              )
     search_fields = ('code', 'name', 'description')
     inlines = (AttribInline,)
 
 
 class AttribAdmin(ProductionModelAdmin):
     list_display = ('value', 'attrib_type')
+    fields = ('value', 'attrib_type',
+              ('created_by', 'created_at'),
+              ('modified_by', 'modified_at'))
     search_fields = ('value', 'attrib_type__name')
     inlines = (AttribSetInline,)
 
 
 class AttribSetAdmin(ProductionModelAdmin):
-    fields = ('attrib_set_id', 'attrib', 'is_current', ('created_by', 'modified_by'))
+    fields = ('attrib_set_id', 'attrib', 'is_current',
+              ('created_by', 'created_at'),
+              ('modified_by', 'modified_at')
+              )
     list_display = ('attrib', 'attrib_set_id')
     search_fields = ('attrib__value', 'attrib_set_id')
 
 
 class BioTypeAdmin(ProductionModelAdmin):
     # TODO DBTYPE to add display inline+flex class
-    fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type', ('is_dumped', 'is_current'),
-              'description', ('created_by', 'modified_by'))
+    fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type',
+              'description',
+              ('is_dumped', 'is_current'),
+              ('created_by', 'created_at'),
+              ('modified_by', 'modified_at')
+              )
     list_display = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type', 'is_dumped', 'description')
     search_fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type__name', 'description')
 
 
 class AnalysisDescriptionAdmin(ProductionModelAdmin):
-    fields = ('logic_name', 'description', 'display_label', ('db_version', 'displayable', 'is_current',),
-              ('created_by', 'modified_by'))
+    fields = ('logic_name', 'description', 'display_label', 'web_data',
+              ('db_version', 'displayable', 'is_current'),
+              ('created_by', 'created_at'),
+              ('modified_by', 'modified_at')
+              )
 
     list_display = ('logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable')
     search_fields = ('logic_name', 'display_label', 'description', 'web_data__data')
@@ -69,19 +86,37 @@ class AnalysisDescriptionAdmin(ProductionModelAdmin):
 
 class MetakeyAdmin(ProductionModelAdmin):
     list_display = ('name', 'is_optional', 'db_type', 'description')
+    fields = ('name', 'description', 'is_optional', 'db_type',
+              ('created_by', 'created_at'),
+              ('modified_by', 'modified_at')
+              )
     search_fields = ('name', 'db_type', 'description')
 
 
 class WebDataAdmin(ProductionModelAdmin):
-    list_display = ('data', 'comment')
+    # TODO add pretty json display / conversion to Perl upon save
+    list_display = ('label', 'related_analysis', 'comment', 'pk')
     search_fields = ('data', 'comment')
+    fields = ('data', 'comment',
+              ('created_by', 'created_at'),
+              ('modified_by', 'modified_at')
+              )
     inlines = (AnalysisDescriptionInline,)
+
+    def related_analysis(self, obj):
+        return [x for x in obj.analysis.all()[:3]] if obj.analysis else 'n/a'
+
+    related_analysis.short_description = "Analysis Description"
 
 
 class MasterExternalDbAdmin(ProductionModelAdmin):
-    list_display = (
-        'db_name', 'db_release', 'status', 'db_display_name', 'priority', 'type', 'secondary_db_name',
-        'secondary_db_table')
+    list_display = ('db_name', 'db_release', 'status', 'db_display_name', 'priority', 'type', 'secondary_db_name',
+                    'secondary_db_table')
+    fields = ('db_name', 'status', 'db_display_name', 'priority', 'type', 'db_release', 'secondary_db_name',
+              'secondary_db_table',
+              ('created_by', 'created_at'),
+              ('modified_by', 'modified_at')
+              )
     search_fields = (
         'db_name', 'db_release', 'status', 'db_display_name', 'priority', 'type', 'secondary_db_name',
         'secondary_db_table')

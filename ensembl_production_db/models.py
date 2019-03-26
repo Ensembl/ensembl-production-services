@@ -11,6 +11,7 @@ from django_mysql.models import EnumField
 from multiselectfield import MultiSelectField
 
 from ensembl_production.models import SpanningForeignKey
+from ensembl_production.utils import perl_string_to_python
 
 DB_TYPE_CHOICES_BIOTYPE = (('cdna', 'cdna'),
                            ('core', 'core'),
@@ -44,7 +45,7 @@ class BaseTimestampedModel(models.Model):
 
     class Meta:
         abstract = True
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
         ordering = ['-updated', '-created']
 
     #: created by user (external DB ID)
@@ -68,7 +69,7 @@ class BaseTimestampedModel(models.Model):
 class HasCurrent(models.Model):
     class Meta:
         abstract = True
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
 
     is_current = models.BooleanField(default=True)
 
@@ -80,12 +81,25 @@ class WebData(BaseTimestampedModel):
     description = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
         db_table = 'web_data'
         verbose_name = 'WebData'
 
+    @property
+    def label(self):
+        json = perl_string_to_python(self.data)
+        label = ''
+        stop = 2
+        for key in json:
+            label += '[{}:{}]'.format(key, json[key])
+            stop -= 1
+            if stop == 0:
+                break
+        label += '...'
+        return label
+
     def __str__(self):
-        return 'WebData: {}'.format(self.data)
+        return 'WebData: {}...'.format(self.label)
 
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel):
@@ -94,12 +108,16 @@ class AnalysisDescription(HasCurrent, BaseTimestampedModel):
     description = models.TextField(blank=True, null=True)
     display_label = models.CharField(max_length=256)
     db_version = models.BooleanField(default=True)
-    web_data = models.ForeignKey(WebData, null=True, blank=True, on_delete=models.SET_NULL)
+    web_data = models.ForeignKey(WebData, null=True, blank=True, on_delete=models.SET_NULL,
+                                 related_name='analysis')
     displayable = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'analysis_description'
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
+
+    def __str__(self):
+        return 'Analysis: {} ({})'.format(self.display_label, self.logic_name)
 
 
 class MasterAttribType(HasCurrent, BaseTimestampedModel):
@@ -110,7 +128,7 @@ class MasterAttribType(HasCurrent, BaseTimestampedModel):
 
     class Meta:
         db_table = 'master_attrib_type'
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
         verbose_name = 'AttribType'
 
     def __str__(self):
@@ -124,7 +142,7 @@ class MasterAttrib(HasCurrent, BaseTimestampedModel):
 
     class Meta:
         db_table = 'master_attrib'
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
         verbose_name = 'Attrib'
 
     def __str__(self):
@@ -137,7 +155,7 @@ class MasterAttribSet(HasCurrent, BaseTimestampedModel):
 
     class Meta:
         db_table = 'master_attrib_set'
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
         verbose_name = 'AttribSet'
 
 
@@ -158,7 +176,7 @@ class MasterBiotype(HasCurrent, BaseTimestampedModel):
 
     class Meta:
         db_table = 'master_biotype'
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
         unique_together = (('name', 'object_type'),)
         verbose_name = 'Biotype'
 
@@ -177,7 +195,7 @@ class MasterExternalDb(HasCurrent, BaseTimestampedModel):
 
     class Meta:
         db_table = 'master_external_db'
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
         unique_together = (('db_name', 'db_release', 'is_current'),)
         verbose_name = 'ExternalDB'
 
@@ -190,7 +208,7 @@ class MasterMiscSet(HasCurrent, BaseTimestampedModel):
     max_length = models.PositiveIntegerField()
 
     class Meta:
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
         db_table = 'master_misc_set'
 
 
@@ -200,7 +218,7 @@ class MasterUnmappedReason(HasCurrent, BaseTimestampedModel):
     full_description = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'
         db_table = 'master_unmapped_reason'
 
 
@@ -213,4 +231,4 @@ class MetaKey(HasCurrent, BaseTimestampedModel):
 
     class Meta:
         db_table = 'meta_key'
-        app_label = 'ensembl_production_api'
+        app_label = 'ensembl_production_db'

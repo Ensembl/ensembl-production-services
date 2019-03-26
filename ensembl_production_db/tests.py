@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-from ensembl_production_api.models import *
+from ensembl_production_db.models import *
 from rest_framework import status
 from rest_framework.test import APITestCase
 from django.core.management import call_command
-from ensembl_production_api.api.serializers import *
+from ensembl_production_db.api.serializers import *
 from django.urls import reverse
 
 class AnalysisTest(APITestCase):
     """ Test module for AnalysisDescription model """
     multi_db = True
     using_db = 'production'
-    fixtures = ['ensembl_production_api']
+    fixtures = ['ensembl_production_db']
 
     # Test Analysis description endpoints
     def test_AnalysisDescription(self):

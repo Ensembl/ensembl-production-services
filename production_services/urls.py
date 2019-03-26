@@ -15,15 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
-from ensembl_production_api.api.urls import schema_view
+from ensembl_production_db.api.urls import schema_view
 
 urlpatterns = [
     # Production Admin
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
     url(r'^', admin.site.urls),
     # Production DB API
-    url(r'^api/', include('ensembl_production_api.api.urls')),
-    url(r'^api/schema/', schema_view),
+    url(r'^production_db/api/', include('ensembl_production_db.api.urls')),
+    url(r'^production_db/api/schema', schema_view),
 ]
 
 admin.site.site_header = "Ensembl Production Services"

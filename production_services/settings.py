@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
-    'ensembl_production_api',
+    'ensembl_production_db',
     'multiselectfield',
 ]
 
@@ -61,7 +61,7 @@ ROOT_URLCONF = 'production_services.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'ensembl_production/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,7 +107,7 @@ DATABASES = {
 }
 
 DATABASE_ROUTERS = ['ensembl_production.router.AuthRouter',
-                    'ensembl_production_api.router.ProductionRouter']
+                    'ensembl_production_db.router.ProductionRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
