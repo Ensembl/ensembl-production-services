@@ -9,8 +9,8 @@ services:
              python manage.py collectstatic --no-input &&
              gunicorn ensembl_production_api.wsgi:application --bind 0.0.0.0:8000"
     volumes:
-      - 'app:/usr/src/app/'
-      - 'static_volume:/usr/src/app/staticfiles'
+      - 'production_services:/usr/src/production_services/'
+      - 'static_volume:/usr/src/production_services/staticfiles'
     expose:
       - 8000
     environment:
@@ -28,9 +28,9 @@ services:
     ports:
       - '9000:8000'
   nginx:
-    build: ./nginx
+    build: bin/nginx
     volumes:
-      - 'static_volume:/usr/src/app/staticfiles'
+      - 'static_volume:/usr/src/production_services/staticfiles'
     ports:
       - '1337:80'
     depends_on:

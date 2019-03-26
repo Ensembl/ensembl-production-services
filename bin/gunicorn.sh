@@ -20,7 +20,7 @@ DAEMON=`command -v gunicorn`
 NAME=${SCRIPT_PATH}/gunicorn
 DESC="Production DB Service"
 
-DAEMON_OPTS="-c $SCRIPT_PATH/gunicorn.conf.py ensembl_production_api.wsgi:application --daemon"
+DAEMON_OPTS="-c $SCRIPT_PATH/gunicorn.conf.py production_services.wsgi:application --daemon"
 
 PYTHONPATH=${PYTHONPATH}:${SCRIPT_PATH}/../
 export PYTHONPATH
