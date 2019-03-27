@@ -14,8 +14,6 @@
 """
 from django import forms
 from django.contrib import admin
-from django.urls import reverse
-from django.utils.safestring import mark_safe
 
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
@@ -27,6 +25,20 @@ class ProductionModelAdmin(ProductionUserAdminMixin):
     readonly_fields = ('created_by', 'created_at', 'modified_by', 'modified_at')
     ordering = ('-modified_at', '-created_at')
     list_filter = ['created_by', 'modified_by']
+
+    def has_delete_permission(self, request, obj=None):
+        if not request.user.is_superuser:
+            return False
+        return super().has_delete_permission(request, obj)
+
+    def has_add_permission(self, request):
+        return request.user.is_staff
+
+    def has_module_permission(self, request):
+        return request.user.is_staff
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_staff
 
 
 class ProductionTabularInline(admin.TabularInline):
@@ -113,13 +125,19 @@ class MetaKeyForm(forms.BaseModelForm):
 
 
 class MetakeyAdmin(ProductionModelAdmin):
-    form = MetaKeyForm
+    # form = MetaKeyForm
     list_display = ('name', 'is_optional', 'db_type', 'description')
     fields = ('name', 'description', 'is_optional', 'db_type',
               ('created_by', 'created_at'),
-              ('modified_by', 'modified_at')
-              )
+              ('modified_by', 'modified_at'))
+    ordering = ('name',)
     search_fields = ('name', 'db_type', 'description')
+
+    def get_readonly_fields(self, request, obj=None):
+        read_only_fields = super().get_readonly_fields(request, obj)
+        if obj is not None:
+            read_only_fields += ('name',)
+        return read_only_fields
 
 
 class WebDataAdmin(ProductionModelAdmin):

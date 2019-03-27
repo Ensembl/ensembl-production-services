@@ -232,3 +232,4 @@ class MetaKey(HasCurrent, BaseTimestampedModel):
     class Meta:
         db_table = 'meta_key'
         app_label = 'ensembl_production_db'
+        ordering = ('name',)
