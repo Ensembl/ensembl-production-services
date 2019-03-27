@@ -21,6 +21,11 @@ class ProductionUserAdminMixin(admin.ModelAdmin):
     Warning: Do not check for foreign key integrity across databases
     """
 
+    class Media:
+        css = {
+            'all': ('production_admin.css',)
+        }
+
     def save_model(self, request, obj, form, change):
         if change:
             if form.changed_data:

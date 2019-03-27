@@ -12,17 +12,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from django import forms
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 from ensembl_production.admin import ProductionUserAdminMixin
-from .models import *
-from django import forms
 from ensembl_production.forms import JetCheckboxSelectMultiple
+from .models import *
 
 
 class ProductionModelAdmin(ProductionUserAdminMixin):
     list_per_page = 50
     readonly_fields = ('created_by', 'created_at', 'modified_by', 'modified_at')
+    ordering = ('-modified_at', '-created_at')
+    list_filter = ['created_by', 'modified_by']
 
 
 class ProductionTabularInline(admin.TabularInline):
@@ -37,8 +41,9 @@ class AttribInline(ProductionTabularInline):
 
 class AttribSetInline(ProductionTabularInline):
     model = MasterAttribSet
-    extra = 1
+    extra = 0
     fields = ['attrib_set_id', 'modified_by', 'created_by', 'created_at', 'modified_at']
+    can_delete = True
 
 
 class AnalysisDescriptionInline(ProductionTabularInline):
@@ -52,8 +57,7 @@ class AttribTypeAdmin(ProductionModelAdmin):
     list_display = ('code', 'name', 'description')
     fields = ('code', 'name', 'description',
               ('created_by', 'created_at'),
-              ('modified_by', 'modified_at')
-              )
+              ('modified_by', 'modified_at'))
     search_fields = ('code', 'name', 'description')
     inlines = (AttribInline,)
 
@@ -64,7 +68,7 @@ class AttribAdmin(ProductionModelAdmin):
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     search_fields = ('value', 'attrib_type__name')
-    inlines = (AttribSetInline,)
+    # inlines = (AttribSetInline,)
 
 
 class AttribSetAdmin(ProductionModelAdmin):
@@ -72,7 +76,7 @@ class AttribSetAdmin(ProductionModelAdmin):
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at')
               )
-    list_display = ('attrib', 'attrib_set_id')
+    list_display = ('attrib_set_id', 'attrib', 'modified_at', 'created_at')
     search_fields = ('attrib__value', 'attrib_set_id')
 
 
@@ -92,11 +96,11 @@ class AnalysisDescriptionAdmin(ProductionModelAdmin):
     fields = ('logic_name', 'description', 'display_label', 'web_data',
               ('db_version', 'displayable', 'is_current'),
               ('created_by', 'created_at'),
-              ('modified_by', 'modified_at')
-              )
+              ('modified_by', 'modified_at'))
 
     list_display = ('logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable')
     search_fields = ('logic_name', 'display_label', 'description', 'web_data__data')
+
 
 class MetaKeyForm(forms.BaseModelForm):
     class Meta:

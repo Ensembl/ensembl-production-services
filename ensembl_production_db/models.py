@@ -54,16 +54,14 @@ class BaseTimestampedModel(models.Model):
                                     on_delete=models.SET_NULL, db_constraint=False,
                                     related_name="%(class)s_created_by",
                                     related_query_name="%(app_label)s_%(class)ss_creates", )
-    created_at = models.DateTimeField('Created on', auto_now_add=True, editable=False, null=True,
-                                      help_text='Creation timestamp')
+    created_at = models.DateTimeField('Created on', auto_now_add=True, editable=False, null=True)
     #: Modified by user (external DB ID)
     modified_by = SpanningForeignKey(get_user_model(), db_column='modified_by', blank=True, null=True,
                                      on_delete=models.SET_NULL, db_constraint=False,
                                      related_name="%(class)s_modified_by",
                                      related_query_name="%(app_label)s_%(class)ss_updates", )
     #: (auto_now): set each time model object is saved in database
-    modified_at = models.DateTimeField('Last Update', auto_now=True, editable=False, null=True,
-                                       help_text='Last update timestamp')
+    modified_at = models.DateTimeField('Last Update', auto_now=True, editable=False, null=True)
 
 
 class HasCurrent(models.Model):
@@ -95,11 +93,11 @@ class WebData(BaseTimestampedModel):
             stop -= 1
             if stop == 0:
                 break
-        label += '...'
+        # label += '...'
         return label
 
     def __str__(self):
-        return 'WebData: {}...'.format(self.label)
+        return '{}...'.format(self.label)
 
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel):
@@ -107,10 +105,10 @@ class AnalysisDescription(HasCurrent, BaseTimestampedModel):
     logic_name = models.CharField(unique=True, max_length=128)
     description = models.TextField(blank=True, null=True)
     display_label = models.CharField(max_length=256)
-    db_version = models.BooleanField(default=True)
+    db_version = models.BooleanField('Use DB version', default=True)
     web_data = models.ForeignKey(WebData, null=True, blank=True, on_delete=models.SET_NULL,
                                  related_name='analysis')
-    displayable = models.BooleanField(default=True)
+    displayable = models.BooleanField('Is displayed', default=True)
 
     class Meta:
         db_table = 'analysis_description'
@@ -132,7 +130,7 @@ class MasterAttribType(HasCurrent, BaseTimestampedModel):
         verbose_name = 'AttribType'
 
     def __str__(self):
-        return 'AttribType: {}'.format(self.name)
+        return '{}'.format(self.name)
 
 
 class MasterAttrib(HasCurrent, BaseTimestampedModel):
@@ -146,12 +144,14 @@ class MasterAttrib(HasCurrent, BaseTimestampedModel):
         verbose_name = 'Attrib'
 
     def __str__(self):
-        return 'Attrib: {}'.format(self.value)
+        return '{}'.format(self.value)
 
 
 class MasterAttribSet(HasCurrent, BaseTimestampedModel):
     attrib_set_id = models.IntegerField()
-    attrib = models.OneToOneField(MasterAttrib, db_column='attrib_id', on_delete=models.CASCADE, primary_key=True)
+    attrib = models.OneToOneField(MasterAttrib, db_column='attrib_id',
+                                  on_delete=models.CASCADE, primary_key=True,
+                                  related_name='related_attrib_set')
 
     class Meta:
         db_table = 'master_attrib_set'

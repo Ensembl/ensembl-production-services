@@ -17,10 +17,13 @@ import json
 
 def escape_perl_string(v):
     """Escape characters with special meaning in perl"""
-    return str(v).replace("$", "\\$").replace("\"", "\\\"").replace("@", "\\@")
+    return str(v).replace("$", "\\$").replace("\"", "\\\"").replace("@", "\\@") if v else ''
 
 
 def perl_string_to_python(s):
     """Parse a Perl hash string into a Python dict"""
-    s = s.replace("=>", ":").replace("\\$", "$").replace("\\@", "@").replace('\'', '"')
-    return json.loads(s)
+    if s:
+        s = s.replace("=>", ":").replace("\\$", "$").replace("\\@", "@").replace('\'', '"').replace('\n', '')
+        return json.loads(s)
+    else:
+        return ''
