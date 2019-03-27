@@ -1,8 +1,23 @@
 # -*- coding: utf-8 -*-
+"""
+.. See the NOTICE file distributed with this work for additional information
+   regarding copyright ownership.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+"""
 from django.contrib import admin
 
 from ensembl_production.admin import ProductionUserAdminMixin
 from .models import *
+from django import forms
+from ensembl_production.forms import JetCheckboxSelectMultiple
 
 
 class ProductionModelAdmin(ProductionUserAdminMixin):
@@ -83,8 +98,18 @@ class AnalysisDescriptionAdmin(ProductionModelAdmin):
     list_display = ('logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable')
     search_fields = ('logic_name', 'display_label', 'description', 'web_data__data')
 
+class MetaKeyForm(forms.BaseModelForm):
+    class Meta:
+        model = MetaKey
+        fields = ('__all__',)
+
+    def __init__(self, **kwargs):
+        self.fields['db_type'].widget = JetCheckboxSelectMultiple()
+        super().__init__(**kwargs)
+
 
 class MetakeyAdmin(ProductionModelAdmin):
+    form = MetaKeyForm
     list_display = ('name', 'is_optional', 'db_type', 'description')
     fields = ('name', 'description', 'is_optional', 'db_type',
               ('created_by', 'created_at'),

@@ -12,8 +12,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django.apps import AppConfig
+from django.forms import CheckboxSelectMultiple
 
 
-class EnsemblProductionConfig(AppConfig):
-    name = 'ensembl production_api'
+# Overriding standart CheckboxSelectMultiple for jet admin
+class JetCheckboxSelectMultiple(CheckboxSelectMultiple):
+    option_template_name = 'admin/forms/widgets/checkbox_option.html'

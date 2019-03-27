@@ -1,0 +1,8 @@
+For following files Django copyright applies:
+
+~/production_services/settings.py
+~/production_services/urls.py
+~/production_services/wsgi.py
+~/manage.py
+
+For files under any other path/directory EMBL/EBI copyright applies
