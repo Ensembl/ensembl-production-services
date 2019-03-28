@@ -15,5 +15,6 @@
 from django.apps import AppConfig
 
 
-class EnsemblProductionConfig(AppConfig):
-    name = 'ensembl production_api'
+class EnsemblProductionDbConfig(AppConfig):
+    name = 'ensembl_production_db'
+

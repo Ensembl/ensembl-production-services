@@ -14,9 +14,11 @@
 """
 from django import forms
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
+from ensembl_production.utils import escape_perl_string
 from .models import *
 
 
@@ -60,8 +62,11 @@ class AttribSetInline(ProductionTabularInline):
 
 class AnalysisDescriptionInline(ProductionTabularInline):
     model = AnalysisDescription
-    extra = 1
+    extra = 0
     fields = ['logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable']
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 # Register your models here.
@@ -109,9 +114,14 @@ class AnalysisDescriptionAdmin(ProductionModelAdmin):
               ('db_version', 'displayable', 'is_current'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
-
-    list_display = ('logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable')
+    list_filter = ProductionModelAdmin.list_filter + ['displayable', ]
+    list_display = ('logic_name', 'display_label', 'description', 'web_data_label', 'db_version', 'displayable')
     search_fields = ('logic_name', 'display_label', 'description', 'web_data__data')
+
+    def web_data_label(self, obj):
+        return obj.web_data.label if obj.web_data else 'EMPTY'
+
+    web_data_label.short_description = "Web Data"
 
 
 class MetaKeyForm(forms.BaseModelForm):
@@ -140,20 +150,29 @@ class MetakeyAdmin(ProductionModelAdmin):
         return read_only_fields
 
 
+class WebDataForm(forms.ModelForm):
+    class Meta:
+        model = WebData
+        fields = ('web_data', 'comment')#, 'created_by', 'created_at', 'modified_by', 'modified_at')
+
+    def clean_data(self):
+        value = self.cleaned_data.get('web_data', None)
+        try:
+            escape_perl_string(value)
+        except:
+            raise ValidationError({'web_data': 'Value is not valid Perl dictionary'})
+
+
 class WebDataAdmin(ProductionModelAdmin):
+    form = WebDataForm
     # TODO add pretty json display / conversion to Perl upon save
-    list_display = ('label', 'related_analysis', 'comment', 'pk')
-    search_fields = ('data', 'comment')
-    fields = ('data', 'comment',
+    list_display = ('pk', 'label', 'comment')
+    search_fields = ('pk', 'web_data', 'comment')
+    fields = ('web_data', 'comment',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at')
               )
     inlines = (AnalysisDescriptionInline,)
-
-    def related_analysis(self, obj):
-        return [x for x in obj.analysis.all()[:3]] if obj.analysis else 'n/a'
-
-    related_analysis.short_description = "Analysis Description"
 
 
 class MasterExternalDbAdmin(ProductionModelAdmin):

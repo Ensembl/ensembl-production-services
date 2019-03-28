@@ -23,6 +23,7 @@ def escape_perl_string(v):
 def perl_string_to_python(s):
     """Parse a Perl hash string into a Python dict"""
     if s:
+        print('perl string', s)
         s = s.replace("=>", ":").replace("\\$", "$").replace("\\@", "@").replace('\'', '"').replace('\n', '')
         return json.loads(s)
     else:

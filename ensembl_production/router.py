@@ -39,7 +39,7 @@ class AuthRouter:
 
     def allow_relation(self, obj1, obj2, **hints):
         """
-        Allow relations if a model in the auth production_services is involved.
+        Allow relations if a model in the auth is involved.
         """
         if obj1._meta.app_label == 'auth' or \
                 obj2._meta.app_label == 'auth':
@@ -48,7 +48,7 @@ class AuthRouter:
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         """
-        Make sure the auth production_services only appears in the 'auth_db'
+        Make sure the auth only appears in the 'auth_db'
         database.
         """
         if app_label == 'auth':

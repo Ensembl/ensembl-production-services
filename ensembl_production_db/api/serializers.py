@@ -14,7 +14,7 @@
 """
 from rest_framework import serializers
 
-from ensembl_production.utils import escape_perl_string
+from ensembl_production.utils import escape_perl_string, perl_string_to_python
 from ensembl_production_db.models import *
 
 
@@ -45,7 +45,7 @@ class PerlFieldElementSerializer(serializers.CharField):
         """Transform the supplied dict into a string representation of a Perl hash"""
         pairs = []
         for k, v in sorted([(k, v) for k, v in data.items() if v is not None], key=lambda x: x[0]):
-            # for k, v in sorted(filter((k, v) for k, v in data.items())):
+            # for k, v in sorted(filter((k, v) for k, v in web_data.items())):
             k = str(k)
             t = type(v).__name__
             if t == 'str':
@@ -76,7 +76,7 @@ class WebDataSerializer(serializers.ModelSerializer):
         model = WebData
         fields = '__all__'
 
-    data = PerlFieldElementSerializer()
+    data = PerlFieldElementSerializer(source="web_data")
 
 
 class BiotypeSerializer(serializers.ModelSerializer):
@@ -125,7 +125,7 @@ class AnalysisDescriptionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if 'web_data' in validated_data:
             web_data = validated_data.pop('web_data')
-            elem = WebData.objects.filter(data=web_data.get('data', '')).first()
+            elem = WebData.objects.filter(web_data=web_data.get('web_data', '')).first()
             if not elem:
                 elem = WebData.objects.create(**web_data)
         else:
@@ -136,7 +136,7 @@ class AnalysisDescriptionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         if 'web_data' in validated_data:
             web_data = validated_data.pop('web_data')
-            elem = WebData.objects.filter(data=web_data.get('data', '')).first()
+            elem = WebData.objects.filter(web_data=web_data.get('data', '')).first()
             if not elem:
                 elem = WebData.objects.create(**web_data)
                 instance.web_data = elem

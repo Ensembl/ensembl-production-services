@@ -15,13 +15,13 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-
+import json
 
 class AnalysisTest(APITestCase):
     """ Test module for AnalysisDescription model """
     multi_db = True
     using_db = 'production'
-    fixtures = ['ensembl_production_db']
+    fixtures = ['ensembl_production_api']
 
     # Test Analysis description endpoints
     def test_AnalysisDescription(self):

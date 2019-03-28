@@ -7,7 +7,7 @@ services:
              python manage.py makemigrations &&
              python manage.py migrate &&
              python manage.py collectstatic --no-input &&
-             gunicorn ensembl_production_api.wsgi:application --bind 0.0.0.0:8000"
+             gunicorn production_services.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - 'production_services:/usr/src/production_services/'
       - 'static_volume:/usr/src/production_services/staticfiles'

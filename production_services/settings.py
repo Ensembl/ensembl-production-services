@@ -13,6 +13,7 @@
    limitations under the License.
 """
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,7 +33,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'jet',
-    'ensembl_production',
+    'ensembl_production.apps.EnsemblProductionConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
-    'ensembl_production_db',
+    'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'multiselectfield',
 ]
 
@@ -84,8 +85,8 @@ ensembl_version = os.getenv('ENS_RELEASE', '97')
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('USER_DB_ENGINE', 'django.db.backends.mysql'),
-        'NAME': os.getenv('USER_DB_DATABASE', 'production_services'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_production_services'),
         'USER': os.getenv('USER_DB_USER', 'root'),
         'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
@@ -96,7 +97,7 @@ DATABASES = {
     },
     'production': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production'),
+        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production_97'),
         'USER': os.getenv('PROD_DB_USER', 'root'),
         'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
         'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
@@ -107,6 +108,10 @@ DATABASES = {
         }
     }
 }
+
+#if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
+#    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
+#    DATABASES['production']['ENGINE'] = 'django.db.backends.sqlite3'
 
 DATABASE_ROUTERS = ['ensembl_production.router.AuthRouter',
                     'ensembl_production_db.router.ProductionRouter']

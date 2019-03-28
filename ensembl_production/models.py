@@ -13,58 +13,27 @@
    limitations under the License.
 """
 from django import forms
+from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.db import models
 from django.db.models.fields.related import ForeignKey
 from django.db.utils import ConnectionHandler, ConnectionRouter
+from django.utils.module_loading import import_string
+
+from .utils import perl_string_to_python
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
-
-
-class UserForeignKey(models.IntegerField):
-
-    def __init__(self, model_on_other_db, **kwargs):
-        self.model_on_other_db = model_on_other_db
-        super(UserForeignKey, self).__init__(**kwargs)
-
-    def to_python(self, value):
-        if isinstance(value, self.model_on_other_db):
-            return value
-        else:
-            return self.model_on_other_db._default_manager.get(pk=value)
-
-    def get_prep_value(self, value):
-        if isinstance(value, self.model_on_other_db):
-            value = value.pk
-        return super(UserForeignKey, self).get_prep_value(value)
-
-    def get_prep_lookup(self, lookup_type, value):
-        if not isinstance(value, self.model_on_other_db):
-            value = self.model_on_other_db._default_manager.get(pk=value)
-        return super(UserForeignKey, self).get_prep_lookup(lookup_type, value)
-
-    def formfield(self, **kwargs):
-        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
-        return super().formfield(**{
-            'form_class': forms.CharField,
-            **kwargs,
-        })
-
-    def get_db_prep_value(self, value, connection, prepared=False):
-        return super().get_db_prep_value(value, connection, prepared)
-
-
 NOT_PROVIDED = object()
 
 
-class SpanningForeignKey(ForeignKey):
+class SpanningForeignKey(models.ForeignKey):
 
     def validate(self, value, model_instance):
         if self.remote_field.parent_link:
             return
         # Call the grandparent rather than the parent to skip validation
-        super(ForeignKey, self).validate(value, model_instance)
+        super(SpanningForeignKey, self).validate(value, model_instance)
         if value is None:
             return
 
@@ -83,28 +52,27 @@ class SpanningForeignKey(ForeignKey):
                 },  # 'pk' is included for backwards compatibility
             )
 
-    def __init__(self, model_on_other_db, **kwargs):
-        self.model_on_other_db = model_on_other_db
-        if 'db_contraint' in kwargs:
-            kwargs['db_constraint'] = False
+    def __init__(self, model_on_other_db=None, **kwargs):
+        # print('received ', model_on_other_db, '!!!', kwargs)
+        self.model_on_other_db = model_on_other_db or kwargs.pop('to')
+        kwargs['on_delete'] = models.SET_NULL
         kwargs['db_constraint'] = False
-        super(SpanningForeignKey, self).__init__(model_on_other_db, **kwargs)
+
+        super(SpanningForeignKey, self).__init__(self.model_on_other_db, **kwargs)
 
     def to_python(self, value):
         if isinstance(value, self.model_on_other_db):
             return value
         else:
-            return self.model_on_other_db._default_manager.get(pk=value)
+            try:
+                return self.model_on_other_db._default_manager.get(pk=value)
+            except exceptions.ObjectDoesNotExist:
+                return value
 
     def get_prep_value(self, value):
         if isinstance(value, self.model_on_other_db):
             value = value.pk
         return super(SpanningForeignKey, self).get_prep_value(value)
-
-    def get_prep_lookup(self, lookup_type, value):
-        if not isinstance(value, self.model_on_other_db):
-            value = self.model_on_other_db._default_manager.get(pk=value)
-        return super(SpanningForeignKey, self).get_prep_lookup(lookup_type, value)
 
     def formfield(self, **kwargs):
         kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
@@ -124,3 +92,15 @@ class SpanningForeignKey(ForeignKey):
 
     def get_db_prep_value(self, value, connection, prepared=False):
         return super().get_db_prep_value(value, connection, prepared)
+
+
+class PerlField(models.TextField):
+    """ Field which should contains PERL valid value
+    TODO assign this type to related field - more generic and useful
+    """
+
+    def to_python(self, value):
+        try:
+            return perl_string_to_python(value)
+        except:
+            raise exceptions.ValidationError('Value must be a valid Perl String')
