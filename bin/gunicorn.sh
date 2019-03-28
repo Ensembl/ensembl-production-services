@@ -13,9 +13,11 @@
 SCRIPT=$(readlink -f $0)
 SCRIPT_PATH=`dirname ${SCRIPT}`
 APP_PATH=`dirname ${SCRIPT_PATH}`
+
 PATH=$PATH:$SCRIPT_PATH:$APP_PATH
 
 DAEMON=`command -v gunicorn`
+
 
 NAME=${SCRIPT_PATH}/gunicorn
 DESC="Production DB Service"
@@ -23,6 +25,7 @@ DESC="Production DB Service"
 DAEMON_OPTS="-c $SCRIPT_PATH/gunicorn.conf.py production_services.wsgi:application --daemon"
 
 PYTHONPATH=${PYTHONPATH}:${SCRIPT_PATH}/../
+
 export PYTHONPATH
 
 command -v gunicorn > /dev/null 2>&1 || { echo >&2 "no gunicorn available"; exit 1; }
@@ -37,6 +40,14 @@ function init_django() {
     python manage.py migrate
     python manage.py collectstatic --no-input
 }
+dotenv () {
+  set -a
+  [ -f ${SCRIPT_PATH}/.env ] && . ${SCRIPT_PATH}/.env
+  set +a
+}
+
+dotenv
+
 
 set -e
 
