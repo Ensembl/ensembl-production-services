@@ -116,7 +116,7 @@ class AnalysisDescriptionAdmin(ProductionModelAdmin):
               ('modified_by', 'modified_at'))
     list_filter = ProductionModelAdmin.list_filter + ['displayable', ]
     list_display = ('logic_name', 'display_label', 'description', 'web_data_label', 'db_version', 'displayable')
-    search_fields = ('logic_name', 'display_label', 'description', 'web_data__data')
+    search_fields = ('logic_name', 'display_label', 'description', 'web_data__web_data')
 
     def web_data_label(self, obj):
         return obj.web_data.label if obj.web_data else 'EMPTY'
