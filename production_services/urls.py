@@ -13,23 +13,18 @@
    limitations under the License.
 """
 from django.contrib import admin
+from django.conf.urls import url, include
+from ensembl_production_db.api.urls import schema_view
 
+urlpatterns = [
+    # Production Admin
+    url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
+    url(r'^', admin.site.urls),
+    # Production DB API
+    url(r'^production_db/api/', include('ensembl_production_db.api.urls')),
+    url(r'^production_db/api/schema', schema_view),
+]
 
-class ProductionUserAdminMixin(admin.ModelAdmin):
-    """ Mixin class to assiciated request user to integer ID in another database host
-    Allow cross linking within multiple database
-    Warning: Do not check for foreign key integrity across databases
-    """
-
-    class Media:
-        css = {
-            'all': ('production_admin.css',)
-        }
-
-    def save_model(self, request, obj, form, change):
-        if change:
-            if form.changed_data:
-                obj.modified_by = request.user
-        else:
-            obj.created_by = request.user
-        super().save_model(request, obj, form, change)
+admin.site.site_header = "Ensembl Production Services"
+admin.site.site_title = "Ensembl Production Services"
+admin.site.index_title = "Welcome to Ensembl Production Services"

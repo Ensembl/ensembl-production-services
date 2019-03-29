@@ -1,0 +1,7 @@
+.related-widget-wrapper .select2, .vTextField {
+    min-width: 500px;
+}
+
+li input[type=checkbox] {
+    display: inline;
+}

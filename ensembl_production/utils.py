@@ -12,24 +12,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django.contrib import admin
+import json
 
 
-class ProductionUserAdminMixin(admin.ModelAdmin):
-    """ Mixin class to assiciated request user to integer ID in another database host
-    Allow cross linking within multiple database
-    Warning: Do not check for foreign key integrity across databases
-    """
+def escape_perl_string(v):
+    """Escape characters with special meaning in perl"""
+    return str(v).replace("$", "\\$").replace("\"", "\\\"").replace("@", "\\@") if v else ''
 
-    class Media:
-        css = {
-            'all': ('production_admin.css',)
-        }
 
-    def save_model(self, request, obj, form, change):
-        if change:
-            if form.changed_data:
-                obj.modified_by = request.user
-        else:
-            obj.created_by = request.user
-        super().save_model(request, obj, form, change)
+def perl_string_to_python(s):
+    """Parse a Perl hash string into a Python dict"""
+    if s:
+        print('perl string', s)
+        s = s.replace("=>", ":").replace("\\$", "$").replace("\\@", "@").replace('\'', '"').replace('\n', '')
+        return json.loads(s)
+    else:
+        return ''

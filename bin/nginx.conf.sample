@@ -35,6 +35,11 @@ http {
         alias /home/marc/work_local/ensembl_production_api/staticfiles/;
     }
 
+    # path for static files
+    location /media/ {
+        alias /home/marc/work_local/ensembl_production_api/media/;
+    }
+
     location / {
       # checks for static file, if not found proxy to app
       try_files $uri @proxy_to_app;

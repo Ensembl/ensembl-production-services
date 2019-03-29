@@ -24,13 +24,13 @@ def import_requirements():
 
 
 setup(
-    name='ensembl_production_api',
+    name='production_services',
     version=version,
     description='Ensembl Production Database Application',
     long_description=readme,
     author='Marc Chakiachvili, Thomas Maurel, James Allen, Amonida Zanissa',
     author_email='mchakiachvili@ebi.ac.uk, maurel@ebi.ac.uk, jallen@ebi.ac.uk, amonida@ebi.ac.uk',
-    url='https://github.com/Ensembl/ensembl_production_api',
+    url='https://github.com/Ensembl/production_services',
     license=license_ct,
     packages=find_packages(exclude=('tests', 'docs')),
     install_requires=import_requirements(),
