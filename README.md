@@ -1,4 +1,4 @@
-# ensembl_production_api
+# ensembl-production-services
 
 INSTALL
 =======
