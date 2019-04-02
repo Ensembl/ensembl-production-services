@@ -84,7 +84,7 @@ class WebData(BaseTimestampedModel):
         return self.web_data[:100] if self.web_data else ''
 
     def __str__(self):
-        return '{}[{}...]'.format(self.pk, self.label)
+        return 'ID:{} [{}...]'.format(self.pk, self.label)
 
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel):
