@@ -13,6 +13,7 @@
    limitations under the License.
 """
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.db import models
@@ -104,3 +105,25 @@ class PerlField(models.TextField):
             return perl_string_to_python(value)
         except:
             raise exceptions.ValidationError('Value must be a valid Perl String')
+
+
+class BaseTimestampedModel(models.Model):
+    """
+    Time stamped 'able' models objects, add fields to inherited objects
+    """
+
+    class Meta:
+        abstract = True
+        ordering = ['-updated', '-created']
+
+    #: created by user (external DB ID)
+    created_by = SpanningForeignKey(get_user_model(), db_column='created_by', blank=True, null=True,
+                                    related_name="%(class)s_created_by",
+                                    related_query_name="%(class)s_creates")
+    created_at = models.DateTimeField('Created on', auto_now_add=True, editable=False, null=True)
+    #: Modified by user (external DB ID)
+    modified_by = SpanningForeignKey(get_user_model(), db_column='modified_by', blank=True, null=True,
+                                     related_name="%(class)s_modified_by",
+                                     related_query_name="%(class)s_updates")
+    #: (auto_now): set each time model object is saved in database
+    modified_at = models.DateTimeField('Last Update', auto_now=True, editable=False, null=True)
