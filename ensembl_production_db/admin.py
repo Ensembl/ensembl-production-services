@@ -18,7 +18,7 @@ from django.core.exceptions import ValidationError
 
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
-from ensembl_production.utils import escape_perl_string
+from ensembl_production.utils import perl_string_to_python
 from .models import *
 
 
@@ -153,14 +153,15 @@ class MetakeyAdmin(ProductionModelAdmin):
 class WebDataForm(forms.ModelForm):
     class Meta:
         model = WebData
-        fields = ('web_data', 'comment')#, 'created_by', 'created_at', 'modified_by', 'modified_at')
+        fields = ('web_data', 'comment')
 
-    def clean_data(self):
+    def clean_web_data(self):
         value = self.cleaned_data.get('web_data', None)
         try:
-            escape_perl_string(value)
-        except:
-            raise ValidationError({'web_data': 'Value is not valid Perl dictionary'})
+            perl_string_to_python(value)
+            return value
+        except ValueError:
+            raise ValidationError('Value is not valid Perl string')
 
 
 class WebDataAdmin(ProductionModelAdmin):
