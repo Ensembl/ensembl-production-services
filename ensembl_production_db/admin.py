@@ -180,7 +180,8 @@ class WebDataAdmin(ProductionModelAdmin):
     inlines = (AnalysisDescriptionInline,)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        messages.warning(request, "WARNING: Updating web data with multiple analysis description update it for all of them")
+        messages.warning(request,
+                         "WARNING: Updating web data with multiple analysis description update it for all of them")
         return super().change_view(request, object_id, form_url, extra_context)
 
 
