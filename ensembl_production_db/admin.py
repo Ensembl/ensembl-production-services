@@ -155,7 +155,8 @@ class WebDataForm(forms.ModelForm):
         model = WebData
         fields = ('web_data', 'comment')#, 'created_by', 'created_at', 'modified_by', 'modified_at')
 
-    def clean_data(self):
+    def clean_web_data(self):
+        print("in clean ", self.cleaned_data.get('web_data', None))
         value = self.cleaned_data.get('web_data', None)
         try:
             escape_perl_string(value)

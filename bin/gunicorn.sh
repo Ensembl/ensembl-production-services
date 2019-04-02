@@ -32,6 +32,7 @@ command -v gunicorn > /dev/null 2>&1 || { echo >&2 "no gunicorn available"; exit
 
 cd ${SCRIPT_PATH}/../
 
+
 function init_django() {
     echo "Check Django Updates / Upgrades"
     python manage.py makemigrations ensembl_production_db
@@ -40,6 +41,7 @@ function init_django() {
     python manage.py migrate
     python manage.py collectstatic --no-input
 }
+
 dotenv () {
   set -a
   [ -f ${SCRIPT_PATH}/.env ] && . ${SCRIPT_PATH}/.env
