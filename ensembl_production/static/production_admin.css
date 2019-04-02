@@ -5,3 +5,9 @@
 li input[type=checkbox] {
     display: inline;
 }
+
+ul.messagelist li.warning{
+    color: #856404;
+    background-color: #ffc107;
+    border-color: #ffeeba;
+}

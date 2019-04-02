@@ -14,6 +14,7 @@
 """
 from django import forms
 from django.contrib import admin
+from django.contrib import messages
 from django.core.exceptions import ValidationError
 
 from ensembl_production.admin import ProductionUserAdminMixin
@@ -64,9 +65,13 @@ class AnalysisDescriptionInline(ProductionTabularInline):
     model = AnalysisDescription
     extra = 0
     fields = ['logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable']
+    readonly_fields = ['logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable']
 
     def has_add_permission(self, request, obj=None):
         return False
+
+    def has_view_permission(self, request, obj=None):
+        return True
 
 
 # Register your models here.
@@ -171,9 +176,12 @@ class WebDataAdmin(ProductionModelAdmin):
     search_fields = ('pk', 'web_data', 'comment')
     fields = ('web_data', 'comment',
               ('created_by', 'created_at'),
-              ('modified_by', 'modified_at')
-              )
+              ('modified_by', 'modified_at'))
     inlines = (AnalysisDescriptionInline,)
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        messages.warning(request, "WARNING: Updating web data with multiple analysis description update it for all of them")
+        return super().change_view(request, object_id, form_url, extra_context)
 
 
 class MasterExternalDbAdmin(ProductionModelAdmin):
