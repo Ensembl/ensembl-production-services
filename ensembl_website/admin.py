@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 
 from admin import ProductionUserAdminMixin
-from ensembl_production.utils import list_to_perl_string, perl_string_to_python
+from ensembl_production.utils import list_to_perl_string, perl_string_to_python, to_internal_value
 from .models import *
 
 
@@ -38,9 +38,9 @@ class WebsiteModelAdmin(ProductionUserAdminMixin):
         return request.user.is_staff
 
     def save_model(self, request, obj, form, change):
-        extra_field = [{field[3:]: form.cleaned_data[field]} for field in form.fields if field.startswith('ex_')]
+        extra_field = {field[3:]: form.cleaned_data[field] for field in form.fields if field.startswith('ex_')}
         print(extra_field)
-        obj.data = list_to_perl_string(extra_field)
+        obj.data = to_internal_value(extra_field)
         super().save_model(request, obj, form, change)
 
 
@@ -56,10 +56,12 @@ class GlossaryItemAdmin(WebsiteModelAdmin):
         return q
 
     def get_form(self, request, obj=None, change=False, **kwargs):
-        print('initial', obj.data)
-        raw_data = perl_string_to_python(obj.data)
-        print(raw_data)
-        kwargs['fields'] = raw_data
+        if obj:
+            print('initial', obj.data)
+            raw_data = perl_string_to_python(obj.data)
+            print(raw_data)
+            kwargs['fields'] = {'ex_' + key :val for key, val in raw_data.items()}
+        print(kwargs['fields'])
         return super().get_form(request, obj, change, **kwargs)
 
 
