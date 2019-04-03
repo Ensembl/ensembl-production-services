@@ -13,8 +13,10 @@ INSTALL
     - (.venv)$: cp bin/gunicorn.conf.py.sample bin/gunicorn.conf.py
     - (.venv)$: cp bin/nginx.conf.sample bin/nginx.conf
 
-Create .env file: 
+Create .env file (a .env.sample is available in checkout)
+    - (.venv)$: cp bin/.env.conf.sample bin/.env
     - (.venv)$: vi bin/.env
+    
     - put required parameters such as follow:
     
 DJANGO_SETTINGS_MODULE=production_services.settings
