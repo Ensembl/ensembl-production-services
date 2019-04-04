@@ -155,6 +155,10 @@ class AnalysisTest(APITestCase):
         response = self.client.post(reverse('attribtypes-list'),
                                     {'code': 'test', 'name': 'test attribtypes', 'description': 'test'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # Test duplicated code post
+        response = self.client.post(reverse('attribtypes-list'),
+                                    {'code': 'test', 'name': 'test attribtypes', 'description': 'test'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # Test bad post
         response = self.client.post(reverse('attribtypes-list'),
                                     {'code': '', 'name': 'test attribtypes', 'description': 'test'})

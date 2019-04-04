@@ -94,6 +94,17 @@ class AttribTypeSerializer(serializers.ModelSerializer):
         model = MasterAttribType
         exclude = ('created_at', 'created_by')
 
+class AttribTypeSerializerNoValidator(serializers.ModelSerializer):
+    is_current = serializers.BooleanField(default=True, initial=True)
+    class Meta:
+        model = MasterAttribType
+        exclude = ('created_at', 'created_by')
+        extra_kwargs = {
+            'code': {
+                'validators': [],
+                }
+        }
+
 
 class AttribSerializer(serializers.ModelSerializer):
     is_current = serializers.BooleanField(default=True, initial=True)
@@ -102,7 +113,7 @@ class AttribSerializer(serializers.ModelSerializer):
         model = MasterAttrib
         exclude = ('created_at', 'created_by', 'modified_by')
 
-    attrib_type = AttribTypeSerializer(many=False, required=True)
+    attrib_type = AttribTypeSerializerNoValidator(many=False, required=True)
 
     def create(self, validated_data):
         attrib_type = validated_data.pop('attrib_type')
