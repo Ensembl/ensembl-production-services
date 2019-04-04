@@ -12,10 +12,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import json
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-import json
+from ensembl_production_db.models import *
+
 
 class AnalysisTest(APITestCase):
     """ Test module for AnalysisDescription model """
@@ -259,11 +262,14 @@ class AnalysisTest(APITestCase):
         response = self.client.post(reverse('attrib-list'), data=json.dumps(valid_payload),
                                     content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        attrib_type = MasterAttrib.objects.filter(value='test').first().attrib_type
+        self.assertIsNotNone(MasterAttrib.objects.filter(value='test').first().attrib_type)
         # Test post wth attrib_type, reusing existing attrib_type
         valid_payload = {'value': 'test2', 'is_current': '1',
                          'attrib_type': {'code': 'test', 'name': 'test', 'description': 'test'}}
         response = self.client.post(reverse('attrib-list'), data=json.dumps(valid_payload),
                                     content_type='application/json')
+        self.assertTrue(MasterAttrib.objects.filter(value='test2').first().attrib_type.pk == attrib_type.pk)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         # Test bad post
         valid_payload = {'value': '', 'is_current': '1',

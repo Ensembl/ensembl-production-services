@@ -94,15 +94,17 @@ class AttribTypeSerializer(serializers.ModelSerializer):
         model = MasterAttribType
         exclude = ('created_at', 'created_by')
 
+
 class AttribTypeSerializerNoValidator(serializers.ModelSerializer):
     is_current = serializers.BooleanField(default=True, initial=True)
+
     class Meta:
         model = MasterAttribType
         exclude = ('created_at', 'created_by')
         extra_kwargs = {
             'code': {
                 'validators': [],
-                }
+            }
         }
 
 
