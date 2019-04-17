@@ -215,7 +215,7 @@ class MovieItemAdmin(HelpRecordModelAdmin):
 @admin.register(FaqRecord)
 class FaqItemAdmin(HelpRecordModelAdmin):
     form = FaqForm
-    list_display = ('category','question','keyword','status')
+    list_display = ('question','category','keyword','status')
     fields = ('category', 'question','answer','keyword','status',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'),
@@ -274,6 +274,7 @@ class ViewItemAdmin(HelpRecordModelAdmin):
         super().save_model(request, obj, form, change)
 
     page_url.admin_order_field = 'helplink__page_url'
+    page_url.short_description = 'Help Links'
 
 @admin.register(LookupRecord)
 class LookupItemAdmin(HelpRecordModelAdmin):
