@@ -9,7 +9,6 @@ INSTALL
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-./manage.py migrate
 ```
 3. copy config files
 ```
@@ -42,11 +41,18 @@ USER_DB_HOST=the_user_database_host
 
 (update conf according to your needs - paths - hosts etc.)
 
-6. start gunicorn with 
+6. migrate to propagate changes
+```
+source ./bin/.env
+export $(cut -d= -f1 ./bin/.env)
+./manage.py migrate
+```
+
+7. start gunicorn with
 ```
 ./bin/gunicorn.sh start
 ```
-7. start nginx with ~/bin/nginx.sh start
+8. start nginx with ~/bin/nginx.sh start
 ```
 ./bin/nginx.sh start
 ```   
