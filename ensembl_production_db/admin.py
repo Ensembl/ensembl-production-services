@@ -90,7 +90,6 @@ class AttribAdmin(ProductionModelAdmin):
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     search_fields = ('value', 'attrib_type__name')
-    # inlines = (AttribSetInline,)
 
 
 class AttribSetAdmin(ProductionModelAdmin):
