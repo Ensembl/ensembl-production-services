@@ -14,7 +14,6 @@
 """
 import json
 
-
 def escape_perl_string(v):
     """Escape characters with special meaning in perl"""
     return str(v).replace("$", "\\$").replace("\"", "\\\"").replace("@", "\\@") if v else ''
@@ -28,6 +27,13 @@ def perl_string_to_python(s):
     else:
         return ''
 
+def perl_string_to_python_website(s):
+    """Parse a Perl hash string into a Python dict"""
+    if s:
+        s = s.replace("=>", ":").replace("\\$", "$").replace("\\@", "@").replace('\n', '').replace('\r','')
+        return json.loads(s)
+    else:
+        return ''
 
 def list_to_perl_string(input_list):
     """Transform the supplied array into a string representation of a Perl array"""

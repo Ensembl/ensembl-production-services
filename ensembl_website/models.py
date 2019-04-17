@@ -15,19 +15,12 @@
 from django.db import models
 
 from ensembl_production.models import BaseTimestampedModel
-
+from django_mysql.models import EnumField, SizedTextField
 
 class WebSiteModel(BaseTimestampedModel):
     class Meta:
         app_label = 'website'
         abstract = True
-
-
-RECORD_STATUS = (
-    ('Draft', 'draft'),
-    ('Live', 'live'),
-    ('Dead', 'dead'),
-)
 
 """
 glossary
@@ -42,9 +35,9 @@ class HelpRecord(WebSiteModel):
     _force_type = ''
     help_record_id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=255)
-    keyword = models.CharField(max_length=255, blank=True, null=True)
+    keyword = SizedTextField(size_class=1,blank=True, null=True)
     data = models.TextField()
-    status = models.CharField(max_length=5, choices=RECORD_STATUS, null=False)
+    status = EnumField(choices=['draft', 'live','dead'])
     helpful = models.IntegerField(blank=True, null=True)
     not_helpful = models.IntegerField(blank=True, null=True)
 
@@ -56,20 +49,19 @@ class HelpRecord(WebSiteModel):
         self.type = self._force_type
         super().save(force_insert, force_update, using, update_fields)
 
-
-class HelpLink(WebSiteModel):
+class HelpLink(models.Model):
     help_link_id = models.AutoField(primary_key=True)
-    page_url = models.TextField(blank=True, null=True)
-    help_record_id = models.OneToOneField(HelpRecord, blank=True, null=True, on_delete=models.SET_NULL)
+    page_url = SizedTextField(size_class=1,blank=True, null=True)
+    help_record = models.OneToOneField(ViewRecord, db_column='help_record_id', blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         managed = False
         db_table = 'help_link'
 
-
 class GlossaryRecord(HelpRecord):
     class Meta:
         proxy = True
+        verbose_name = 'Glossary'
 
     _force_type = 'glossary'
 
@@ -77,13 +69,14 @@ class GlossaryRecord(HelpRecord):
 class ViewRecord(HelpRecord):
     class Meta:
         proxy = True
-
+        verbose_name = 'Page'
     _force_type = 'view'
 
 
 class FaqRecord(HelpRecord):
     class Meta:
         proxy = True
+        verbose_name = 'FAQ'
 
     _force_type = 'faq'
 
@@ -91,5 +84,13 @@ class FaqRecord(HelpRecord):
 class LookupRecord(HelpRecord):
     class Meta:
         proxy = True
+        verbose_name = 'Lookup'
 
     _force_type = 'lookup'
+
+class MovieRecord(HelpRecord):
+    class Meta:
+        proxy = True
+        verbose_name = 'Movie'
+
+    _force_type = 'movie'
