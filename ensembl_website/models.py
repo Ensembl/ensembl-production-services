@@ -49,6 +49,12 @@ class HelpRecord(WebSiteModel):
         self.type = self._force_type
         super().save(force_insert, force_update, using, update_fields)
 
+class ViewRecord(HelpRecord):
+    class Meta:
+        proxy = True
+        verbose_name = 'Page'
+    _force_type = 'view'
+
 class HelpLink(models.Model):
     help_link_id = models.AutoField(primary_key=True)
     page_url = SizedTextField(size_class=1,blank=True, null=True)
@@ -64,13 +70,6 @@ class GlossaryRecord(HelpRecord):
         verbose_name = 'Glossary'
 
     _force_type = 'glossary'
-
-
-class ViewRecord(HelpRecord):
-    class Meta:
-        proxy = True
-        verbose_name = 'Page'
-    _force_type = 'view'
 
 
 class FaqRecord(HelpRecord):
