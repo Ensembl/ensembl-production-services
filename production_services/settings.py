@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
     'multiselectfield',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -171,3 +172,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100
 }
+
+CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
