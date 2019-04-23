@@ -28,7 +28,7 @@ class WebSiteRecordForm(forms.ModelForm):
     class Meta:
         exclude = ('type', 'data')
 
-class GlossaryForm(WebSiteRecordForm):
+class LookupItemForm(WebSiteRecordForm):
     word = forms.CharField(label='Word')
     expanded = forms.CharField(label='Expanded',required=False, widget=forms.Textarea({'rows': 3}))
     meaning = forms.CharField(label='Meaning', widget=CKEditorWidget())
@@ -42,7 +42,7 @@ class GlossaryForm(WebSiteRecordForm):
                     kwargs['initial'] = {}
                     data = perl_string_to_python_website(kwargs['instance'].data)
                     kwargs['initial'].update({'word': data['word'],'meaning':data['meaning'],'expanded':data['expanded']})
-        super(GlossaryForm, self).__init__(*args, **kwargs)
+        super(LookupItemForm, self).__init__(*args, **kwargs)
 
 class MovieForm(WebSiteRecordForm):
     title = forms.CharField(label="Title")
@@ -137,38 +137,6 @@ class HelpLinkItemAdmin(HelpLinkModelAdmin):
     list_display = ('page_url',)
     fields = ('page_url',)
     search_fields = ('page_url',)
-
-@admin.register(GlossaryRecord)
-class GlossaryItemAdmin(HelpRecordModelAdmin):
-    form = GlossaryForm
-    list_display = ('word','expanded','keyword','status')
-    fields = ('word', 'expanded', 'meaning','keyword','status',
-              ('created_by', 'created_at'),
-              ('modified_by', 'modified_at'),
-              ('helpful','not_helpful'))
-    search_fields = ('data','keyword','status')
-
-    def get_queryset(self, request):
-        q = GlossaryRecord.objects.filter(type='glossary')
-        ordering = self.get_ordering(request)
-        if ordering:
-            q = q.order_by(*ordering)
-        return q
-
-    def expanded(self, obj):
-        if obj:
-            raw_data = perl_string_to_python_website(obj.data)
-            return raw_data.get('expanded')
-
-    def word(self, obj):
-        if obj:
-            raw_data = perl_string_to_python_website(obj.data)
-            return raw_data.get('word')
-
-    def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field] for field in form.fields if field in ('word','expanded','meaning')}
-        obj.data = to_internal_value(extra_field)
-        super().save_model(request, obj, form, change)
 
 @admin.register(MovieRecord)
 class MovieItemAdmin(HelpRecordModelAdmin):
@@ -278,7 +246,7 @@ class ViewItemAdmin(HelpRecordModelAdmin):
 
 @admin.register(LookupRecord)
 class LookupItemAdmin(HelpRecordModelAdmin):
-    form = GlossaryForm
+    form = LookupItemForm
     list_display = ('word','meaning','keyword','status')
     fields = ('word', 'expanded', 'meaning','keyword','status',
               ('created_by', 'created_at'),

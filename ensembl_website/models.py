@@ -23,7 +23,6 @@ class WebSiteModel(BaseTimestampedModel):
         abstract = True
 
 """
-glossary
 faq
 view
 lookup
@@ -63,14 +62,6 @@ class HelpLink(models.Model):
     class Meta:
         managed = False
         db_table = 'help_link'
-
-class GlossaryRecord(HelpRecord):
-    class Meta:
-        proxy = True
-        verbose_name = 'Glossary'
-
-    _force_type = 'glossary'
-
 
 class FaqRecord(HelpRecord):
     class Meta:
