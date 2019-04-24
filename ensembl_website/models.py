@@ -57,7 +57,7 @@ class ViewRecord(HelpRecord):
 class HelpLink(models.Model):
     help_link_id = models.AutoField(primary_key=True)
     page_url = SizedTextField(size_class=1,blank=True, null=True)
-    help_record = models.OneToOneField(ViewRecord, db_column='help_record_id', blank=True, null=True, on_delete=models.SET_NULL)
+    help_record = models.OneToOneField(ViewRecord, db_column='help_record_id', blank=True, null=True, on_delete=models.CASCADE)
 
     class Meta:
         managed = False

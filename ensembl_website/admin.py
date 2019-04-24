@@ -36,12 +36,11 @@ class LookupItemForm(WebSiteRecordForm):
     def __init__(self, *args, **kwargs):
         # Populate the form with fields from the data object.
         # Only for update
-        if 'instance' in kwargs:
-            if kwargs['instance'] != None:
-                if 'initial' not in kwargs:
-                    kwargs['initial'] = {}
-                    data = perl_string_to_python_website(kwargs['instance'].data)
-                    kwargs['initial'].update({'word': data['word'],'meaning':data['meaning'],'expanded':data['expanded']})
+        if 'instance' in kwargs and kwargs['instance'] is not None:
+            if 'initial' not in kwargs:
+                kwargs['initial'] = {}
+                data = perl_string_to_python_website(kwargs['instance'].data)
+                kwargs['initial'].update({'word': data['word'],'meaning':data['meaning'],'expanded':data['expanded']})
         super(LookupItemForm, self).__init__(*args, **kwargs)
 
 class MovieForm(WebSiteRecordForm):
@@ -54,13 +53,12 @@ class MovieForm(WebSiteRecordForm):
     def __init__(self, *args, **kwargs):
         # Populate the form with fields from the data object.
         # Only for update
-        if 'instance' in kwargs:
-            if kwargs['instance'] != None:
-                if 'initial' not in kwargs:
-                    kwargs['initial'] = {}
-                    data = perl_string_to_python_website(kwargs['instance'].data)
-                    initial = {'title': data['title'],'list_position':data['list_position'],'youtube_id':data['youtube_id'],'youku_id':data['youku_id'],'length':data['length']}
-                    kwargs['initial'].update(initial)
+        if 'instance' in kwargs and kwargs['instance'] is not None:
+            if 'initial' not in kwargs:
+                kwargs['initial'] = {}
+                data = perl_string_to_python_website(kwargs['instance'].data)
+                initial = {'title': data['title'],'list_position':data['list_position'],'youtube_id':data['youtube_id'],'youku_id':data['youku_id'],'length':data['length']}
+                kwargs['initial'].update(initial)
         super(MovieForm, self).__init__(*args, **kwargs)
 
 class FaqForm(WebSiteRecordForm):
@@ -71,27 +69,32 @@ class FaqForm(WebSiteRecordForm):
     def __init__(self, *args, **kwargs):
         # Populate the form with fields from the data object.
         # Only for update
-        if 'instance' in kwargs:
-            if kwargs['instance'] != None:
-                if 'initial' not in kwargs:
-                    kwargs['initial'] = {}
-                    data = perl_string_to_python_website(kwargs['instance'].data)
-                    kwargs['initial'].update({'category': data['category'],'question':data['question'],'answer':data['answer']})
+        if 'instance' in kwargs and kwargs['instance'] is not None:
+            if 'initial' not in kwargs:
+                kwargs['initial'] = {}
+                data = perl_string_to_python_website(kwargs['instance'].data)
+                kwargs['initial'].update({'category': data['category'],'question':data['question'],'answer':data['answer']})
         super(FaqForm, self).__init__(*args, **kwargs)
 
 class ViewForm(WebSiteRecordForm):
     content = forms.CharField(label="Content",widget=CKEditorWidget())
+    help_link = forms.CharField(label="Linked URLs")
 
     def __init__(self, *args, **kwargs):
         # Populate the form with fields from the data object.
         # Only for update
-        if 'instance' in kwargs:
-            if kwargs['instance'] != None:
-                if 'initial' not in kwargs:
-                    kwargs['initial'] = {}
-                    data = perl_string_to_python_website(kwargs['instance'].data)
-                    kwargs['initial'].update({'content': data['content']})
-        super(ViewForm, self).__init__(*args, **kwargs)
+        if 'instance' in kwargs and kwargs['instance'] is not None:
+            if 'initial' not in kwargs:
+                kwargs['initial'] = {}
+                help_link = HelpLink.objects.filter(help_record_id=kwargs['instance'].pk).first()
+                data = perl_string_to_python_website(kwargs['instance'].data)
+                kwargs['initial'].update({'content': data['content'],'help_link' : help_link.page_url})
+                super(ViewForm, self).__init__(*args, **kwargs)
+                self.fields['help_link'].widget.attrs['readonly'] = True
+            else:
+                super(ViewForm, self).__init__(*args, **kwargs)
+        else:
+            super(ViewForm, self).__init__(*args, **kwargs)
 
 class HelpLinkModelAdmin(admin.ModelAdmin):
     list_per_page = 50
@@ -216,12 +219,11 @@ class FaqItemAdmin(HelpRecordModelAdmin):
 class ViewItemAdmin(HelpRecordModelAdmin):
     form = ViewForm
     list_display = ('page_url','keyword','status')
-    fields = ('content', 'keyword','status',
+    fields = ('help_link','content', 'keyword','status',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'),
               ('helpful','not_helpful'))
     search_fields = ('data','keyword','status','helplink__page_url')
-    inlines = (HelpLinkInline,)
 
     def get_queryset(self, request):
         q = ViewRecord.objects.filter(type='view')
@@ -240,6 +242,9 @@ class ViewItemAdmin(HelpRecordModelAdmin):
         extra_field = {field: form.cleaned_data[field] for field in form.fields if field in ('content')}
         obj.data = to_internal_value(extra_field)
         super().save_model(request, obj, form, change)
+        q = HelpLink.objects.filter(help_record_id=obj.pk).first()
+        if not q:
+            HelpLink.objects.create(page_url=form.cleaned_data['help_link'],help_record_id=obj.pk)
 
     page_url.admin_order_field = 'helplink__page_url'
     page_url.short_description = 'Help Links'
