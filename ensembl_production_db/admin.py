@@ -16,10 +16,10 @@ from django import forms
 from django.contrib import admin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.utils.safestring import mark_safe
 
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
-from ensembl_production.utils import perl_string_to_python
 from .models import *
 
 
@@ -171,7 +171,7 @@ class WebDataForm(forms.ModelForm):
 class WebDataAdmin(ProductionModelAdmin):
     form = WebDataForm
     # TODO add pretty json display / conversion to Perl upon save
-    list_display = ('pk', 'label', 'comment')
+    list_display = ('pk', 'web_data_label', 'comment')
     search_fields = ('pk', 'web_data', 'comment')
     fields = ('web_data', 'comment',
               ('created_by', 'created_at'),
@@ -179,8 +179,17 @@ class WebDataAdmin(ProductionModelAdmin):
     inlines = (AnalysisDescriptionInline,)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        messages.warning(request, "WARNING: Updating web data with multiple analysis description update it for all of them")
+        messages.warning(request,
+                         "WARNING: Updating web data with multiple analysis description update it for all of them")
         return super().change_view(request, object_id, form_url, extra_context)
+
+    def web_data_label(self, obj):
+        return mark_safe('<pre>' + obj.label + '</pre>') if obj else ''
+
+    web_data_label.short_description = "Web Data"
+
+    def get_queryset(self, request):
+        return super().get_queryset(request)
 
 
 class MasterExternalDbAdmin(ProductionModelAdmin):

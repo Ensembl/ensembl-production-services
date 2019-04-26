@@ -5,11 +5,14 @@
 #   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+import json
+
 from django.db import models
 from django_mysql.models import EnumField
 from multiselectfield import MultiSelectField
 
 from ensembl_production.models import BaseTimestampedModel
+from utils import perl_string_to_python
 
 DB_TYPE_CHOICES_BIOTYPE = (('cdna', 'cdna'),
                            ('core', 'core'),
@@ -57,10 +60,16 @@ class WebData(BaseTimestampedModel):
 
     @property
     def label(self):
-        return self.web_data[:100] if self.web_data else ''
+        try:
+            json_data = perl_string_to_python(self.web_data)
+            json_pretty = json.dumps(json_data, sort_keys=True, indent=4)
+            return json_pretty
+        except Exception:
+            pass
+        return self.web_data[:50] + '...' if self.web_data else ''
 
     def __str__(self):
-        return 'ID:{} [{}...]'.format(self.pk, self.label)
+        return 'ID: {} [{}...]'.format(self.pk, self.label)
 
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel):
