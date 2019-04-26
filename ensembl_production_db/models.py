@@ -12,7 +12,7 @@ from django_mysql.models import EnumField
 from multiselectfield import MultiSelectField
 
 from ensembl_production.models import BaseTimestampedModel
-from utils import perl_string_to_python
+from ensembl_production.utils import perl_string_to_python
 
 DB_TYPE_CHOICES_BIOTYPE = (('cdna', 'cdna'),
                            ('core', 'core'),
