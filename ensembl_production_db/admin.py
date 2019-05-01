@@ -15,11 +15,12 @@
 from django import forms
 from django.contrib import admin
 from django.contrib import messages
+from django.contrib.admin import SimpleListFilter
 from django.core.exceptions import ValidationError
+from django.utils.safestring import mark_safe
 
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
-from ensembl_production.utils import perl_string_to_python
 from .models import *
 
 
@@ -42,6 +43,64 @@ class ProductionModelAdmin(ProductionUserAdminMixin):
 
     def has_change_permission(self, request, obj=None):
         return request.user.is_staff
+
+
+class IsCurrentFilter(SimpleListFilter):
+    title = 'Is Current'
+
+    parameter_name = 'is_current'
+
+    def lookups(self, request, model_admin):
+        return (
+            (None, 'Yes'),
+            ('no', 'No'),
+            ('all', 'All'),
+        )
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        if self.value() == 'no':
+            return queryset.filter(is_current=False)
+        elif self.value() is None:
+            return queryset.filter(is_current=True)
+
+
+class IsDisplayableFilter(SimpleListFilter):
+    title = 'Is Displayed'
+
+    parameter_name = 'displayable'
+
+    def lookups(self, request, model_admin):
+        return (
+            (None, 'Yes'),
+            ('no', 'No'),
+            ('all', 'All'),
+        )
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        if self.value() == 'no':
+            return queryset.filter(displayable=False)
+        elif self.value() is None:
+            return queryset.filter(displayable=True)
 
 
 class ProductionTabularInline(admin.TabularInline):
@@ -74,9 +133,13 @@ class AnalysisDescriptionInline(ProductionTabularInline):
         return True
 
 
+class HasCurrentAdmin(ProductionModelAdmin):
+    list_filter = ProductionModelAdmin.list_filter + [IsCurrentFilter, ]
+
+
 # Register your models here.
-class AttribTypeAdmin(ProductionModelAdmin):
-    list_display = ('code', 'name', 'description')
+class AttribTypeAdmin(HasCurrentAdmin):
+    list_display = ('code', 'name', 'description', 'is_current')
     fields = ('code', 'name', 'description',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
@@ -84,25 +147,25 @@ class AttribTypeAdmin(ProductionModelAdmin):
     inlines = (AttribInline,)
 
 
-class AttribAdmin(ProductionModelAdmin):
-    list_display = ('value', 'attrib_type')
+class AttribAdmin(HasCurrentAdmin):
+    list_display = ('value', 'attrib_type', 'is_current')
     fields = ('value', 'attrib_type',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     search_fields = ('value', 'attrib_type__name')
-    # inlines = (AttribSetInline,)
 
 
-class AttribSetAdmin(ProductionModelAdmin):
+class AttribSetAdmin(HasCurrentAdmin):
     fields = ('attrib_set_id', 'attrib', 'is_current',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at')
               )
-    list_display = ('attrib_set_id', 'attrib', 'modified_at', 'created_at')
+    list_display = ('attrib_set_id', 'attrib', 'is_current')
     search_fields = ('attrib__value', 'attrib_set_id')
+    ordering = ('-modified_at', )
 
 
-class BioTypeAdmin(ProductionModelAdmin):
+class BioTypeAdmin(HasCurrentAdmin):
     # TODO DBTYPE to add display inline+flex class
     fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type',
               'description',
@@ -110,17 +173,16 @@ class BioTypeAdmin(ProductionModelAdmin):
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at')
               )
-    list_display = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type', 'is_dumped', 'description')
+    list_display = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type', 'description', 'is_current')
     search_fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type__name', 'description')
 
 
-class AnalysisDescriptionAdmin(ProductionModelAdmin):
+class AnalysisDescriptionAdmin(HasCurrentAdmin):
     fields = ('logic_name', 'description', 'display_label', 'web_data',
               ('db_version', 'displayable', 'is_current'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
-    list_filter = ProductionModelAdmin.list_filter + ['displayable', ]
-    list_display = ('logic_name', 'display_label', 'description', 'web_data_label', 'db_version', 'displayable')
+    list_display = ('logic_name', 'display_label', 'description', 'web_data_label', 'is_current', 'displayable')
     search_fields = ('logic_name', 'display_label', 'description', 'web_data__web_data')
 
     def web_data_label(self, obj):
@@ -139,9 +201,9 @@ class MetaKeyForm(forms.BaseModelForm):
         super().__init__(**kwargs)
 
 
-class MetakeyAdmin(ProductionModelAdmin):
+class MetakeyAdmin(HasCurrentAdmin):
     # form = MetaKeyForm
-    list_display = ('name', 'is_optional', 'db_type', 'description')
+    list_display = ('name', 'is_optional', 'db_type', 'description', 'is_current')
     fields = ('name', 'description', 'is_optional', 'db_type',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
@@ -172,7 +234,7 @@ class WebDataForm(forms.ModelForm):
 class WebDataAdmin(ProductionModelAdmin):
     form = WebDataForm
     # TODO add pretty json display / conversion to Perl upon save
-    list_display = ('pk', 'label', 'comment')
+    list_display = ('pk', 'web_data_label', 'comment')
     search_fields = ('pk', 'web_data', 'comment')
     fields = ('web_data', 'comment',
               ('created_by', 'created_at'),
@@ -180,13 +242,22 @@ class WebDataAdmin(ProductionModelAdmin):
     inlines = (AnalysisDescriptionInline,)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        messages.warning(request, "WARNING: Updating web data with multiple analysis description update it for all of them")
+        messages.warning(request,
+                         "WARNING: Updating web data with multiple analysis description update it for all of them")
         return super().change_view(request, object_id, form_url, extra_context)
 
+    def web_data_label(self, obj):
+        return mark_safe('<pre>' + obj.label + '</pre>') if obj else ''
 
-class MasterExternalDbAdmin(ProductionModelAdmin):
+    web_data_label.short_description = "Web Data"
+
+    def get_queryset(self, request):
+        return super().get_queryset(request)
+
+
+class MasterExternalDbAdmin(HasCurrentAdmin):
     list_display = ('db_name', 'db_release', 'status', 'db_display_name', 'priority', 'type', 'secondary_db_name',
-                    'secondary_db_table')
+                    'secondary_db_table', 'is_current')
     fields = ('db_name', 'status', 'db_display_name', 'priority', 'type', 'db_release', 'secondary_db_name',
               'secondary_db_table',
               ('created_by', 'created_at'),
