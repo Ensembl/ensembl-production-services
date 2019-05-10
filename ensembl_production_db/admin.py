@@ -42,7 +42,8 @@ class ProductionModelAdmin(ProductionUserAdminMixin):
     readonly_fields = ['created_by', 'created_at', 'modified_by', 'modified_at']
     ordering = ('-modified_at', '-created_at')
     list_filter = ['created_by', 'modified_by']
-    super_user_only = ['is_current', 'is_dumped', 'db_version', 'displayable']
+    # ability to define a list of 'only_super_admin' fields
+    super_user_only = []
 
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = super().get_readonly_fields(request, obj)
@@ -227,7 +228,8 @@ class MetaKeyForm(forms.BaseModelForm):
 class MetakeyAdmin(HasCurrentAdmin):
     # form = MetaKeyForm
     list_display = ('name', 'is_optional', 'db_type', 'description', 'is_current')
-    fields = ('name', 'description', 'is_optional', 'is_current', 'db_type',
+    fields = ('name', 'description', 'db_type',
+              ('is_optional', 'is_current', 'is_multi_value'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     ordering = ('name',)
