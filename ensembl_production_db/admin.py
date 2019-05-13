@@ -12,6 +12,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+
+import collections
+
 from django import forms
 from django.contrib import admin
 from django.contrib import messages
@@ -24,11 +27,32 @@ from ensembl_production.forms import JetCheckboxSelectMultiple
 from .models import *
 
 
+def flatten(iter_obj):
+    result = []
+    for el in iter_obj:
+        if isinstance(iter_obj, collections.Iterable) and not isinstance(el, str):
+            result.extend(flatten(el))
+        else:
+            result.append(el)
+    return result
+
+
 class ProductionModelAdmin(ProductionUserAdminMixin):
     list_per_page = 50
-    readonly_fields = ('created_by', 'created_at', 'modified_by', 'modified_at')
+    readonly_fields = ['created_by', 'created_at', 'modified_by', 'modified_at']
     ordering = ('-modified_at', '-created_at')
     list_filter = ['created_by', 'modified_by']
+    # ability to define a list of 'only_super_admin' fields
+    super_user_only = []
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+        if not request.user.is_superuser:
+            flat = flatten(self.get_fields(request, obj))
+            for admin_only in self.super_user_only:
+                if admin_only in flat and admin_only not in readonly_fields:
+                    readonly_fields += [admin_only, ]
+        return readonly_fields
 
     def has_delete_permission(self, request, obj=None):
         if not request.user.is_superuser:
@@ -104,26 +128,26 @@ class IsDisplayableFilter(SimpleListFilter):
 
 
 class ProductionTabularInline(admin.TabularInline):
-    readonly_fields = ('modified_by', 'created_by', 'created_at', 'modified_at')
+    readonly_fields = ['modified_by', 'created_by', 'created_at', 'modified_at']
 
 
 class AttribInline(ProductionTabularInline):
     model = MasterAttrib
     extra = 1
-    fields = ['value', 'modified_by', 'created_by', 'created_at', 'modified_at']
+    fields = ('value', 'modified_by', 'created_by', 'created_at', 'modified_at')
 
 
 class AttribSetInline(ProductionTabularInline):
     model = MasterAttribSet
     extra = 0
-    fields = ['attrib_set_id', 'modified_by', 'created_by', 'created_at', 'modified_at']
+    fields = ('attrib_set_id', 'modified_by', 'created_by', 'created_at', 'modified_at')
     can_delete = True
 
 
 class AnalysisDescriptionInline(ProductionTabularInline):
     model = AnalysisDescription
     extra = 0
-    fields = ['logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable']
+    fields = ('logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable')
     readonly_fields = ['logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable']
 
     def has_add_permission(self, request, obj=None):
@@ -162,7 +186,7 @@ class AttribSetAdmin(HasCurrentAdmin):
               )
     list_display = ('attrib_set_id', 'attrib', 'is_current')
     search_fields = ('attrib__value', 'attrib_set_id')
-    ordering = ('-modified_at', )
+    ordering = ('-modified_at',)
 
 
 class BioTypeAdmin(HasCurrentAdmin):
@@ -204,7 +228,8 @@ class MetaKeyForm(forms.BaseModelForm):
 class MetakeyAdmin(HasCurrentAdmin):
     # form = MetaKeyForm
     list_display = ('name', 'is_optional', 'db_type', 'description', 'is_current')
-    fields = ('name', 'description', 'is_optional', 'db_type',
+    fields = ('name', 'description', 'db_type',
+              ('is_optional', 'is_current', 'is_multi_value'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     ordering = ('name',)
@@ -212,8 +237,8 @@ class MetakeyAdmin(HasCurrentAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         read_only_fields = super().get_readonly_fields(request, obj)
-        if obj is not None:
-            read_only_fields += ('name',)
+        if obj is not None and 'name' not in read_only_fields:
+            read_only_fields += ['name', ]
         return read_only_fields
 
 
