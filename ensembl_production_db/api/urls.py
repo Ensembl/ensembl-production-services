@@ -18,6 +18,20 @@ from rest_framework_swagger.views import get_swagger_view
 
 from ensembl_production_db.api import viewsets
 from ensembl_production_db.router import CustomRouter
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Production DB API snippets",
+      default_version='v1',
+      description="Production DB Api Description",
+      contact=openapi.Contact(email="ensembl-production@ebi.ac.uk"),
+      license=openapi.License(name="Apache 2 License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 # API router setup
 router = routers.DefaultRouter(trailing_slash=False)
@@ -42,10 +56,10 @@ biotype_name_router.register(r'biotypes', viewsets.BiotypeNameViewSet)
 biotype_object_type_router = routers.NestedSimpleRouter(biotype_name_router, r'biotypes', lookup='biotype')
 biotype_object_type_router.register(r'types', viewsets.BiotypeObjectTypeViewSet, base_name='type')
 
-schema_view = get_swagger_view(title='Ensembl Production DB API')
-
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^', include(router_attrib.urls)),
     url(r'^', include(biotype_object_type_router.urls)),
+    url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    url(r'^docs/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

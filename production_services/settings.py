@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
     'multiselectfield',
-    'ckeditor'
+    'ckeditor',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
