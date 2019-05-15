@@ -53,7 +53,7 @@ class PerlFieldElementSerializer(serializers.CharField):
 class WebDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebData
-        fields = '__all__'
+        exclude = ('web_data', )
 
     data = PerlFieldElementSerializer(source="web_data")
 
@@ -128,7 +128,7 @@ class AnalysisDescriptionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         if 'web_data' in validated_data:
             web_data = validated_data.pop('web_data')
-            elem = WebData.objects.filter(web_data=web_data.get('data', '')).first()
+            elem = WebData.objects.filter(web_data=web_data.get('web_data', '')).first()
             if not elem:
                 elem = WebData.objects.create(**web_data)
                 instance.web_data = elem
