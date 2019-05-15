@@ -12,9 +12,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django.contrib import admin
 from django.conf.urls import url, include
-from ensembl_production_db.api.urls import schema_view
+from django.contrib import admin
 
 urlpatterns = [
     # Production Admin
@@ -22,7 +21,6 @@ urlpatterns = [
     url(r'^', admin.site.urls),
     # Production DB API
     url(r'^production_db/api/', include('ensembl_production_db.api.urls')),
-    url(r'^production_db/api/schema', schema_view),
 ]
 
 admin.site.site_header = "Ensembl Production Services"
