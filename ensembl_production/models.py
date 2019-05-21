@@ -17,9 +17,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.db import models
-from django.db.models.fields.related import ForeignKey
 from django.db.utils import ConnectionHandler, ConnectionRouter
-from django.utils.module_loading import import_string
 
 from .utils import perl_string_to_python
 

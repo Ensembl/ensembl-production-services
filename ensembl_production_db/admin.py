@@ -25,7 +25,7 @@ from django.utils.safestring import mark_safe
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
 from .models import *
-
+from django.template.defaultfilters import truncatewords
 
 def flatten(iter_obj):
     result = []
@@ -67,6 +67,12 @@ class ProductionModelAdmin(ProductionUserAdminMixin):
 
     def has_change_permission(self, request, obj=None):
         return request.user.is_staff
+
+    def get_list_display(self, request):
+        list_display = super().get_list_display(request)
+        if issubclass(self.model, BaseTimestampedModel):
+            list_display = list_display + ('modified_at', )
+        return list_display
 
 
 class IsCurrentFilter(SimpleListFilter):
@@ -206,13 +212,14 @@ class AnalysisDescriptionAdmin(HasCurrentAdmin):
               ('db_version', 'displayable', 'is_current'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
-    list_display = ('logic_name', 'display_label', 'description', 'web_data_label', 'is_current', 'displayable')
+    list_display = ('logic_name', 'short_description', 'web_data_label', 'is_current', 'displayable')
     search_fields = ('logic_name', 'display_label', 'description', 'web_data__web_data')
 
     def web_data_label(self, obj):
         return obj.web_data.label if obj.web_data else 'EMPTY'
 
     web_data_label.short_description = "Web Data"
+
 
 
 class MetaKeyForm(forms.BaseModelForm):
