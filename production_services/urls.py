@@ -14,11 +14,14 @@
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.views.generic import TemplateView
+
 
 urlpatterns = [
     # Production Admin
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
-    url(r'^', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
+    url(r'^$', TemplateView.as_view(template_name='home.html')),
     # Production DB API
     url(r'^production_db/api/', include('ensembl_production_db.api.urls')),
 ]
