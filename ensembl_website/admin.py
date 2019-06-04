@@ -44,7 +44,7 @@ class LookupItemForm(WebSiteRecordForm):
                 kwargs['initial'] = {}
                 data = perl_string_to_python_website(kwargs['instance'].data)
                 kwargs['initial'].update(
-                    {'word': data['word'], 'meaning': data['meaning'], 'expanded': data['expanded']})
+                    {'word': data.get('word',""), 'meaning': data.get('meaning',""), 'expanded': data.get('expanded',"")})
         super(LookupItemForm, self).__init__(*args, **kwargs)
 
 
@@ -62,8 +62,8 @@ class MovieForm(WebSiteRecordForm):
             if 'initial' not in kwargs:
                 kwargs['initial'] = {}
                 data = perl_string_to_python_website(kwargs['instance'].data)
-                initial = {'title': data['title'], 'list_position': data['list_position'],
-                           'youtube_id': data['youtube_id'], 'youku_id': data['youku_id'], 'length': data['length']}
+                initial = {'title': data.get('title',""), 'list_position': data.get('list_position',""),
+                           'youtube_id': data.get('youtube_id',""), 'youku_id': data.get('youku_id',""), 'length': data.get('length',"")}
                 kwargs['initial'].update(initial)
         super(MovieForm, self).__init__(*args, **kwargs)
 
@@ -81,13 +81,15 @@ class FaqForm(WebSiteRecordForm):
                 kwargs['initial'] = {}
                 data = perl_string_to_python_website(kwargs['instance'].data)
                 kwargs['initial'].update(
-                    {'category': data['category'], 'question': data['question'], 'answer': data['answer']})
+                    {'category': data.get('category',""), 'question': data.get('question',""), 'answer': data.get('answer',"")})
         super(FaqForm, self).__init__(*args, **kwargs)
 
 
 class ViewForm(WebSiteRecordForm):
     content = forms.CharField(label="Content", widget=CKEditorWidget())
     help_link = forms.CharField(label="Linked URLs")
+    ensembl_action = forms.CharField(label="Ensembl Action", required=False)
+    ensembl_object = forms.CharField(label="Ensembl Object", required=False)
 
     def __init__(self, *args, **kwargs):
         # Populate the form with fields from the data object.
@@ -97,7 +99,7 @@ class ViewForm(WebSiteRecordForm):
                 kwargs['initial'] = {}
                 help_link = HelpLink.objects.filter(help_record_id=kwargs['instance'].pk).first()
                 data = perl_string_to_python_website(kwargs['instance'].data)
-                kwargs['initial'].update({'content': data['content'], 'help_link': help_link.page_url})
+                kwargs['initial'].update({'content': data.get('content', ""), 'ensembl_action' : data.get('ensembl_action', ""), 'ensembl_object': data.get('ensembl_object',""), 'help_link': help_link.page_url})
                 super(ViewForm, self).__init__(*args, **kwargs)
                 self.fields['help_link'].widget.attrs['readonly'] = True
             else:
@@ -187,7 +189,7 @@ class MovieItemAdmin(HelpRecordModelAdmin):
             return raw_data.get('youku_id')
 
     def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field] for field in form.fields if
+        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field in form.fields if
                        field in ('title', 'list_position', 'youtube_id', 'youku_id', 'length')}
         obj.data = to_internal_value(extra_field)
         super().save_model(request, obj, form, change)
@@ -227,7 +229,7 @@ class FaqItemAdmin(HelpRecordModelAdmin):
             return mark_safe(raw_data.get('question'))
 
     def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field] for field in form.fields if
+        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field in form.fields if
                        field in ('category', 'question', 'answer')}
         obj.data = to_internal_value(extra_field)
         super().save_model(request, obj, form, change)
@@ -238,6 +240,7 @@ class ViewItemAdmin(HelpRecordModelAdmin):
     form = ViewForm
     list_display = ('page_url', 'keyword', 'status')
     fields = ('help_link', 'content', 'keyword', 'status',
+              ('ensembl_action','ensembl_object'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'),
               ('helpful', 'not_helpful'))
@@ -250,6 +253,16 @@ class ViewItemAdmin(HelpRecordModelAdmin):
             q = q.order_by(*ordering)
         return q
 
+    def ensembl_action(self, obj):
+        if obj:
+            raw_data = perl_string_to_python_website(obj.data)
+            return raw_data.get('ensembl_action', "")
+
+    def ensembl_object(self, obj):
+        if obj:
+            raw_data = perl_string_to_python_website(obj.data)
+            return raw_data.get('ensembl_object', "")
+
     def page_url(self, obj):
         if obj:
             q = HelpLink.objects.filter(help_record_id=obj.help_record_id).first()
@@ -257,7 +270,7 @@ class ViewItemAdmin(HelpRecordModelAdmin):
                 return q.page_url
 
     def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field] for field in form.fields if field in ('content')}
+        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field in form.fields if field in ('content','ensembl_action','ensembl_object') if form.cleaned_data.get(field, False)}
         obj.data = to_internal_value(extra_field)
         super().save_model(request, obj, form, change)
         q = HelpLink.objects.filter(help_record_id=obj.pk).first()
@@ -296,7 +309,7 @@ class LookupItemAdmin(HelpRecordModelAdmin):
             return mark_safe(raw_data.get('meaning'))
 
     def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field] for field in form.fields if
+        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field in form.fields if
                        field in ('word', 'expanded', 'meaning')}
         obj.data = to_internal_value(extra_field)
         super().save_model(request, obj, form, change)
