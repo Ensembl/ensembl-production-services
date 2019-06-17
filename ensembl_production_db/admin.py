@@ -12,22 +12,47 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+
+import collections
+
 from django import forms
 from django.contrib import admin
 from django.contrib import messages
+from django.contrib.admin import SimpleListFilter
 from django.core.exceptions import ValidationError
+from django.utils.safestring import mark_safe
 
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
-from ensembl_production.utils import perl_string_to_python
 from .models import *
+
+
+def flatten(iter_obj):
+    result = []
+    for el in iter_obj:
+        if isinstance(iter_obj, collections.Iterable) and not isinstance(el, str):
+            result.extend(flatten(el))
+        else:
+            result.append(el)
+    return result
 
 
 class ProductionModelAdmin(ProductionUserAdminMixin):
     list_per_page = 50
-    readonly_fields = ('created_by', 'created_at', 'modified_by', 'modified_at')
+    readonly_fields = ['created_by', 'created_at', 'modified_by', 'modified_at']
     ordering = ('-modified_at', '-created_at')
     list_filter = ['created_by', 'modified_by']
+    # ability to define a list of 'only_super_admin' fields
+    super_user_only = []
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+        if not request.user.is_superuser:
+            flat = flatten(self.get_fields(request, obj))
+            for admin_only in self.super_user_only:
+                if admin_only in flat and admin_only not in readonly_fields:
+                    readonly_fields += [admin_only, ]
+        return readonly_fields
 
     def has_delete_permission(self, request, obj=None):
         if not request.user.is_superuser:
@@ -44,27 +69,85 @@ class ProductionModelAdmin(ProductionUserAdminMixin):
         return request.user.is_staff
 
 
+class IsCurrentFilter(SimpleListFilter):
+    title = 'Is Current'
+
+    parameter_name = 'is_current'
+
+    def lookups(self, request, model_admin):
+        return (
+            (None, 'Yes'),
+            ('no', 'No'),
+            ('all', 'All'),
+        )
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        if self.value() == 'no':
+            return queryset.filter(is_current=False)
+        elif self.value() is None:
+            return queryset.filter(is_current=True)
+
+
+class IsDisplayableFilter(SimpleListFilter):
+    title = 'Is Displayed'
+
+    parameter_name = 'displayable'
+
+    def lookups(self, request, model_admin):
+        return (
+            (None, 'Yes'),
+            ('no', 'No'),
+            ('all', 'All'),
+        )
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        if self.value() == 'no':
+            return queryset.filter(displayable=False)
+        elif self.value() is None:
+            return queryset.filter(displayable=True)
+
+
 class ProductionTabularInline(admin.TabularInline):
-    readonly_fields = ('modified_by', 'created_by', 'created_at', 'modified_at')
+    readonly_fields = ['modified_by', 'created_by', 'created_at', 'modified_at']
 
 
 class AttribInline(ProductionTabularInline):
     model = MasterAttrib
     extra = 1
-    fields = ['value', 'modified_by', 'created_by', 'created_at', 'modified_at']
+    fields = ('value', 'modified_by', 'created_by', 'created_at', 'modified_at')
 
 
 class AttribSetInline(ProductionTabularInline):
     model = MasterAttribSet
     extra = 0
-    fields = ['attrib_set_id', 'modified_by', 'created_by', 'created_at', 'modified_at']
+    fields = ('attrib_set_id', 'modified_by', 'created_by', 'created_at', 'modified_at')
     can_delete = True
 
 
 class AnalysisDescriptionInline(ProductionTabularInline):
     model = AnalysisDescription
     extra = 0
-    fields = ['logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable']
+    fields = ('logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable')
     readonly_fields = ['logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable']
 
     def has_add_permission(self, request, obj=None):
@@ -74,9 +157,13 @@ class AnalysisDescriptionInline(ProductionTabularInline):
         return True
 
 
+class HasCurrentAdmin(ProductionModelAdmin):
+    list_filter = ProductionModelAdmin.list_filter + [IsCurrentFilter, ]
+
+
 # Register your models here.
-class AttribTypeAdmin(ProductionModelAdmin):
-    list_display = ('code', 'name', 'description')
+class AttribTypeAdmin(HasCurrentAdmin):
+    list_display = ('code', 'name', 'description', 'is_current')
     fields = ('code', 'name', 'description',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
@@ -84,25 +171,25 @@ class AttribTypeAdmin(ProductionModelAdmin):
     inlines = (AttribInline,)
 
 
-class AttribAdmin(ProductionModelAdmin):
-    list_display = ('value', 'attrib_type')
+class AttribAdmin(HasCurrentAdmin):
+    list_display = ('value', 'attrib_type', 'is_current')
     fields = ('value', 'attrib_type',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     search_fields = ('value', 'attrib_type__name')
-    # inlines = (AttribSetInline,)
 
 
-class AttribSetAdmin(ProductionModelAdmin):
+class AttribSetAdmin(HasCurrentAdmin):
     fields = ('attrib_set_id', 'attrib', 'is_current',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at')
               )
-    list_display = ('attrib_set_id', 'attrib', 'modified_at', 'created_at')
+    list_display = ('attrib_set_id', 'attrib', 'is_current')
     search_fields = ('attrib__value', 'attrib_set_id')
+    ordering = ('-modified_at',)
 
 
-class BioTypeAdmin(ProductionModelAdmin):
+class BioTypeAdmin(HasCurrentAdmin):
     # TODO DBTYPE to add display inline+flex class
     fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type',
               'description',
@@ -110,17 +197,16 @@ class BioTypeAdmin(ProductionModelAdmin):
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at')
               )
-    list_display = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type', 'is_dumped', 'description')
+    list_display = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type', 'description', 'is_current')
     search_fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type__name', 'description')
 
 
-class AnalysisDescriptionAdmin(ProductionModelAdmin):
+class AnalysisDescriptionAdmin(HasCurrentAdmin):
     fields = ('logic_name', 'description', 'display_label', 'web_data',
               ('db_version', 'displayable', 'is_current'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
-    list_filter = ProductionModelAdmin.list_filter + ['displayable', ]
-    list_display = ('logic_name', 'display_label', 'description', 'web_data_label', 'db_version', 'displayable')
+    list_display = ('logic_name', 'display_label', 'description', 'web_data_label', 'is_current', 'displayable')
     search_fields = ('logic_name', 'display_label', 'description', 'web_data__web_data')
 
     def web_data_label(self, obj):
@@ -139,10 +225,11 @@ class MetaKeyForm(forms.BaseModelForm):
         super().__init__(**kwargs)
 
 
-class MetakeyAdmin(ProductionModelAdmin):
+class MetakeyAdmin(HasCurrentAdmin):
     # form = MetaKeyForm
-    list_display = ('name', 'is_optional', 'db_type', 'description')
-    fields = ('name', 'description', 'is_optional', 'db_type',
+    list_display = ('name', 'is_optional', 'db_type', 'description', 'is_current')
+    fields = ('name', 'description', 'db_type',
+              ('is_optional', 'is_current', 'is_multi_value'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     ordering = ('name',)
@@ -150,8 +237,8 @@ class MetakeyAdmin(ProductionModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         read_only_fields = super().get_readonly_fields(request, obj)
-        if obj is not None:
-            read_only_fields += ('name',)
+        if obj is not None and 'name' not in read_only_fields:
+            read_only_fields += ['name', ]
         return read_only_fields
 
 
@@ -172,7 +259,7 @@ class WebDataForm(forms.ModelForm):
 class WebDataAdmin(ProductionModelAdmin):
     form = WebDataForm
     # TODO add pretty json display / conversion to Perl upon save
-    list_display = ('pk', 'label', 'comment')
+    list_display = ('pk', 'web_data_label', 'comment')
     search_fields = ('pk', 'web_data', 'comment')
     fields = ('web_data', 'comment',
               ('created_by', 'created_at'),
@@ -184,10 +271,18 @@ class WebDataAdmin(ProductionModelAdmin):
                          "WARNING: Updating web data with multiple analysis description update it for all of them")
         return super().change_view(request, object_id, form_url, extra_context)
 
+    def web_data_label(self, obj):
+        return mark_safe('<pre>' + obj.label + '</pre>') if obj else ''
 
-class MasterExternalDbAdmin(ProductionModelAdmin):
+    web_data_label.short_description = "Web Data"
+
+    def get_queryset(self, request):
+        return super().get_queryset(request)
+
+
+class MasterExternalDbAdmin(HasCurrentAdmin):
     list_display = ('db_name', 'db_release', 'status', 'db_display_name', 'priority', 'type', 'secondary_db_name',
-                    'secondary_db_table')
+                    'secondary_db_table', 'is_current')
     fields = ('db_name', 'status', 'db_display_name', 'priority', 'type', 'db_release', 'secondary_db_name',
               'secondary_db_table',
               ('created_by', 'created_at'),

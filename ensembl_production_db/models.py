@@ -5,12 +5,14 @@
 #   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
-from django.contrib.auth import get_user_model
+import json
+
 from django.db import models
 from django_mysql.models import EnumField
 from multiselectfield import MultiSelectField
 
-from ensembl_production.models import SpanningForeignKey
+from ensembl_production.models import BaseTimestampedModel
+from ensembl_production.utils import perl_string_to_python
 
 DB_TYPE_CHOICES_BIOTYPE = (('cdna', 'cdna'),
                            ('core', 'core'),
@@ -37,29 +39,6 @@ DB_TYPE_CHOICES_METAKEY = (('cdna', 'cdna'),
                            ('sangervega', 'sangervega'))
 
 
-class BaseTimestampedModel(models.Model):
-    """
-    Time stamped 'able' models objects, add fields to inherited objects
-    """
-
-    class Meta:
-        abstract = True
-        app_label = 'ensembl_production_db'
-        ordering = ['-updated', '-created']
-
-    #: created by user (external DB ID)
-    created_by = SpanningForeignKey(get_user_model(), db_column='created_by', blank=True, null=True,
-                                    related_name="%(class)s_created_by",
-                                    related_query_name="%(class)s_creates")
-    created_at = models.DateTimeField('Created on', auto_now_add=True, editable=False, null=True)
-    #: Modified by user (external DB ID)
-    modified_by = SpanningForeignKey(get_user_model(), db_column='modified_by', blank=True, null=True,
-                                     related_name="%(class)s_modified_by",
-                                     related_query_name="%(class)s_updates")
-    #: (auto_now): set each time model object is saved in database
-    modified_at = models.DateTimeField('Last Update', auto_now=True, editable=False, null=True)
-
-
 class HasCurrent(models.Model):
     class Meta:
         abstract = True
@@ -81,10 +60,16 @@ class WebData(BaseTimestampedModel):
 
     @property
     def label(self):
-        return self.web_data[:100] if self.web_data else ''
+        try:
+            json_data = perl_string_to_python(self.web_data)
+            json_pretty = json.dumps(json_data, sort_keys=True, indent=4)
+            return json_pretty
+        except Exception:
+            pass
+        return self.web_data[:50] + '...' if self.web_data else ''
 
     def __str__(self):
-        return 'ID:{} [{}...]'.format(self.pk, self.label)
+        return 'ID: {} [{}...]'.format(self.pk, self.label)
 
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel):
@@ -107,7 +92,7 @@ class AnalysisDescription(HasCurrent, BaseTimestampedModel):
 
 class MasterAttribType(HasCurrent, BaseTimestampedModel):
     attrib_type_id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=20)
+    code = models.CharField(unique=True, max_length=20)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
 
@@ -215,6 +200,7 @@ class MetaKey(HasCurrent, BaseTimestampedModel):
     is_optional = models.BooleanField(default=False)
     db_type = MultiSelectField(choices=DB_TYPE_CHOICES_METAKEY)
     description = models.TextField(blank=True, null=True)
+    is_multi_value = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'meta_key'

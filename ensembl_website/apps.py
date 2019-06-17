@@ -12,17 +12,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.apps import AppConfig
 
-urlpatterns = [
-    # Production Admin
-    url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
-    url(r'^', admin.site.urls),
-    # Production DB API
-    url(r'^production_db/api/', include('ensembl_production_db.api.urls')),
-]
 
-admin.site.site_header = "Ensembl Production Services"
-admin.site.site_title = "Ensembl Production Services"
-admin.site.index_title = "Welcome to Ensembl Production Services"
+class EnsemblWebsiteConfig(AppConfig):
+    name = 'ensembl_website'

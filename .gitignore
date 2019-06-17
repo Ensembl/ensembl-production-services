@@ -143,4 +143,5 @@ venv.bak/
 
 /bin/nginx.conf
 /bin/gunicorn.conf.py
-/bin/nginx.pid
+/bin/*.pid
+/staticfiles

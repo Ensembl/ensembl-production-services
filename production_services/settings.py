@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_swagger',
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
+    'ensembl_website.apps.EnsemblWebsiteConfig',
     'multiselectfield',
+    'ckeditor',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -102,6 +105,18 @@ DATABASES = {
         'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
         'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
+        'OPTIONS': {                                          
+            # Tell MySQLdb to connect with 'utf8mb4' character set
+            'charset': 'utf8mb4',
+        }
+    },
+    'website': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website_97'),
+        'USER': os.getenv('WEBSITE_DB_USER', 'root'),
+        'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', ''),
+        'HOST': os.getenv('WEBSITE_DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': 'utf8mb4',
@@ -109,12 +124,9 @@ DATABASES = {
     }
 }
 
-#if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
-#    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
-#    DATABASES['production']['ENGINE'] = 'django.db.backends.sqlite3'
-
 DATABASE_ROUTERS = ['ensembl_production.router.AuthRouter',
-                    'ensembl_production_db.router.ProductionRouter']
+                    'ensembl_production_db.router.ProductionRouter',
+                    'ensembl_website.router.WebsiteRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -161,3 +173,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100
 }
+
+CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'

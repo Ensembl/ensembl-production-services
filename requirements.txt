@@ -8,3 +8,5 @@ gunicorn==19.9.0
 django-multiselectfield==0.1.8
 django-mysql==2.4.1
 django-jet==1.0.8
+django-ckeditor==5.6.1
+drf_yasg==1.15.0
