@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('auth', '0009_alter_user_last_name_max_length'),
+        ('auth', '0009_alter_user_last_name_max_length')
     ]
 
     operations = [
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('app_url', models.URLField(max_length=255, verbose_name='App flask url')),
                 ('app_theme', models.CharField(choices=[('336', 'Ensembl'), ('707080', 'Bacteria'), ('714486', 'Protists'), ('407253', 'Plants'), ('725A40', 'Fungi'), ('015365', 'Metazoa'), ('800066', 'Datachecks')], default='FFFFFF', max_length=6)),
                 ('app_prod_url', models.CharField(max_length=200, unique=True, verbose_name='App Url')),
-                ('app_groups', models.ManyToManyField(to='auth.Group')),
+                ('app_groups', models.ManyToManyField(to='auth.Group', blank=True, db_constraint=False)),
             ],
             options={
                 'verbose_name': 'Flask App',

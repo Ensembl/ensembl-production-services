@@ -151,5 +151,5 @@ class ProductionFlaskApp(models.Model):
     app_name = models.CharField("App display name", max_length=255, null=False)
     app_url = models.URLField("App flask url", max_length=255)
     app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)
-    app_groups = models.ManyToManyField(Group)
+    app_groups = models.ManyToManyField(Group, blank=True)
     app_prod_url = models.CharField('App Url', max_length=200, null=False, unique=True)
