@@ -14,6 +14,8 @@
 """
 from django.contrib import admin
 
+from .models import ProductionFlaskApp
+
 
 class ProductionUserAdminMixin(admin.ModelAdmin):
     """ Mixin class to assiciated request user to integer ID in another database host
@@ -23,7 +25,7 @@ class ProductionUserAdminMixin(admin.ModelAdmin):
 
     class Media:
         css = {
-            'all': ('production_admin.css',)
+            'all': ('css/production_admin.css',)
         }
 
     def save_model(self, request, obj, form, change):
@@ -33,3 +35,19 @@ class ProductionUserAdminMixin(admin.ModelAdmin):
         else:
             obj.created_by = request.user
         super().save_model(request, obj, form, change)
+
+
+@admin.register(ProductionFlaskApp)
+class FlaskAppAdmin(ProductionUserAdminMixin):
+
+    def has_add_permission(self, request):
+        return request.user.is_superuser
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_module_permission(self, request):
+        return request.user.is_superuser

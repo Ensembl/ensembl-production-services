@@ -1,0 +1,129 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "Metazoa",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+      "name": "Microbes",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 3,
+    "fields": {
+      "name": "Production",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 4,
+    "fields": {
+      "name": "GeneBuild",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 5,
+    "fields": {
+      "name": "Compara",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 6,
+    "fields": {
+      "name": "Plants",
+      "permissions": []
+    }
+  },
+  {
+    "model": "ensembl_production.productionflaskapp",
+    "pk": 1,
+    "fields": {
+      "app_name": "Vertebrate Services",
+      "app_url": "http://ens-prod-1.ebi.ac.uk:8000",
+      "app_theme": "336",
+      "app_prod_url": "vertebrates",
+      "app_groups": [
+        4,
+        5
+      ]
+    }
+  },
+  {
+    "model": "ensembl_production.productionflaskapp",
+    "pk": 2,
+    "fields": {
+      "app_name": "Microbes (Protists/Bacteria) Services",
+      "app_url": "http://eg-prod-01.ebi.ac.uk:7000/#!/",
+      "app_theme": "714486",
+      "app_prod_url": "microbes",
+      "app_groups": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "ensembl_production.productionflaskapp",
+    "pk": 3,
+    "fields": {
+      "app_name": "Plants Services",
+      "app_url": "http://eg-prod-01.ebi.ac.uk:7000/#!/",
+      "app_theme": "407253",
+      "app_prod_url": "plants",
+      "app_groups": [
+        6
+      ]
+    }
+  },
+  {
+    "model": "ensembl_production.productionflaskapp",
+    "pk": 4,
+    "fields": {
+      "app_name": "Metazoa Services",
+      "app_url": "http://eg-prod-01.ebi.ac.uk:7000/#!/",
+      "app_theme": "015365",
+      "app_prod_url": "metazoa",
+      "app_groups": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "ensembl_production.productionflaskapp",
+    "pk": 5,
+    "fields": {
+      "app_name": "DataChecks Catalog (Alpha)",
+      "app_url": "http://ens-prod-1.ebi.ac.uk:3000/datacheck/names",
+      "app_theme": "800066",
+      "app_prod_url": "datachecks",
+      "app_groups": [
+        3
+      ]
+    }
+  },
+  {
+    "model": "ensembl_production.productionflaskapp",
+    "pk": 6,
+    "fields": {
+      "app_name": "Production Internal",
+      "app_url": "http://ens-prod-1.ebi.ac.uk:9000/",
+      "app_theme": "336",
+      "app_prod_url": "production",
+      "app_groups": [
+        3
+      ]
+    }
+  }
+]
