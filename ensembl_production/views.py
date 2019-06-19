@@ -31,8 +31,8 @@ class FlaskAppView(DetailView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if "Production" in self.object.app_groups.all() and not request.user.is_authenticated and not request.user.is_superuser:
-            return self.render_to_response('403.html')
+        if "Production" in self.object.app_groups.values_list('name', flat=True) and not request.user.is_authenticated and not request.user.is_superuser:
+            return render_to_response('403.html', {})
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
