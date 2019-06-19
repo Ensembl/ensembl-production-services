@@ -16,6 +16,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
 
+from ensembl_production.views import FlaskAppView
 
 urlpatterns = [
     # Production Admin
@@ -24,7 +25,11 @@ urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='home.html')),
     # Production DB API
     url(r'^production_db/api/', include('ensembl_production_db.api.urls')),
+    url(r'^app/(?P<app_prod_url>[a-z]+)', FlaskAppView.as_view()),
 ]
+
+handler404 = 'ensembl_production.views.handler404'
+handler500 = 'ensembl_production.views.handler500'
 
 admin.site.site_header = "Ensembl Production Services"
 admin.site.site_title = "Ensembl Production Services"
