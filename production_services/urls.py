@@ -30,6 +30,7 @@ urlpatterns = [
 
 handler404 = 'ensembl_production.views.handler404'
 handler500 = 'ensembl_production.views.handler500'
+handler403 = 'ensembl_production.views.handler403'
 
 admin.site.site_header = "Ensembl Production Services"
 admin.site.site_title = "Ensembl Production Services"

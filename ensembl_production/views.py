@@ -14,7 +14,7 @@
 """
 from django.shortcuts import render_to_response
 from django.views.generic import DetailView
-
+from django.core.exceptions import PermissionDenied
 from .models import ProductionFlaskApp
 
 
@@ -32,7 +32,7 @@ class FlaskAppView(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if "Production" in self.object.app_groups.values_list('name', flat=True) and not (request.user.is_authenticated and request.user.is_superuser):
-            return render_to_response('403.html', {})
+            raise PermissionDenied()
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
@@ -49,4 +49,11 @@ def handler404(request, *args, **argv):
 def handler500(request, *args, **argv):
     response = render_to_response('500.html', {})
     response.status_code = 500
+    return response
+
+
+def handler403(request, *args, **argv):
+    print('in here')
+    response = render_to_response('403.html', {})
+    response.status_code = 403
     return response
