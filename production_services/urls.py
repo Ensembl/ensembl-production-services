@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='home.html')),
     # Production DB API
-    url(r'^production_db/api/', include('ensembl_production_db.api.urls')),
+    url(r'^api/production_db/', include('ensembl_production_db.api.urls')),
     url(r'^app/(?P<app_prod_url>[a-z]+)', FlaskAppView.as_view()),
 ]
 
