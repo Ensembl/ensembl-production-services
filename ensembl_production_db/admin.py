@@ -25,7 +25,7 @@ from django.utils.safestring import mark_safe
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
 from .models import *
-from django.template.defaultfilters import truncatewords
+
 
 def flatten(iter_obj):
     result = []
@@ -71,7 +71,7 @@ class ProductionModelAdmin(ProductionUserAdminMixin):
     def get_list_display(self, request):
         list_display = super().get_list_display(request)
         if issubclass(self.model, BaseTimestampedModel):
-            list_display = list_display + ('modified_at', )
+            list_display = list_display + ('modified_at',)
         return list_display
 
 
@@ -207,6 +207,11 @@ class BioTypeAdmin(HasCurrentAdmin):
     search_fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type__name', 'description')
 
 
+class WebDataChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return "WebData: {} - {}".format(obj.pk, obj.web_data[:50] + '...' if obj.web_data else '')
+
+
 class AnalysisDescriptionAdmin(HasCurrentAdmin):
     fields = ('logic_name', 'description', 'display_label', 'web_data',
               ('db_version', 'displayable', 'is_current'),
@@ -220,6 +225,10 @@ class AnalysisDescriptionAdmin(HasCurrentAdmin):
 
     web_data_label.short_description = "Web Data"
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'web_data':
+            return WebDataChoiceField(queryset=WebData.objects.all())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class MetaKeyForm(forms.BaseModelForm):
