@@ -300,7 +300,7 @@ class MasterExternalDbAdmin(HasCurrentAdmin):
     list_display = ('db_name', 'db_release', 'status', 'db_display_name', 'priority', 'type', 'secondary_db_name',
                     'secondary_db_table', 'is_current')
     fields = ('db_name', 'status', 'db_display_name', 'priority', 'type', 'db_release', 'secondary_db_name',
-              'secondary_db_table',
+              'secondary_db_table', 'description',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at')
               )
