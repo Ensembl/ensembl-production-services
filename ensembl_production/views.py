@@ -12,9 +12,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render_to_response
 from django.views.generic import DetailView
-from django.core.exceptions import PermissionDenied
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import ProductionFlaskApp
 
 
@@ -31,7 +38,8 @@ class FlaskAppView(DetailView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if "Production" in self.object.app_groups.values_list('name', flat=True) and not (request.user.is_authenticated and request.user.is_superuser):
+        if "Production" in self.object.app_groups.values_list('name', flat=True) and not (
+                request.user.is_authenticated and request.user.is_superuser):
             raise PermissionDenied()
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
@@ -57,3 +65,25 @@ def handler403(request, *args, **argv):
     response = render_to_response('403.html', {})
     response.status_code = 403
     return response
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {
+        'form': form
+    })
+
+
+@login_required
+def secret_page(request):
+    return render(request, 'secret_page.html')
+
+
+class SecretPage(LoginRequiredMixin, TemplateView):
+    template_name = 'secret_page.html'

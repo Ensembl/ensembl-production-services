@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'ensembl_website.apps.EnsemblWebsiteConfig',
     'multiselectfield',
     'ckeditor',
+    'crispy_forms',
     'drf_yasg',
 ]
 
@@ -175,3 +176,8 @@ REST_FRAMEWORK = {
 }
 
 CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
+
+# mailing
+LOGIN_REDIRECT_URL = '/'
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")

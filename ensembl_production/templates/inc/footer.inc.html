@@ -1,11 +1,17 @@
 {% load static %}
-  <!-- footer.inc.html -->
-  <footer class="bg-dark" style="background-color: #{{ flask_app.app_theme|default:'343A40' }} !important">
+<!-- footer.inc.html -->
+<footer class="bg-dark" style="background-color: #{{ flask_app.app_theme|default:'343A40' }} !important">
     <div class="container text-white">
-        <p class="float-left">Tools for Production Fools</p>
-      <p class="m-0 float-right">
-              <img src="{% static "img/logo.png" %}" alt="Ensembl Production" class="img-fluid" style="max-width: 60px;">
-    Ensembl Production 2019</p>
+        <div class="row">
+            <div class="col-md-4"><p class="float-left">Tools for Production Fools</p></div>
+            <div class="col-md-4"><p class="text-center"><a href="{% url 'password_reset' %}">Forgot password?</a></p>
+            </div>
+            <div class="col-md-4"><p class="float-right">
+                <img src="{% static "img/logo.png" %}" alt="Ensembl Production" class="img-fluid"
+                     style="max-width: 60px;">
+                Ensembl Production 2019</p>
+            </div>
+        </div>
     </div>
-  </footer>
-  <!-- footer.inc.html -->
+</footer>
+<!-- footer.inc.html -->
