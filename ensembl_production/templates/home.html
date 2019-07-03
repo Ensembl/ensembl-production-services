@@ -22,13 +22,18 @@
 
             <!-- Jumbotron Header -->
             <header class="jumbotron my-4">
-                <h1 class="display-3">{% if user.is_authenticated %}bl;ablabla{% endif %}A Warm Welcome!</h1>
+                <h1 class="display-3">{% if user.is_authenticated %}Welcome back {{ user.first_name|default:user.username }}!{% else %}Production Services{% endif %}</h1>
                 <p class="lead">
-                    Production Services platform here to help you publishing your data. <br/>
+                    Here to help you publishing your data. <br/>
                     <span class="float-right">>>> One portal to rule them all.<<<</span>
-
-                    <a href="{% url 'logout' %}?next={% url 'login' %}">Log out</a>
-                    <a href="{% url 'login' %}?next={% url 'home' %}">login</a>
+                    <br/>
+                </p>
+                <p class="float-right">
+                    {% if user.is_authenticated %}
+                        <a class="btn btn-dark" href="{% url 'logout' %}?next=/">Log out</a>
+                    {% else %}
+                        <a class="btn btn-primary" href="{% url 'login' %}?next={% url 'home' %}">Sign In</a>
+                    {% endif %}
                 </p>
             </header>
 

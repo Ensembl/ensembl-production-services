@@ -25,9 +25,6 @@ urlpatterns = [
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
-    path('signup/', views.signup, name='signup'),
-    path('secret/', views.secret_page, name='secret'),
-    path('secret2/', views.SecretPage.as_view(), name='secret2'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login', auth_views.LoginView.as_view(), name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),

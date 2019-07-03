@@ -3,9 +3,11 @@
 {% load crispy_forms_tags %}
 
 {% block registration-content %}
-    <div class="container" align="center">
-        <img src="{% static "img/logo.png" %}" alt="Ensembl Production" height="50%" width="50%"><br/>Production
-        Services
+    <div class="">
+        <div align="center">
+            <img src="{% static "img/logo.png" %}" align="center" alt="Ensembl Production" height="50%"
+                 width="50%"><br/>
+        </div>
         <form method="post" novalidate>
             {% csrf_token %}
             {{ form|crispy }}

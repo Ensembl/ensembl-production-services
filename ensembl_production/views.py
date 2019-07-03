@@ -65,25 +65,3 @@ def handler403(request, *args, **argv):
     response = render_to_response('403.html', {})
     response.status_code = 403
     return response
-
-
-def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'registration/signup.html', {
-        'form': form
-    })
-
-
-@login_required
-def secret_page(request):
-    return render(request, 'secret_page.html')
-
-
-class SecretPage(LoginRequiredMixin, TemplateView):
-    template_name = 'secret_page.html'

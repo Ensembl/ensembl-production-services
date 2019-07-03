@@ -32,7 +32,7 @@ def override_logentry(sender, **kwargs):
 
 class EnsemblProductionConfig(AppConfig):
     name = 'ensembl_production'
-    verbose_name = "Production"
+    verbose_name = "Production Apps"
 
     def ready(self):
         """
