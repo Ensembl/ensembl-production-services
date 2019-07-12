@@ -13,6 +13,7 @@
    limitations under the License.
 """
 
+
 class WebsiteRouter:
     """
     A router to control all database operations on models in the
@@ -49,6 +50,6 @@ class WebsiteRouter:
         Make sure the website website_services only appears in the 'website'
         database.
         """
-        if app_label == 'ensembl_website':
-            return db == 'website'
-        return None
+        if 'target_db' in hints:
+            return hints['target_db'] == "website"
+        return app_label == 'ensembl_website' and db != "default"

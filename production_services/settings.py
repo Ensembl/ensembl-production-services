@@ -100,7 +100,7 @@ DATABASES = {
     },
     'production': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production_97'),
+        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production'),
         'USER': os.getenv('PROD_DB_USER', 'root'),
         'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
         'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
@@ -112,7 +112,7 @@ DATABASES = {
     },
     'website': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website_97'),
+        'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website'),
         'USER': os.getenv('WEBSITE_DB_USER', 'root'),
         'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', ''),
         'HOST': os.getenv('WEBSITE_DB_HOST', '127.0.0.1'),

@@ -12,12 +12,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import json
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from ensembl_production.utils import to_internal_value, perl_string_to_python_website
+# from ensembl_production.utils import json.dumps, json.loads
 from ensembl_production_db.admin import ProductionUserAdminMixin
 from ensembl_website.models import *
 
@@ -42,9 +43,10 @@ class LookupItemForm(WebSiteRecordForm):
         if 'instance' in kwargs and kwargs['instance'] is not None:
             if 'initial' not in kwargs:
                 kwargs['initial'] = {}
-                data = perl_string_to_python_website(kwargs['instance'].data)
+                data = json.loads(kwargs['instance'].data)
                 kwargs['initial'].update(
-                    {'word': data.get('word',""), 'meaning': data.get('meaning',""), 'expanded': data.get('expanded',"")})
+                    {'word': data.get('word', ""), 'meaning': data.get('meaning', ""),
+                     'expanded': data.get('expanded', "")})
         super(LookupItemForm, self).__init__(*args, **kwargs)
 
 
@@ -61,9 +63,10 @@ class MovieForm(WebSiteRecordForm):
         if 'instance' in kwargs and kwargs['instance'] is not None:
             if 'initial' not in kwargs:
                 kwargs['initial'] = {}
-                data = perl_string_to_python_website(kwargs['instance'].data)
+                data = json.loads(kwargs['instance'].data)
                 initial = {'title': data.get('title',""), 'list_position': data.get('list_position',""),
-                           'youtube_id': data.get('youtube_id',""), 'youku_id': data.get('youku_id',""), 'length': data.get('length',"")}
+                           'youtube_id': data.get('youtube_id',""), 'youku_id': data.get('youku_id',""),
+                           'length': data.get('length',"")}
                 kwargs['initial'].update(initial)
         super(MovieForm, self).__init__(*args, **kwargs)
 
@@ -79,9 +82,10 @@ class FaqForm(WebSiteRecordForm):
         if 'instance' in kwargs and kwargs['instance'] is not None:
             if 'initial' not in kwargs:
                 kwargs['initial'] = {}
-                data = perl_string_to_python_website(kwargs['instance'].data)
+                data = json.loads(kwargs['instance'].data)
                 kwargs['initial'].update(
-                    {'category': data.get('category',""), 'question': data.get('question',""), 'answer': data.get('answer',"")})
+                    {'category': data.get('category',""), 'question': data.get('question',""),
+                     'answer': data.get('answer',"")})
         super(FaqForm, self).__init__(*args, **kwargs)
 
 
@@ -98,8 +102,9 @@ class ViewForm(WebSiteRecordForm):
             if 'initial' not in kwargs:
                 kwargs['initial'] = {}
                 help_link = HelpLink.objects.filter(help_record_id=kwargs['instance'].pk).first()
-                data = perl_string_to_python_website(kwargs['instance'].data)
-                kwargs['initial'].update({'content': data.get('content', ""), 'ensembl_action' : data.get('ensembl_action', ""), 'ensembl_object': data.get('ensembl_object',""), 'help_link': help_link.page_url})
+                data = json.loads(kwargs['instance'].data)
+                kwargs['initial'].update(
+                    {'content': data.get('content', ""), 'ensembl_action' : data.get('ensembl_action', ""), 'ensembl_object': data.get('ensembl_object',""), 'help_link': help_link.page_url})
                 super(ViewForm, self).__init__(*args, **kwargs)
                 self.fields['help_link'].widget.attrs['readonly'] = True
             else:
@@ -129,7 +134,7 @@ class HelpLinkModelAdmin(admin.ModelAdmin):
 class HelpRecordModelAdmin(ProductionUserAdminMixin):
     list_per_page = 50
     readonly_fields = (
-    'help_record_id', 'created_by', 'created_at', 'modified_by', 'modified_at', 'helpful', 'not_helpful')
+        'help_record_id', 'created_by', 'created_at', 'modified_by', 'modified_at', 'helpful', 'not_helpful')
     ordering = ('-modified_at', '-created_at')
     list_filter = ['created_by', 'modified_by']
 
@@ -175,23 +180,23 @@ class MovieItemAdmin(HelpRecordModelAdmin):
 
     def title(self, obj):
         if obj:
-            raw_data = perl_string_to_python_website(obj.data)
+            raw_data = json.loads(obj.data)
             return raw_data.get('title')
 
     def youtube_id(self, obj):
         if obj:
-            raw_data = perl_string_to_python_website(obj.data)
+            raw_data = json.loads(obj.data)
             return raw_data.get('youtube_id')
 
     def youku_id(self, obj):
         if obj:
-            raw_data = perl_string_to_python_website(obj.data)
+            raw_data = json.loads(obj.data)
             return raw_data.get('youku_id')
 
     def save_model(self, request, obj, form, change):
         extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field in form.fields if
                        field in ('title', 'list_position', 'youtube_id', 'youku_id', 'length')}
-        obj.data = to_internal_value(extra_field)
+        obj.data = json.dumps(extra_field)
         super().save_model(request, obj, form, change)
 
     def movie_id(self, obj):
@@ -220,18 +225,19 @@ class FaqItemAdmin(HelpRecordModelAdmin):
 
     def category(self, obj):
         if obj:
-            raw_data = perl_string_to_python_website(obj.data)
+            raw_data = json.loads(obj.data)
             return raw_data.get('category')
 
     def question(self, obj):
         if obj:
-            raw_data = perl_string_to_python_website(obj.data)
+            raw_data = json.loads(obj.data)
             return mark_safe(raw_data.get('question'))
 
     def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field in form.fields if
+        extra_field = {field: form.cleaned_data[field].replace('\n', '').replace('\r', '').replace('\t', '') for field
+                       in form.fields if
                        field in ('category', 'question', 'answer')}
-        obj.data = to_internal_value(extra_field)
+        obj.data = json.dumps(extra_field)
         super().save_model(request, obj, form, change)
 
 
@@ -240,7 +246,7 @@ class ViewItemAdmin(HelpRecordModelAdmin):
     form = ViewForm
     list_display = ('page_url', 'keyword', 'status')
     fields = ('help_link', 'content', 'keyword', 'status',
-              ('ensembl_action','ensembl_object'),
+              ('ensembl_action', 'ensembl_object'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'),
               ('helpful', 'not_helpful'))
@@ -255,12 +261,12 @@ class ViewItemAdmin(HelpRecordModelAdmin):
 
     def ensembl_action(self, obj):
         if obj:
-            raw_data = perl_string_to_python_website(obj.data)
+            raw_data = json.loads(obj.data)
             return raw_data.get('ensembl_action', "")
 
     def ensembl_object(self, obj):
         if obj:
-            raw_data = perl_string_to_python_website(obj.data)
+            raw_data = json.loads(obj.data)
             return raw_data.get('ensembl_object', "")
 
     def page_url(self, obj):
@@ -270,8 +276,9 @@ class ViewItemAdmin(HelpRecordModelAdmin):
                 return q.page_url
 
     def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field in form.fields if field in ('content','ensembl_action','ensembl_object') if form.cleaned_data.get(field, False)}
-        obj.data = to_internal_value(extra_field)
+        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field
+                       in form.fields if field in ('content','ensembl_action','ensembl_object') if form.cleaned_data.get(field, False)}
+        obj.data = json.dumps(extra_field)
         super().save_model(request, obj, form, change)
         q = HelpLink.objects.filter(help_record_id=obj.pk).first()
         if not q:
@@ -300,16 +307,17 @@ class LookupItemAdmin(HelpRecordModelAdmin):
 
     def word(self, obj):
         if obj:
-            raw_data = perl_string_to_python_website(obj.data)
+            raw_data = json.loads(obj.data)
             return raw_data.get('word')
 
     def meaning(self, obj):
         if obj:
-            raw_data = perl_string_to_python_website(obj.data)
+            raw_data = json.loads(obj.data)
             return mark_safe(raw_data.get('meaning'))
 
     def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field in form.fields if
+        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field
+                       in form.fields if
                        field in ('word', 'expanded', 'meaning')}
-        obj.data = to_internal_value(extra_field)
+        obj.data = json.dumps(extra_field)
         super().save_model(request, obj, form, change)
