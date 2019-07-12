@@ -18,7 +18,6 @@ from ensembl_production.utils import perl_string_to_python_website, to_internal_
 
 def transform_json(apps, schema_editor):
     HelpRecord = apps.get_model('ensembl_website', 'HelpRecord')
-    print("Patching %s" % HelpRecord.objects.all().count())
     for record in HelpRecord.objects.all():
         python_value = perl_string_to_python_website(record.data)
         record.data = json.dumps(python_value)
@@ -27,7 +26,6 @@ def transform_json(apps, schema_editor):
 
 def reverse_transform_json(apps, schema_editor):
     HelpRecord = apps.get_model('ensembl_website', 'HelpRecord')
-    print("Reverting Patching %s" % HelpRecord.objects.all().count())
     for record in HelpRecord.objects.all():
         perl = to_internal_value(json.loads(record.data))
         record.data = perl
