@@ -14,48 +14,15 @@
 """
 from rest_framework import serializers
 
-from ensembl_production.utils import escape_perl_string, perl_string_to_python, list_to_perl_string
 from ensembl_production_db.models import *
-
-
-class PerlFieldElementSerializer(serializers.CharField):
-
-    def to_internal_value(self, data):
-        """Transform the supplied dict into a string representation of a Perl hash"""
-        pairs = []
-        for k, v in sorted([(k, v) for k, v in data.items() if v is not None], key=lambda x: x[0]):
-            # for k, v in sorted(filter((k, v) for k, v in web_data.items())):
-            k = str(k)
-            t = type(v).__name__
-            if t == 'str':
-                pairs.append("\"%s\" => \"%s\"" % (k, escape_perl_string(v)))
-            elif t == 'unicode':
-                pairs.append("\"%s\" => \"%s\"" % (k, escape_perl_string(str(v))))
-            elif t in ('int', 'long'):
-                pairs.append("\"%s\" => %d" % (k, v))
-            elif t == 'float':
-                pairs.append("\"%s\" => %f" % (k, v))
-            elif t == 'list':
-                pairs.append("\"%s\" => %s" % (k, list_to_perl_string(v)))
-            elif t == 'dict':
-                pairs.append("\"%s\" => %s" % (k, self.to_internal_value(v)))
-            elif t == 'bool':
-                if str(v) == "True":
-                    pairs.append("\"%s\" => %d" % (k, 1))
-            else:
-                raise Exception("Unsupported type " + str(t))
-        return "{%s}" % ", ".join(pairs)
-
-    def to_representation(self, instance):
-        return perl_string_to_python(instance)
 
 
 class WebDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebData
-        exclude = ('web_data', )
+        exclude = ('web_data',)
 
-    data = PerlFieldElementSerializer(source="web_data")
+    data = serializers.CharField(source="web_data")
 
 
 class BiotypeSerializer(serializers.ModelSerializer):

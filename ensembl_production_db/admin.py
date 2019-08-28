@@ -245,7 +245,7 @@ class MetakeyAdmin(HasCurrentAdmin):
 class WebDataForm(forms.ModelForm):
     class Meta:
         model = WebData
-        fields = ('web_data', 'comment')
+        fields = ('web_data', 'comment', 'description')
 
     def clean_web_data(self):
         value = self.cleaned_data.get('web_data', None)
@@ -261,7 +261,7 @@ class WebDataAdmin(ProductionModelAdmin):
     # TODO add pretty json display / conversion to Perl upon save
     list_display = ('pk', 'web_data_label', 'comment')
     search_fields = ('pk', 'web_data', 'comment')
-    fields = ('web_data', 'comment',
+    fields = ('web_data', 'comment', 'description',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     inlines = (AnalysisDescriptionInline,)
