@@ -8,7 +8,8 @@ python:
 services:
   - mysql
 env:
-  -DJANGO=2.1.7 DB=mysql
+  - DJANGO=2.1.7
+  - DB=mysql
 install:
   - pip install -r requirements.txt
   - pip install coverage==4.5.1
