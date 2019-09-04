@@ -8,8 +8,10 @@ python:
 services:
   - mysql
 env:
-  - DJANGO=2.1.7
-  - DB=mysql
+  - DJANGO=2.1.7 DB=mysql
+before_script:
+  - mysql -u root -e "CREATE USER 'ensembl'@'localhost' IDENTIFIED BY '';"
+  - mysql -u root -e "GRANT ALL ON *.* TO 'ensembl'@'localhost';"
 install:
   - pip install -r requirements.txt
   - pip install coverage==4.5.1
