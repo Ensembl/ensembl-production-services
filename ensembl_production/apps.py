@@ -18,7 +18,6 @@ from django.db.models.signals import class_prepared
 from django.utils.translation import gettext_lazy as _
 
 
-
 def override_logentry(sender, **kwargs):
     from ensembl_production.models import SpanningForeignKey
     if sender.__name__ == "LogEntry":
@@ -29,9 +28,6 @@ def override_logentry(sender, **kwargs):
         )
         sender._meta.local_fields = [f for f in sender._meta.fields if f.name != "user"]
         user.contribute_to_class(sender, "user")
-
-
-
 
 
 class EnsemblProductionConfig(AppConfig):

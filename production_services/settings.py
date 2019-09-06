@@ -90,22 +90,22 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_production_services'),
-        'USER': os.getenv('USER_DB_USER', 'root'),
+        'USER': os.getenv('USER_DB_USER', 'ensembl'),
         'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
         'OPTIONS': {
-           "init_command": "SET default_storage_engine=MYISAM",
+            "init_command": "SET default_storage_engine=MYISAM",
         }
     },
     'production': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production'),
-        'USER': os.getenv('PROD_DB_USER', 'root'),
+        'USER': os.getenv('PROD_DB_USER', 'ensembl'),
         'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
         'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
-        'OPTIONS': {                                          
+        'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': 'utf8mb4',
         }
@@ -113,7 +113,7 @@ DATABASES = {
     'website': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website'),
-        'USER': os.getenv('WEBSITE_DB_USER', 'root'),
+        'USER': os.getenv('WEBSITE_DB_USER', 'ensembl'),
         'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', ''),
         'HOST': os.getenv('WEBSITE_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
