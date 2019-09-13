@@ -1,0 +1,66 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "Vertebrates",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+      "name": "Microbes",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 3,
+    "fields": {
+      "name": "Metazoa",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 4,
+    "fields": {
+      "name": "VectorBase",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 5,
+    "fields": {
+      "name": "Plants",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 6,
+    "fields": {
+      "name": "WormBase",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 7,
+    "fields": {
+      "name": "Compara",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 8,
+    "fields": {
+      "name": "Production",
+      "permissions": []
+    }
+  }
+]
