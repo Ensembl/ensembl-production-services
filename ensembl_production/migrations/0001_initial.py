@@ -3,6 +3,11 @@
 from django.db import migrations, models
 
 
+def initial_flask_app(apps, schema_editor):
+    from django.core.management import call_command
+    call_command('loaddata', 'ensembl_production/fixtures/init.json')
+
+
 class Migration(migrations.Migration):
 
     initial = True
@@ -28,4 +33,6 @@ class Migration(migrations.Migration):
                 'db_table': 'flask_app',
             },
         ),
+        migrations.RunPython(initial_flask_app, None),
+
     ]

@@ -92,7 +92,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_production_services'),
-        'USER': os.getenv('USER_DB_USER', 'root'),
+        'USER': os.getenv('USER_DB_USER', 'ensembl'),
         'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
@@ -102,8 +102,8 @@ DATABASES = {
     },
     'production': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production_97'),
-        'USER': os.getenv('PROD_DB_USER', 'root'),
+        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production'),
+        'USER': os.getenv('PROD_DB_USER', 'ensembl'),
         'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
         'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
@@ -114,8 +114,8 @@ DATABASES = {
     },
     'website': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website_97'),
-        'USER': os.getenv('WEBSITE_DB_USER', 'root'),
+        'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website'),
+        'USER': os.getenv('WEBSITE_DB_USER', 'ensembl'),
         'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', ''),
         'HOST': os.getenv('WEBSITE_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
@@ -178,10 +178,9 @@ REST_FRAMEWORK = {
 
 CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 # mailing
 LOGIN_REDIRECT_URL = '/'
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',

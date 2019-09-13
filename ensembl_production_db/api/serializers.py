@@ -57,7 +57,7 @@ class PerlFieldElementSerializer(serializers.CharField):
         return perl_string_to_python(instance)
 
 
-class BaseTimestampSerializer(serializers.ModelSerializer):
+class BaseUserTimestampSerializer(serializers.ModelSerializer):
     user = serializers.CharField(write_only=True, required=False)
 
     def create(self, validated_data):
@@ -91,7 +91,7 @@ class WebDataSerializer(serializers.ModelSerializer):
     data = PerlFieldElementSerializer(source="web_data")
 
 
-class BiotypeSerializer(BaseTimestampSerializer):
+class BiotypeSerializerUser(BaseUserTimestampSerializer):
     is_current = serializers.BooleanField(default=True, initial=True)
 
     class Meta:
@@ -99,7 +99,7 @@ class BiotypeSerializer(BaseTimestampSerializer):
         exclude = ('created_at', 'modified_at')
 
 
-class AttribTypeSerializer(BaseTimestampSerializer):
+class AttribTypeSerializerUser(BaseUserTimestampSerializer):
     is_current = serializers.BooleanField(default=True, initial=True)
 
     class Meta:
@@ -120,7 +120,7 @@ class AttribTypeSerializerNoValidator(serializers.ModelSerializer):
         }
 
 
-class AttribSerializer(BaseTimestampSerializer):
+class AttribSerializerUser(BaseUserTimestampSerializer):
     is_current = serializers.BooleanField(default=True, initial=True)
 
     class Meta:
@@ -139,10 +139,10 @@ class AttribSerializer(BaseTimestampSerializer):
             attrib_type['modified_by'] = validated_data.get('user')
             elem = MasterAttribType.objects.update(**attrib_type)
         validated_data['attrib_type'] = elem
-        return super(AttribSerializer, self).create(validated_data)
+        return super(AttribSerializerUser, self).create(validated_data)
 
 
-class AnalysisDescriptionSerializer(BaseTimestampSerializer):
+class AnalysisDescriptionSerializerUser(BaseUserTimestampSerializer):
     is_current = serializers.BooleanField(default=True, initial=True)
 
     class Meta:
@@ -164,7 +164,7 @@ class AnalysisDescriptionSerializer(BaseTimestampSerializer):
         else:
             validated_data['web_data'] = None
 
-        return super(AnalysisDescriptionSerializer, self).create(validated_data)
+        return super(AnalysisDescriptionSerializerUser, self).create(validated_data)
 
     def update(self, instance, validated_data):
         if 'web_data' in validated_data:
@@ -178,4 +178,4 @@ class AnalysisDescriptionSerializer(BaseTimestampSerializer):
                 elem = WebData.objects.update(**web_data)
             instance.web_data = elem
             # instance.save()
-        return super(AnalysisDescriptionSerializer, self).update(instance, validated_data)
+        return super(AnalysisDescriptionSerializerUser, self).update(instance, validated_data)

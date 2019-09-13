@@ -1,0 +1,7 @@
+{% if wrap_label %}
+    {% include "django/forms/widgets/input.html" %}
+    <label class="vCheckboxLabel" {% if widget.attrs.id %} for="{{ widget.attrs.id }}"{% endif %}>
+{% endif %}
+{% if wrap_label %}
+    {{ widget.label }}</label>
+{% endif %}

@@ -27,19 +27,19 @@ class WebDataViewSet(viewsets.ModelViewSet):
 
 
 class AnalysisDescriptionViewSet(viewsets.ModelViewSet):
-    serializer_class = AnalysisDescriptionSerializer
+    serializer_class = AnalysisDescriptionSerializerUser
     queryset = AnalysisDescription.objects.filter(is_current=1)
     lookup_field = 'logic_name'
 
 
 class BiotypeNameViewSet(viewsets.ModelViewSet):
-    serializer_class = BiotypeSerializer
+    serializer_class = BiotypeSerializerUser
     queryset = MasterBiotype.objects.filter(is_current=1)
     lookup_field = 'name'
 
 
 class BiotypeObjectTypeViewSet(viewsets.ModelViewSet):
-    serializer_class = BiotypeSerializer
+    serializer_class = BiotypeSerializerUser
     lookup_field = 'object_type'
     lookup_url_kwarg = 'type'
 
@@ -48,7 +48,7 @@ class BiotypeObjectTypeViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = BiotypeSerializer(queryset, many=True)
+        serializer = BiotypeSerializerUser(queryset, many=True)
         if len(serializer.data) is 0:
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
@@ -56,12 +56,12 @@ class BiotypeObjectTypeViewSet(viewsets.ModelViewSet):
 
 
 class AttribTypeViewSet(viewsets.ModelViewSet):
-    serializer_class = AttribTypeSerializer
+    serializer_class = AttribTypeSerializerUser
     queryset = MasterAttribType.objects.all()
     lookup_field = 'code'
 
 
 class AttribViewSet(viewsets.ModelViewSet):
-    serializer_class = AttribSerializer
+    serializer_class = AttribSerializerUser
     queryset = MasterAttrib.objects.all()
     lookup_field = 'value'
