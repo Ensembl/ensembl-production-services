@@ -84,8 +84,6 @@ WSGI_APPLICATION = 'production_services.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-ensembl_version = os.getenv('ENS_RELEASE', '97')
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -124,9 +122,11 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = ['ensembl_production.router.AuthRouter',
-                    'ensembl_production_db.router.ProductionRouter',
-                    'ensembl_website.router.WebsiteRouter']
+DATABASE_ROUTERS = [
+    'ensembl_production.router.AuthRouter',
+    'ensembl_production_db.router.ProductionRouter',
+    'ensembl_website.router.WebsiteRouter'
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
