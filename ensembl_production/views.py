@@ -36,7 +36,8 @@ class FlaskAppView(DetailView):
         if "Production" in self.object.app_groups.values_list('name', flat=True) and not (
                 request.user.is_authenticated and request.user.is_superuser):
             raise PermissionDenied()
-        context = self.get_context_data(object=self.object, url_cache=random.random())
+
+        context = self.get_context_data(object=self.object, url_cache=random.random(), flask_img=self.object.img)
         return self.render_to_response(context)
 
     def dispatch(self, request, *args, **kwargs):

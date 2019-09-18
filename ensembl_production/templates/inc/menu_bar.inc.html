@@ -7,7 +7,7 @@
         <a class="navbar-brand" rel="home" href="#" title="Production Services portal">
 
             <img style="max-height:50px; margin-top: -7px;"
-                 src="/static/img/{{ current|default:'logo_industry' }}.png"/>
+                 src="/static/img/{{ flask_app.img|default:'logo_industry.png' }}"/>
         </a>
         <a class="navbar-brand" href="/">{{ flask_app.app_name|default:"Production Service Portal" }}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
