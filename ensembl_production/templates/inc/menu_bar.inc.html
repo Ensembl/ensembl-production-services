@@ -1,0 +1,62 @@
+<!-- menu_bar.inc.html -->
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
+     style="background-color: #{{ flask_app.app_theme|default:'343A40' }} !important">
+    <div class="container">
+        <a class="navbar-brand" rel="home" href="#" title="Production Services portal">
+
+            <img style="max-height:50px; margin-top: -7px;"
+                 src="/static/img/{{ current|default:'logo_industry' }}.png"/>
+        </a>
+        <a class="navbar-brand" href="/">{{ flask_app.app_name|default:"Production Service Portal" }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item {% if not current %}active{% endif %}">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Production BackEnds
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/admin/ensembl_production_db/">Production DB</a>
+                        <a class="dropdown-item" href="/admin/ensembl_website/">Help DB</a>
+                        <a class="dropdown-item" href="/admin/">Other Backends</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown {% if current %}active{% endif %}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Services
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item {% if current == 'vertebrates' %}active{% endif %}" href="/app/vertebrates/">Vertebrates</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item {% if current == 'microbes' %}active{% endif %}" href="/app/microbes/">Microbes</a>
+                        <a class="dropdown-item {% if current == 'plants' %}active{% endif %}" href="/app/plants/">Plants</a>
+                        <a class="dropdown-item {% if current == 'metazoa' %}active{% endif %}" href="/app/metazoa/">Metazoa</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item {% if current == 'production' %}active{% endif %}" href="/app/production/">Production Int.</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown {% if current == 'datachecks' %}active{% endif %}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        DataChecks
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item {% if current == 'datachecks' %}active{% endif %}" href="/app/datachecks">View</a>
+
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- menu_bar.inc.html -->

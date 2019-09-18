@@ -17,4 +17,4 @@ from django.apps import AppConfig
 
 class EnsemblProductionDbConfig(AppConfig):
     name = 'ensembl_production_db'
-
+    verbose_name = "Production Database"

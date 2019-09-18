@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 
+from .models import ProductionFlaskApp
+
 
 class ProductionUserAdminMixin(admin.ModelAdmin):
     """ Mixin class to assiciated request user to integer ID in another database host
@@ -28,7 +30,7 @@ class ProductionUserAdminMixin(admin.ModelAdmin):
 
     class Media:
         css = {
-            'all': ('production_admin.css',)
+            'all': ('css/production_admin.css',)
         }
 
     def save_model(self, request, obj, form, change):
@@ -39,17 +41,19 @@ class ProductionUserAdminMixin(admin.ModelAdmin):
             obj.created_by = request.user
         super().save_model(request, obj, form, change)
 
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        try:
-            return super().change_view(request, object_id, form_url, extra_context)
-        except IntegrityError as e:
-            self.message_user(request, 'Error changing model: %s' % e, level=logging.ERROR)
-            return HttpResponseRedirect(request.path)
 
-    def add_view(self, request, form_url='', extra_context=None):
-        try:
-            return super().add_view(request, form_url, extra_context)
-        except IntegrityError as e:
-            self.message_user(request, 'Error changing model: %s' % e, level=logging.ERROR)
-            return HttpResponseRedirect(request.path)
+@admin.register(ProductionFlaskApp)
+class FlaskAppAdmin(ProductionUserAdminMixin):
+
+    def has_add_permission(self, request):
+        return request.user.is_superuser
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_module_permission(self, request):
+        return request.user.is_superuser
 

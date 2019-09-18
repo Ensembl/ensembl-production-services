@@ -2,9 +2,11 @@
 {% load static i18n %}
 {% load static %}
 {# Setup favicon #}
-{% block extrahead %}<link rel="shortcut icon" type="image/png" href="{% static "logo.png"%}"/>{% endblock %}
+{% block extrahead %}<link rel="shortcut icon" type="image/png" href="{% static "img/logo.png"%}"/>{% endblock %}
 
 
 {% block content_title %}
-    <img src="{% static "logo.png" %}" alt="Ensembl Production" height="50%" width="50%">Production DB
+    <div class="container" align="center">
+    <img src="{% static "img/logo.png" %}" alt="Ensembl Production" height="50%" width="50%"><br/>Production BackEnd
+    </div>
 {% endblock %}

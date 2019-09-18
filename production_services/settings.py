@@ -14,6 +14,7 @@
 """
 import os
 import sys
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'ensembl_website.apps.EnsemblWebsiteConfig',
     'multiselectfield',
     'ckeditor',
+    'crispy_forms',
     'drf_yasg',
 ]
 
@@ -177,3 +179,15 @@ REST_FRAMEWORK = {
 }
 
 CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# mailing
+LOGIN_REDIRECT_URL = '/'
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}

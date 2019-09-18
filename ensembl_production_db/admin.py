@@ -68,6 +68,12 @@ class ProductionModelAdmin(ProductionUserAdminMixin):
     def has_change_permission(self, request, obj=None):
         return request.user.is_staff
 
+    def get_list_display(self, request):
+        list_display = super().get_list_display(request)
+        if issubclass(self.model, BaseTimestampedModel):
+            list_display = list_display + ('modified_at',)
+        return list_display
+
 
 class IsCurrentFilter(SimpleListFilter):
     title = 'Is Current'
@@ -201,18 +207,28 @@ class BioTypeAdmin(HasCurrentAdmin):
     search_fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type__name', 'description')
 
 
+class WebDataChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return "WebData: {} - {}".format(obj.pk, obj.web_data[:50] + '...' if obj.web_data else '')
+
+
 class AnalysisDescriptionAdmin(HasCurrentAdmin):
     fields = ('logic_name', 'description', 'display_label', 'web_data',
               ('db_version', 'displayable', 'is_current'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
-    list_display = ('logic_name', 'display_label', 'description', 'web_data_label', 'is_current', 'displayable')
+    list_display = ('logic_name', 'short_description', 'web_data_label', 'is_current', 'displayable')
     search_fields = ('logic_name', 'display_label', 'description', 'web_data__web_data')
 
     def web_data_label(self, obj):
         return obj.web_data.label if obj.web_data else 'EMPTY'
 
     web_data_label.short_description = "Web Data"
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'web_data':
+            return WebDataChoiceField(queryset=WebData.objects.all())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class MetaKeyForm(forms.BaseModelForm):
@@ -284,7 +300,7 @@ class MasterExternalDbAdmin(HasCurrentAdmin):
     list_display = ('db_name', 'db_release', 'status', 'db_display_name', 'priority', 'type', 'secondary_db_name',
                     'secondary_db_table', 'is_current')
     fields = ('db_name', 'status', 'db_display_name', 'priority', 'type', 'db_release', 'secondary_db_name',
-              'secondary_db_table',
+              'secondary_db_table', 'description',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at')
               )
