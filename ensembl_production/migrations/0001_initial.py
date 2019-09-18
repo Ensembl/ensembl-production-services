@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('app_url', models.URLField(max_length=255, verbose_name='App flask url')),
                 ('app_theme', models.CharField(choices=[('336', 'Ensembl'), ('707080', 'Bacteria'), ('714486', 'Protists'), ('407253', 'Plants'), ('725A40', 'Fungi'), ('015365', 'Metazoa'), ('800066', 'Datachecks')], default='FFFFFF', max_length=6)),
                 ('app_prod_url', models.CharField(max_length=200, unique=True, verbose_name='App Url')),
-                ('app_groups', models.ManyToManyField(blank=True, to='auth.Group')),
+                ('app_groups', models.ManyToManyField(blank=True, to='auth.Group', db_constraint=False)),
                 ('created_by', ensembl_production.models.SpanningForeignKey(blank=True, db_column='created_by', db_constraint=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='productionflaskapp_created_by', related_query_name='productionflaskapp_creates', to=settings.AUTH_USER_MODEL)),
                 ('modified_by', ensembl_production.models.SpanningForeignKey(blank=True, db_column='modified_by', db_constraint=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='productionflaskapp_modified_by', related_query_name='productionflaskapp_updates', to=settings.AUTH_USER_MODEL)),
             ],
