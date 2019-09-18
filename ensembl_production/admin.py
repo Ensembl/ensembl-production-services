@@ -57,16 +57,3 @@ class FlaskAppAdmin(ProductionUserAdminMixin):
     def has_module_permission(self, request):
         return request.user.is_superuser
 
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        try:
-            return super().change_view(request, object_id, form_url, extra_context)
-        except IntegrityError as e:
-            self.message_user(request, 'Error changing model: %s' % e, level=logging.ERROR)
-            return HttpResponseRedirect(request.path)
-
-    def add_view(self, request, form_url='', extra_context=None):
-        try:
-            return super().add_view(request, form_url, extra_context)
-        except IntegrityError as e:
-            self.message_user(request, 'Error changing model: %s' % e, level=logging.ERROR)
-            return HttpResponseRedirect(request.path)

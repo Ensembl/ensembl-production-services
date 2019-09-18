@@ -128,7 +128,7 @@ class BaseTimestampedModel(models.Model):
     modified_at = models.DateTimeField('Last Update', auto_now=True, editable=False, null=True)
 
 
-class ProductionFlaskApp(models.Model):
+class ProductionFlaskApp(BaseTimestampedModel):
     class Meta:
         db_table = 'flask_app'
         app_label = 'ensembl_production'
