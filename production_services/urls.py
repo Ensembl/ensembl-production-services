@@ -30,7 +30,7 @@ urlpatterns = [
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
     # Production DB API
     url(r'^api/production_db/', include('ensembl_production_db.api.urls')),
-    url(r'^app/(?P<app_prod_url>[a-z]+)', views.FlaskAppView.as_view()),
+    url(r'^app/(?P<app_prod_url>[a-z\-]+)', views.FlaskAppView.as_view()),
 ]
 
 handler404 = 'ensembl_production.views.handler404'

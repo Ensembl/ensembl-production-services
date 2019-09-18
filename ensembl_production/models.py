@@ -148,6 +148,8 @@ class ProductionFlaskApp(BaseTimestampedModel):
         ('800066', 'Datachecks')
     )
 
+    # TODO add menu organisation
+    app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
     app_url = models.URLField("App flask url", max_length=255)
     app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)

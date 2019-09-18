@@ -30,7 +30,7 @@
                         <a class="dropdown-item" href="/admin/">Other Backends</a>
                     </div>
                 </li>
-                <li class="nav-item dropdown {% if current %}active{% endif %}">
+                <li class="nav-item dropdown {% if current and current|slice:":10" == datachecks %}active{% endif %}">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Services
@@ -45,14 +45,14 @@
                         <a class="dropdown-item {% if current == 'production' %}active{% endif %}" href="/app/production/">Production Int.</a>
                     </div>
                 </li>
-                <li class="nav-item dropdown {% if current == 'datachecks' %}active{% endif %}">
+                <li class="nav-item dropdown {% if current|slice:":10" == 'datachecks' %}active{% endif %}">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        DataChecks
+                        DataChecks (Beta)
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item {% if current == 'datachecks' %}active{% endif %}" href="/app/datachecks">View</a>
-
+                        <a class="dropdown-item" href="/app/datachecks-list">List</a>
+                        <a class="dropdown-item" href="/app/datachecks-submission">Submission</a>
                     </div>
                 </li>
             </ul>
