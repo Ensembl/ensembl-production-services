@@ -113,6 +113,7 @@ class BaseTimestampedModel(models.Model):
     #: (auto_now): set each time model object is saved in database
     modified_at = models.DateTimeField('Last Update', auto_now=True, editable=False, null=True)
 
+
 class ProductionFlaskApp(BaseTimestampedModel):
     class Meta:
         db_table = 'flask_app'

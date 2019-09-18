@@ -191,3 +191,5 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+IS_TESTING = sys.argv[1:2] == ['test']

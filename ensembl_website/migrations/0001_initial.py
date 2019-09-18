@@ -24,6 +24,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'help_link',
+                'managed': settings.IS_TESTING,
             },
         ),
         migrations.CreateModel(
@@ -38,11 +39,12 @@ class Migration(migrations.Migration):
                 ('status', django_mysql.models.EnumField(choices=[('draft', 'draft'), ('live', 'live'), ('dead', 'dead')])),
                 ('helpful', models.IntegerField(blank=True, null=True)),
                 ('not_helpful', models.IntegerField(blank=True, null=True)),
-                ('created_by', ensembl_production.models.SpanningForeignKey(blank=True, db_column='created_by', db_constraint=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='helprecord_created_by', related_query_name='helprecord_creates', to=settings.AUTH_USER_MODEL)),
-                ('modified_by', ensembl_production.models.SpanningForeignKey(blank=True, db_column='modified_by', db_constraint=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='helprecord_modified_by', related_query_name='helprecord_updates', to=settings.AUTH_USER_MODEL)),
+                ('created_by', models.IntegerField(blank=True, null=True)),
+                ('modified_by', models.IntegerField(blank=True, null=True)),
             ],
             options={
                 'db_table': 'help_record',
+                'managed': settings.IS_TESTING,
             },
         ),
         migrations.CreateModel(
