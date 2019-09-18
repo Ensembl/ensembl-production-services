@@ -50,9 +50,9 @@ class WebsiteRouter:
         Make sure the website website_services only appears in the 'website'
         database.
         """
-        if 'target_db' in hints:
-            return hints['target_db'] == "website"
         if app_label == 'ensembl_website':
             return db == 'website'
+        if 'target_db' in hints:
+            return hints['target_db'] == "website"
         return None
 

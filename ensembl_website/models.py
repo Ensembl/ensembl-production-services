@@ -43,7 +43,6 @@ class HelpRecord(WebSiteModel):
     not_helpful = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = True
         db_table = 'help_record'
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
@@ -66,7 +65,6 @@ class HelpLink(models.Model):
                                        on_delete=models.CASCADE)
 
     class Meta:
-        managed = True
         db_table = 'help_link'
 
 

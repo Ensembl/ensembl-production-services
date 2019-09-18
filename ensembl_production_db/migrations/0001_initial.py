@@ -163,6 +163,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(blank=True, null=True)),
                 ('created_by', ensembl_production.models.SpanningForeignKey(blank=True, db_column='created_by', db_constraint=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='metakey_created_by', related_query_name='metakey_creates', to=settings.AUTH_USER_MODEL)),
                 ('modified_by', ensembl_production.models.SpanningForeignKey(blank=True, db_column='modified_by', db_constraint=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='metakey_modified_by', related_query_name='metakey_updates', to=settings.AUTH_USER_MODEL)),
+                ('is_multi_value', models.BooleanField(default=False))
             ],
             options={
                 'db_table': 'meta_key',
