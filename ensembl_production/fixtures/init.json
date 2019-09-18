@@ -87,9 +87,7 @@
     "fields": {
       "created_by": null,
       "created_at": null,
-      "modified_by": [
-        "marc"
-      ],
+      "modified_by": null,
       "modified_at": "2019-09-18T15:41:06.838Z",
       "app_name": "DataChecks Catalog (Alpha)",
       "app_url": "http://ens-prod-1.ebi.ac.uk:8006/datacheck/names",
@@ -121,14 +119,10 @@
     "model": "ensembl_production.productionflaskapp",
     "pk": 7,
     "fields": {
-      "created_by": [
-        "marc"
-      ],
-      "created_at": "2019-09-18T15:41:36.215Z",
-      "modified_by": [
-        "marc"
-      ],
-      "modified_at": "2019-09-18T15:41:40.310Z",
+      "created_by": null,
+      "created_at": null,
+      "modified_by": null,
+      "modified_at": null,
       "app_name": "DataChecks Submission (Alpha)",
       "app_url": "http://ens-prod-1.ebi.ac.uk:5006/datacheck/submit",
       "app_theme": "800066",
