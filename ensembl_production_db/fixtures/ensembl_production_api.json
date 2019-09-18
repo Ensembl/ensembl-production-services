@@ -1,4 +1,40 @@
 [
+ {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$BkM2pAAYVtSW$PB6v/2vsjMZesWfzLzbzZjjdjxo19KFDaPr8vcTcuEc=",
+      "last_login": "2019-06-20T15:30:33.998Z",
+      "is_superuser": true,
+      "username": "testuser",
+      "first_name": "",
+      "last_name": "",
+      "email": "testuser@ebi.ec.uk",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-03-26T11:23:02.067Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$BkM2pAAYVtSW$PB6v/2vsjMZesWfzLzbzZjjdjxo19KFDaPr8vcTcuEc=",
+      "last_login": "2019-06-20T15:30:33.998Z",
+      "is_superuser": true,
+      "username": "testuserupdate",
+      "first_name": "",
+      "last_name": "",
+      "email": "testuserupdate@ebi.ec.uk",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-03-26T11:23:02.067Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
   {
     "model": "ensembl_production_db.analysisdescription",
     "pk": 1,

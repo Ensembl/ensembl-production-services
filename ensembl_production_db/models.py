@@ -8,6 +8,7 @@
 import json
 
 from django.db import models
+from django.template.defaultfilters import truncatechars
 from django_mysql.models import EnumField
 from multiselectfield import MultiSelectField
 
@@ -47,7 +48,13 @@ class HasCurrent(models.Model):
     is_current = models.BooleanField(default=True)
 
 
-class WebData(BaseTimestampedModel):
+class HasDecription(object):
+    @property
+    def short_description(self):
+        return truncatechars(self.description, 150)
+
+
+class WebData(BaseTimestampedModel, HasDecription):
     web_data_id = models.AutoField(primary_key=True)
     web_data = models.TextField(db_column='`data`', null=True)
     comment = models.TextField(blank=True, null=True)
@@ -72,7 +79,7 @@ class WebData(BaseTimestampedModel):
         return 'ID: {} [{}...]'.format(self.pk, self.label)
 
 
-class AnalysisDescription(HasCurrent, BaseTimestampedModel):
+class AnalysisDescription(HasCurrent, BaseTimestampedModel, HasDecription):
     analysis_description_id = models.AutoField(primary_key=True)
     logic_name = models.CharField(unique=True, max_length=128)
     description = models.TextField(blank=True, null=True)
@@ -90,7 +97,7 @@ class AnalysisDescription(HasCurrent, BaseTimestampedModel):
         return 'Analysis: {} ({})'.format(self.display_label, self.logic_name)
 
 
-class MasterAttribType(HasCurrent, BaseTimestampedModel):
+class MasterAttribType(HasCurrent, BaseTimestampedModel, HasDecription):
     attrib_type_id = models.AutoField(primary_key=True)
     code = models.CharField(unique=True, max_length=20)
     name = models.CharField(max_length=255)
@@ -131,7 +138,7 @@ class MasterAttribSet(HasCurrent, BaseTimestampedModel):
         verbose_name = 'AttribSet'
 
 
-class MasterBiotype(HasCurrent, BaseTimestampedModel):
+class MasterBiotype(HasCurrent, BaseTimestampedModel, HasDecription):
     biotype_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64)
     is_dumped = models.BooleanField(default=True)
@@ -153,7 +160,7 @@ class MasterBiotype(HasCurrent, BaseTimestampedModel):
         verbose_name = 'Biotype'
 
 
-class MasterExternalDb(HasCurrent, BaseTimestampedModel):
+class MasterExternalDb(HasCurrent, BaseTimestampedModel, HasDecription):
     external_db_id = models.AutoField(primary_key=True)
     db_name = models.CharField(max_length=100)
     db_release = models.CharField(max_length=255, blank=True, null=True)
@@ -172,7 +179,7 @@ class MasterExternalDb(HasCurrent, BaseTimestampedModel):
         verbose_name = 'ExternalDB'
 
 
-class MasterMiscSet(HasCurrent, BaseTimestampedModel):
+class MasterMiscSet(HasCurrent, BaseTimestampedModel, HasDecription):
     misc_set_id = models.PositiveSmallIntegerField(primary_key=True)
     code = models.CharField(unique=True, max_length=25)
     name = models.CharField(max_length=255)
@@ -193,8 +200,12 @@ class MasterUnmappedReason(HasCurrent, BaseTimestampedModel):
         app_label = 'ensembl_production_db'
         db_table = 'master_unmapped_reason'
 
+    @property
+    def short_description(self):
+        return truncatechars(self.summary_description, 35)
 
-class MetaKey(HasCurrent, BaseTimestampedModel):
+
+class MetaKey(HasCurrent, BaseTimestampedModel, HasDecription):
     meta_key_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64, unique=True)
     is_optional = models.BooleanField(default=False)

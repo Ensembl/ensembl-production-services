@@ -14,6 +14,7 @@
 """
 import os
 import sys
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'ensembl_website.apps.EnsemblWebsiteConfig',
     'multiselectfield',
     'ckeditor',
+    'crispy_forms',
     'drf_yasg',
 ]
 
@@ -90,30 +92,30 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_production_services'),
-        'USER': os.getenv('USER_DB_USER', 'root'),
+        'USER': os.getenv('USER_DB_USER', 'ensembl'),
         'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
         'OPTIONS': {
-           "init_command": "SET default_storage_engine=MYISAM",
+            "init_command": "SET default_storage_engine=MYISAM",
         }
     },
     'production': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production_97'),
-        'USER': os.getenv('PROD_DB_USER', 'root'),
+        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production'),
+        'USER': os.getenv('PROD_DB_USER', 'ensembl'),
         'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
         'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
-        'OPTIONS': {                                          
+        'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': 'utf8mb4',
         }
     },
     'website': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website_97'),
-        'USER': os.getenv('WEBSITE_DB_USER', 'root'),
+        'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website'),
+        'USER': os.getenv('WEBSITE_DB_USER', 'ensembl'),
         'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', ''),
         'HOST': os.getenv('WEBSITE_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
@@ -175,3 +177,15 @@ REST_FRAMEWORK = {
 }
 
 CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# mailing
+LOGIN_REDIRECT_URL = '/'
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}

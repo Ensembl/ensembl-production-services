@@ -14,12 +14,11 @@
 """
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.db import models
-from django.db.models.fields.related import ForeignKey
 from django.db.utils import ConnectionHandler, ConnectionRouter
-from django.utils.module_loading import import_string
 
 from .utils import perl_string_to_python
 
@@ -127,3 +126,30 @@ class BaseTimestampedModel(models.Model):
                                      related_query_name="%(class)s_updates")
     #: (auto_now): set each time model object is saved in database
     modified_at = models.DateTimeField('Last Update', auto_now=True, editable=False, null=True)
+
+
+class ProductionFlaskApp(BaseTimestampedModel):
+    class Meta:
+        db_table = 'flask_app'
+        app_label = 'ensembl_production'
+        verbose_name = 'Flask App'
+        verbose_name_plural = 'Flask Apps'
+
+    def __str__(self):
+        return self.app_name
+
+    color_theme = (
+        ('336', 'Ensembl'),
+        ('707080', 'Bacteria'),
+        ('714486', 'Protists'),
+        ('407253', 'Plants'),
+        ('725A40', 'Fungi'),
+        ('015365', 'Metazoa'),
+        ('800066', 'Datachecks')
+    )
+
+    app_name = models.CharField("App display name", max_length=255, null=False)
+    app_url = models.URLField("App flask url", max_length=255)
+    app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)
+    app_groups = models.ManyToManyField(Group, blank=True)
+    app_prod_url = models.CharField('App Url', max_length=200, null=False, unique=True)
