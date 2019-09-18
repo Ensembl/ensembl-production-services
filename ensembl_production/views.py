@@ -13,14 +13,9 @@
    limitations under the License.
 """
 from django.core.exceptions import PermissionDenied
+import random
 from django.shortcuts import render_to_response
 from django.views.generic import DetailView
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import ProductionFlaskApp
 
@@ -41,7 +36,8 @@ class FlaskAppView(DetailView):
         if "Production" in self.object.app_groups.values_list('name', flat=True) and not (
                 request.user.is_authenticated and request.user.is_superuser):
             raise PermissionDenied()
-        context = self.get_context_data(object=self.object)
+
+        context = self.get_context_data(object=self.object, url_cache=random.random(), flask_img=self.object.img)
         return self.render_to_response(context)
 
     def dispatch(self, request, *args, **kwargs):

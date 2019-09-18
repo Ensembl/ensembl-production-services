@@ -148,8 +148,14 @@ class ProductionFlaskApp(BaseTimestampedModel):
         ('800066', 'Datachecks')
     )
 
+    # TODO add menu organisation
+    app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
     app_url = models.URLField("App flask url", max_length=255)
     app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)
     app_groups = models.ManyToManyField(Group, blank=True)
     app_prod_url = models.CharField('App Url', max_length=200, null=False, unique=True)
+
+    @property
+    def img(self):
+        return self.app_prod_url.split('-')[0] + ".png"
