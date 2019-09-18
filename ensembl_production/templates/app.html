@@ -7,7 +7,7 @@
 
     <div class="container">
         <div class="frame-row">
-            <iframe id='app-iframe' width=100% height=100% src="{{ flask_app.app_url }}" frameborder="0"></iframe>
+            <iframe id='app-iframe' width=100% height=100% src="{{ flask_app.app_url }}?rand={{ url_cache }}" frameborder="0"></iframe>
         </div>
     </div>
 {% endblock %}
