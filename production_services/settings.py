@@ -86,8 +86,6 @@ WSGI_APPLICATION = 'production_services.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-ensembl_version = os.getenv('ENS_RELEASE', '97')
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -110,6 +108,7 @@ DATABASES = {
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': 'utf8mb4',
+            "init_command": "SET default_storage_engine=MYISAM",
         }
     },
     'website': {
@@ -122,13 +121,16 @@ DATABASES = {
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': 'utf8mb4',
+            "init_command": "SET default_storage_engine=MYISAM",
         }
     }
 }
 
-DATABASE_ROUTERS = ['ensembl_production.router.AuthRouter',
-                    'ensembl_production_db.router.ProductionRouter',
-                    'ensembl_website.router.WebsiteRouter']
+DATABASE_ROUTERS = [
+    'ensembl_production.router.AuthRouter',
+    'ensembl_production_db.router.ProductionRouter',
+    'ensembl_website.router.WebsiteRouter'
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -189,3 +191,5 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+IS_TESTING = sys.argv[1:2] == ['test']

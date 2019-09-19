@@ -20,8 +20,6 @@ from django.core import exceptions
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
 
-from .utils import perl_string_to_python
-
 connections = ConnectionHandler()
 router = ConnectionRouter()
 NOT_PROVIDED = object()
@@ -92,18 +90,6 @@ class SpanningForeignKey(models.ForeignKey):
 
     def get_db_prep_value(self, value, connection, prepared=False):
         return super().get_db_prep_value(value, connection, prepared)
-
-
-class PerlField(models.TextField):
-    """ Field which should contains PERL valid value
-    TODO assign this type to related field - more generic and useful
-    """
-
-    def to_python(self, value):
-        try:
-            return perl_string_to_python(value)
-        except:
-            raise exceptions.ValidationError('Value must be a valid Perl String')
 
 
 class BaseTimestampedModel(models.Model):

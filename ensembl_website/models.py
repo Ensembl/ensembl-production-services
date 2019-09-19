@@ -13,14 +13,10 @@
    limitations under the License.
 """
 from django.db import models
-
-from ensembl_production.models import BaseTimestampedModel
 from django_mysql.models import EnumField, SizedTextField
 
-class WebSiteModel(BaseTimestampedModel):
-    class Meta:
-        app_label = 'website'
-        abstract = True
+from ensembl_production.models import BaseTimestampedModel
+
 
 """
 faq
@@ -30,43 +26,50 @@ movie
 """
 
 
-class HelpRecord(WebSiteModel):
+class HelpRecord(BaseTimestampedModel):
+    class Meta:
+        db_table = 'help_record'
+        app_label = 'ensembl_website'
+
     _force_type = ''
     help_record_id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=255)
-    keyword = SizedTextField(size_class=1,blank=True, null=True)
+    keyword = SizedTextField(size_class=1, blank=True, null=True)
     data = models.TextField()
-    status = EnumField(choices=['draft', 'live','dead'])
+    status = EnumField(choices=['draft', 'live', 'dead'])
     helpful = models.IntegerField(blank=True, null=True)
     not_helpful = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'help_record'
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.type = self._force_type
         super().save(force_insert, force_update, using, update_fields)
 
+
 class ViewRecord(HelpRecord):
     class Meta:
         proxy = True
         verbose_name = 'Page'
+        app_label = 'ensembl_website'
+
     _force_type = 'view'
 
-class HelpLink(models.Model):
-    help_link_id = models.AutoField(primary_key=True)
-    page_url = SizedTextField(size_class=1,blank=True, null=True)
-    help_record = models.OneToOneField(ViewRecord, db_column='help_record_id', blank=True, null=True, on_delete=models.CASCADE)
 
+class HelpLink(models.Model):
     class Meta:
-        managed = False
         db_table = 'help_link'
+        app_label = 'ensembl_website'
+
+    help_link_id = models.AutoField(primary_key=True)
+    page_url = SizedTextField(size_class=1, blank=True, null=True)
+    help_record = models.OneToOneField(ViewRecord, db_column='help_record_id', blank=True, null=True,
+                                       on_delete=models.CASCADE)
+
 
 class FaqRecord(HelpRecord):
     class Meta:
         proxy = True
         verbose_name = 'FAQ'
+        app_label = 'ensembl_website'
 
     _force_type = 'faq'
 
@@ -75,12 +78,15 @@ class LookupRecord(HelpRecord):
     class Meta:
         proxy = True
         verbose_name = 'Lookup'
+        app_label = 'ensembl_website'
 
     _force_type = 'lookup'
+
 
 class MovieRecord(HelpRecord):
     class Meta:
         proxy = True
         verbose_name = 'Movie'
+        app_label = 'ensembl_website'
 
     _force_type = 'movie'
