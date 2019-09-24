@@ -86,9 +86,9 @@ class BaseUserTimestampSerializer(serializers.ModelSerializer):
 class WebDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebData
-        exclude = ('web_data', 'created_at', 'modified_at')
+        exclude = ('created_at', 'modified_at')
 
-    data = PerlFieldElementSerializer(source="web_data")
+    data = PerlFieldElementSerializer()
 
 
 class BiotypeSerializerUser(BaseUserTimestampSerializer):
@@ -153,29 +153,27 @@ class AnalysisDescriptionSerializerUser(BaseUserTimestampSerializer):
 
     def create(self, validated_data):
         if 'web_data' in validated_data:
-            web_data = validated_data.pop('web_data')
-            elem = WebData.objects.filter(web_data=web_data.get('web_data', '')).first()
-            if not elem:
-                web_data['created_by'] = validated_data.get('user', None)
-                elem = WebData.objects.create(**web_data)
-            elif validated_data.get('user', None) is not None:
-                web_data['modified_by'] = validated_data.get('user')
-                elem = WebData.objects.update(**web_data)
+            validated_data['web_data'] = self.process_web_data(validated_data.pop('web_data'),
+                                                               validated_data.get('user', None))
         else:
             validated_data['web_data'] = None
 
         return super(AnalysisDescriptionSerializerUser, self).create(validated_data)
 
+    def process_web_data(self, web_data_content, user):
+        search_content = web_data_content.get('data', '')
+        elem = WebData.objects.filter(data=search_content).first()
+        if not elem:
+            web_data_content['created_by'] = user
+            elem = WebData.objects.create(**web_data_content)
+        else:
+            web_data_content['web_data_id'] = elem.pk
+            web_data_content['modified_by'] = user
+            WebData.objects.update(**web_data_content)
+        return elem
+
     def update(self, instance, validated_data):
         if 'web_data' in validated_data:
-            web_data = validated_data.pop('web_data')
-            elem = WebData.objects.filter(web_data=web_data.get('web_data', '')).first()
-            if not elem:
-                web_data['created_by'] = validated_data.get('user', None)
-                elem = WebData.objects.create(**web_data)
-            elif validated_data.get('user', None) is not None:
-                web_data['modified_by'] = validated_data.get('user')
-                elem = WebData.objects.update(**web_data)
-            instance.web_data = elem
-            # instance.save()
+            instance.web_data = self.process_web_data(validated_data.pop('web_data'),
+                                                      validated_data.get('user', None))
         return super(AnalysisDescriptionSerializerUser, self).update(instance, validated_data)

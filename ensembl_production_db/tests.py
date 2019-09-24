@@ -18,6 +18,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from api.serializers import WebDataSerializer, PerlFieldElementSerializer
 from ensembl_production_db.models import *
 
 User = get_user_model()
@@ -170,11 +171,23 @@ class AnalysisTest(APITestCase):
                                     content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        valid_payload = {'logic_name': 'testwebtestdata5', 'description': 'testwebdata5 analysis',
-                         'display_label': 'testwebdata5', 'db_version': 1, 'displayable': 1,
-                         'web_data': {'description': 'test', 'data': {'default': {'contigviewbottom': 'normal'},
-                                                                      'dna_align_feature': {'do_not_display': '1'},
-                                                                      'type': 'core'}}}
+        valid_payload = {'logic_name': 'testwebtestdata5',
+                         'description': 'testwebdata5 analysis',
+                         'display_label': 'testwebdata5',
+                         'db_version': 1,
+                         'displayable': 1,
+                         'web_data': {
+                             'description': 'test',
+                             'data': {
+                                 'default': {
+                                     'contigviewbottom': 'normal'
+                                 },
+                                 'dna_align_feature': {
+                                     'do_not_display': '1'
+                                 },
+                                 'type': 'core'}
+                         }
+                         }
         response = self.client.post(reverse('analysisdescription-list'), data=json.dumps(valid_payload),
                                     content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -196,8 +209,74 @@ class AnalysisTest(APITestCase):
                                      data=json.dumps(valid_payload), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def testWebDataCreateUpdate(self):
+        valid_payload = {
+            "user": "testuser",
+            "web_data": {
+                "data": {
+                    "zmenu": "RNASeq_bam",
+                    "label_key": "RNASeq [biotype]",
+                    "colour_key": "bam",
+                    "type": "rnaseq",
+                    "matrix": {
+                        "group_order": "1",
+                        "column": "BAM files",
+                        "menu": "rnaseq",
+                        "group": "ENA",
+                        "row": "cruk brain"
+                    }
+                }
+            },
+            "logic_name": "sus_scrofa_cruk_brain_rnaseq_bam",
+            "description": "BWA alignments of cruk brain RNA-seq data. This BAM file can be downloaded from the <a href=\"ftp://ftp.ensembl.org/pub/data_files/\">Ensembl FTP site</a>",
+            "display_label": "cruk brain RNA-seq BWA alignments"
+        }
+        response = self.client.post(reverse('analysisdescription-list'),
+                                    data=json.dumps(valid_payload),
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        new_elem = AnalysisDescription.objects.get(logic_name='sus_scrofa_cruk_brain_rnaseq_bam')
+        print(new_elem.pk, new_elem.web_data_id)
+        self.assertIsNone(new_elem.modified_by)
+        self.assertEqual(new_elem.created_by.username, 'testuser')
+        wdata_ser = WebDataSerializer(data=valid_payload["web_data"])
+        if wdata_ser.is_valid():
+            serialized = PerlFieldElementSerializer()
+            web_data = WebData.objects.filter(data=serialized.to_internal_value(valid_payload["web_data"]["data"])).first()
+            print(web_data)
+            # self.assertEqual(wdata_ser.data, web_data.web_data)
+
+        another_valid_payload = {
+            "user": "testuser",
+            "web_data": {
+                "data": {
+                    "zmenu": "RNASeq_bam",
+                    "label_key": "RNASeq [biotype]",
+                    "colour_key": "bam",
+                    "type": "rnaseq",
+                    "matrix": {
+                        "group_order": "1",
+                        "column": "BAM files",
+                        "menu": "rnaseq",
+                        "group": "ENA",
+                        "row": "cruk brain"
+                    }
+                }
+            },
+            "logic_name": "other_logic_name",
+            "description": "BWA alignments of cruk brain RNA-seq data. T",
+            "display_label": "cruk brain RNA-seq BWA alignments"
+        }
+        response = self.client.post(reverse('analysisdescription-list'),
+                                    data=json.dumps(another_valid_payload),
+                                    content_type='application/json')
+        print(response)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        new_elem_same_data = AnalysisDescription.objects.get(logic_name='other_logic_name')
+        self.assertEqual(new_elem.web_data_id, new_elem_same_data.web_data_id)
+
     # Test attrib Type endpoint
-    def test_AttribType(self):
+    def testAttribType(self):
         # Check get all
         response = self.client.get(reverse('attribtypes-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
