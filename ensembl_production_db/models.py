@@ -56,7 +56,7 @@ class HasDecription(object):
 
 class WebData(BaseTimestampedModel, HasDecription):
     web_data_id = models.AutoField(primary_key=True)
-    web_data = models.TextField(db_column='`data`', null=True)
+    data = models.TextField(null=True)
     comment = models.TextField(blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
 
@@ -68,12 +68,12 @@ class WebData(BaseTimestampedModel, HasDecription):
     @property
     def label(self):
         try:
-            json_data = perl_string_to_python(self.web_data)
+            json_data = perl_string_to_python(self.data)
             json_pretty = json.dumps(json_data, sort_keys=True, indent=4)
             return json_pretty
         except Exception:
             pass
-        return self.web_data[:50] + '...' if self.web_data else ''
+        return self.data[:50] + '...' if self.data else ''
 
     def __str__(self):
         return 'ID: {} [{}...]'.format(self.pk, self.label)

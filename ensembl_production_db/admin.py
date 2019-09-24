@@ -209,7 +209,7 @@ class BioTypeAdmin(HasCurrentAdmin):
 
 class WebDataChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
-        return "WebData: {} - {}".format(obj.pk, obj.web_data[:50] + '...' if obj.web_data else '')
+        return "WebData: {} - {}".format(obj.pk, obj.data[:50] + '...' if obj.data else '')
 
 
 class AnalysisDescriptionAdmin(HasCurrentAdmin):
@@ -218,7 +218,7 @@ class AnalysisDescriptionAdmin(HasCurrentAdmin):
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     list_display = ('logic_name', 'short_description', 'web_data_label', 'is_current', 'displayable')
-    search_fields = ('logic_name', 'display_label', 'description', 'web_data__web_data')
+    search_fields = ('logic_name', 'display_label', 'description', 'web_data__data')
 
     def web_data_label(self, obj):
         return obj.web_data.label if obj.web_data else 'EMPTY'
@@ -261,10 +261,10 @@ class MetakeyAdmin(HasCurrentAdmin):
 class WebDataForm(forms.ModelForm):
     class Meta:
         model = WebData
-        fields = ('web_data', 'comment')
+        fields = ('data', 'comment')
 
     def clean_web_data(self):
-        value = self.cleaned_data.get('web_data', None)
+        value = self.cleaned_data.get('data', None)
         try:
             perl_string_to_python(value)
             return value
@@ -275,9 +275,9 @@ class WebDataForm(forms.ModelForm):
 class WebDataAdmin(ProductionModelAdmin):
     form = WebDataForm
     # TODO add pretty json display / conversion to Perl upon save
-    list_display = ('pk', 'web_data_label', 'comment')
-    search_fields = ('pk', 'web_data', 'comment')
-    fields = ('web_data', 'comment',
+    list_display = ('pk', 'data_label', 'comment')
+    search_fields = ('pk', 'data', 'comment')
+    fields = ('data', 'comment',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     inlines = (AnalysisDescriptionInline,)
@@ -287,10 +287,10 @@ class WebDataAdmin(ProductionModelAdmin):
                          "WARNING: Updating web data with multiple analysis description update it for all of them")
         return super().change_view(request, object_id, form_url, extra_context)
 
-    def web_data_label(self, obj):
+    def data_label(self, obj):
         return mark_safe('<pre>' + obj.label + '</pre>') if obj else ''
 
-    web_data_label.short_description = "Web Data"
+    data_label.short_description = "Web Data"
 
     def get_queryset(self, request):
         return super().get_queryset(request)

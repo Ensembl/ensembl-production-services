@@ -193,3 +193,6 @@ MESSAGE_TAGS = {
 }
 
 IS_TESTING = sys.argv[1:2] == ['test']
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
+EMAIL_HOST = 'localhost'
