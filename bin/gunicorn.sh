@@ -14,6 +14,8 @@ SCRIPT=$(readlink -f $0)
 SCRIPT_PATH=`dirname ${SCRIPT}`
 APP_PATH=`dirname ${SCRIPT_PATH}`
 
+PID_FILE=${SCRIPT_PATH}/gunicorn.pid
+
 PATH=$PATH:$SCRIPT_PATH:$APP_PATH
 
 DAEMON=`command -v gunicorn`
@@ -22,7 +24,7 @@ DAEMON=`command -v gunicorn`
 NAME=${SCRIPT_PATH}/gunicorn
 DESC="Production DB Service"
 
-DAEMON_OPTS="-c $SCRIPT_PATH/gunicorn.conf.py production_services.wsgi:application --daemon"
+DAEMON_OPTS="-c $SCRIPT_PATH/gunicorn.conf.py production_services.wsgi:application --daemon --pid=${PID_FILE}"
 
 PYTHONPATH=${PYTHONPATH}:${SCRIPT_PATH}/../
 
@@ -57,15 +59,23 @@ case "$1" in
     echo "$NAME."
     ;;
   stop)
-    echo -n "Stopping $DESC: "
-    kill -9 `ps aux | grep gunicorn | grep production_services | awk '{ print $2 }'`
-    # start-stop-daemon --stop --quiet --pidfile ${NAME}.pid --exec ${DAEMON}  -- ${DAEMON_OPTS}
+    echo -n "Stopping $DESC: $PID_FILE"
+    if [[ -e $PID_FILE ]]
+    then
+      pid=$(cat "$PID_FILE")
+	    echo "Stopping guncorn (pid $pid)" 1>&2
+	    kill -SIGTERM $pid
+    fi
     echo "$NAME."
     ;;
   restart)
     echo -n "Restarting $DESC: "
-    kill -9 `ps aux | grep gunicorn | grep production_services | awk '{ print $2 }'`
-    sleep 1
+    if [[ -e $PID_FILE ]]
+    then
+      pid=$(cat "$PID_FILE")
+	    echo "Stopping guncorn (pid $pid)" 1>&2
+	    kill -SIGTERM $pid
+    fi
     ${DAEMON} ${DAEMON_OPTS}
     echo "$NAME."
     ;;
