@@ -167,7 +167,6 @@ class AnalysisDescriptionSerializerUser(BaseUserTimestampSerializer):
             web_data_content['created_by'] = user
             elem = WebData.objects.create(**web_data_content)
         else:
-            web_data_content['web_data_id'] = elem.pk
             web_data_content['modified_by'] = user
             WebData.objects.update(**web_data_content)
         return elem
