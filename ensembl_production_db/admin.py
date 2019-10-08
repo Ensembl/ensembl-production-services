@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin import SimpleListFilter
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from django.utils.safestring import mark_safe
 
 from ensembl_production.admin import ProductionUserAdminMixin
@@ -73,7 +74,6 @@ class ProductionModelAdmin(ProductionUserAdminMixin):
         if issubclass(self.model, BaseTimestampedModel):
             list_display = list_display + ('modified_at',)
         return list_display
-
 
 class IsCurrentFilter(SimpleListFilter):
     title = 'Is Current'
@@ -227,7 +227,7 @@ class AnalysisDescriptionAdmin(HasCurrentAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'web_data':
-            return WebDataChoiceField(queryset=WebData.objects.all())
+            return WebDataChoiceField(queryset=WebData.objects.all(), required=False)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 

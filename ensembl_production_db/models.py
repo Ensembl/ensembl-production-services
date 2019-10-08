@@ -121,9 +121,13 @@ class MasterAttrib(HasCurrent, BaseTimestampedModel):
         db_table = 'master_attrib'
         app_label = 'ensembl_production_db'
         verbose_name = 'Attrib'
+        unique_together = [("attrib_type", "value")]
 
     def __str__(self):
         return '{}'.format(self.value)
+
+    def clean(self):
+        super().clean()
 
 
 class MasterAttribSet(HasCurrent, BaseTimestampedModel):
@@ -136,6 +140,7 @@ class MasterAttribSet(HasCurrent, BaseTimestampedModel):
         db_table = 'master_attrib_set'
         app_label = 'ensembl_production_db'
         verbose_name = 'AttribSet'
+        unique_together = [('attrib_set_id', 'attrib')]
 
 
 class MasterBiotype(HasCurrent, BaseTimestampedModel, HasDecription):
