@@ -208,6 +208,25 @@ class AnalysisTest(APITestCase):
         response = self.client.patch(reverse('analysisdescription-detail', kwargs={'logic_name': 'testwebtestdata5'}),
                                      data=json.dumps(valid_payload), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        valid_payload = {'logic_name': 'testwebtestdata5',
+                         'description': 'testwebdata5 analysis',
+                         'display_label': 'testwebdata5',
+                         'db_version': 1,
+                         'displayable': 1,
+                         'web_data': {
+                             'description': 'test',
+                             'data': {
+                                 'default': 'normalupdated'
+                             }
+                         }
+                         }
+        response = self.client.put(reverse('analysisdescription-detail', kwargs={'logic_name': 'testwebtestdata5'}),
+                                   data=json.dumps(valid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        analysis = AnalysisDescription.objects.get(logic_name='testwebtestdata5')
+        self.assertEqual(analysis.web_data.data, '{"default" => "normalupdated"}')
+        self.assertEqual(WebData.objects.filter(data__contains="normalupdated").count(), 1)
+
 
     def testWebDataCreateUpdate(self):
         valid_payload = {
@@ -241,7 +260,8 @@ class AnalysisTest(APITestCase):
         wdata_ser = WebDataSerializer(data=valid_payload["web_data"])
         if wdata_ser.is_valid():
             serialized = PerlFieldElementSerializer()
-            web_data = WebData.objects.filter(data=serialized.to_internal_value(valid_payload["web_data"]["data"])).first()
+            web_data = WebData.objects.filter(
+                data=serialized.to_internal_value(valid_payload["web_data"]["data"])).first()
             self.assertIsNotNone(web_data)
 
         another_valid_payload = {
