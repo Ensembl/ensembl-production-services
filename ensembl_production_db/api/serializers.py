@@ -168,7 +168,7 @@ class AnalysisDescriptionSerializerUser(BaseUserTimestampSerializer):
             elem = WebData.objects.create(**web_data_content)
         else:
             web_data_content['modified_by'] = user
-            WebData.objects.update(**web_data_content)
+            WebData.objects.filter(pk=elem.web_data_id).update(**web_data_content)
         return elem
 
     def update(self, instance, validated_data):
