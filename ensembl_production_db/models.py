@@ -172,7 +172,8 @@ class MasterExternalDb(HasCurrent, BaseTimestampedModel, HasDecription):
     status = EnumField(choices=['KNOWNXREF', 'KNOWN', 'XREF', 'PRED', 'ORTH', 'PSEUDO'])
     priority = models.IntegerField()
     db_display_name = models.CharField(max_length=255)
-    type = EnumField(choices=['ARRAY', 'ALT_TRANS', 'ALT_GENE', 'MISC', 'LIT', 'PRIMARY_DB_SYNONYM', 'ENSEMBL'])
+    type = EnumField(choices=['ARRAY', 'ALT_TRANS', 'ALT_GENE', 'MISC', 'LIT', 'PRIMARY_DB_SYNONYM', 'ENSEMBL'],
+                     blank=False, null=False)
     secondary_db_name = models.CharField(max_length=255, blank=True, null=True)
     secondary_db_table = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
