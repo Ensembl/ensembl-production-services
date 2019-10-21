@@ -178,11 +178,12 @@ class AttribTypeAdmin(HasCurrentAdmin):
 
 
 class AttribAdmin(HasCurrentAdmin):
-    list_display = ('value', 'attrib_type', 'is_current')
+    list_display = ('attrib_id', 'value', 'attrib_type', 'is_current')
     fields = ('value', 'attrib_type',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
-    search_fields = ('value', 'attrib_type__name')
+    # readonly_fields = ('attrib_id',)
+    search_fields = ('attrib_id', 'value', 'attrib_type__name')
 
 
 class AttribSetAdmin(HasCurrentAdmin):
