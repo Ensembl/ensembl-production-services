@@ -809,7 +809,7 @@
       "modified_by": 9335,
       "modified_at": "2012-08-21T13:30:15Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 1"
     }
   },
   {
@@ -821,7 +821,7 @@
       "modified_by": 5132,
       "modified_at": "2014-07-08T13:31:42Z",
       "comment": "Use this for human GENCODE",
-      "description": null
+      "description": "Webdata 2"
     }
   },
   {
@@ -833,7 +833,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 3"
     }
   },
   {
@@ -845,7 +845,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 4"
     }
   },
   {
@@ -857,7 +857,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 5"
     }
   },
   {
@@ -869,7 +869,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 6"
     }
   },
   {
@@ -881,7 +881,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 7"
     }
   },
   {
@@ -893,7 +893,7 @@
       "modified_by": 97804,
       "modified_at": "2012-05-01T15:32:17Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 8"
     }
   },
   {
@@ -905,7 +905,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 10"
     }
   },
   {
@@ -917,7 +917,7 @@
       "modified_by": 104856,
       "modified_at": "2013-02-19T11:46:59Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 11"
     }
   },
   {
@@ -929,7 +929,7 @@
       "modified_by": 5132,
       "modified_at": "2013-10-08T09:55:58Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 12"
     }
   },
   {
@@ -941,7 +941,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 13"
     }
   },
   {
@@ -953,7 +953,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 14"
     }
   },
   {
@@ -965,7 +965,7 @@
       "modified_by": 5132,
       "modified_at": "2012-04-12T09:46:11Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 15"
     }
   },
   {
@@ -977,7 +977,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 16"
     }
   },
   {
@@ -989,7 +989,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 17"
     }
   },
   {
@@ -1001,7 +1001,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 18"
     }
   },
   {
@@ -1013,7 +1013,7 @@
       "modified_by": 5132,
       "modified_at": "2013-09-24T10:55:52Z",
       "comment": "Use for RNAseq introns",
-      "description": null
+      "description": "Webdata 19"
     }
   },
   {
@@ -1025,7 +1025,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 20"
     }
   },
   {
@@ -1037,7 +1037,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 21"
     }
   },
   {
@@ -1049,7 +1049,7 @@
       "modified_by": 5132,
       "modified_at": "2012-04-12T09:49:30Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 22"
     }
   },
   {
@@ -1061,7 +1061,7 @@
       "modified_by": 97245,
       "modified_at": "2012-04-04T11:07:38Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 22"
     }
   },
   {
@@ -1073,7 +1073,7 @@
       "modified_by": 97245,
       "modified_at": "2017-07-19T15:47:44Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 23"
     }
   },
   {
@@ -1085,7 +1085,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 24"
     }
   },
   {
@@ -1097,7 +1097,7 @@
       "modified_by": 5132,
       "modified_at": "2012-04-20T12:56:30Z",
       "comment": "Deprecated. No longer used.",
-      "description": null
+      "description": "Webdata 25"
     }
   },
   {
@@ -1109,7 +1109,7 @@
       "modified_by": 9335,
       "modified_at": "2012-06-15T13:52:40Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 26"
     }
   },
   {
@@ -1121,7 +1121,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 27"
     }
   },
   {
@@ -1133,7 +1133,7 @@
       "modified_by": 5132,
       "modified_at": "2012-08-25T12:26:27Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 28"
     }
   },
   {
@@ -1145,7 +1145,7 @@
       "modified_by": 5132,
       "modified_at": "2012-04-12T09:44:37Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 29"
     }
   },
   {
@@ -1157,7 +1157,7 @@
       "modified_by": 104856,
       "modified_at": "2012-03-20T14:09:43Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 30"
     }
   },
   {
@@ -1169,7 +1169,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 31"
     }
   },
   {
@@ -1181,7 +1181,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 32"
     }
   },
   {
@@ -1193,7 +1193,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 33"
     }
   },
   {
@@ -1205,7 +1205,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 34"
     }
   },
   {
@@ -1217,7 +1217,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 35"
     }
   },
   {
@@ -1229,7 +1229,7 @@
       "modified_by": null,
       "modified_at": "2019-03-21T15:00:34Z",
       "comment": null,
-      "description": null
+      "description": "Webdata 36"
     }
   },
   {
@@ -1241,7 +1241,7 @@
       "modified_by": 5132,
       "modified_at": "2013-10-08T18:44:04Z",
       "comment": null,
-      "description": null
+       "description": "Webdata 37"
     }
   },
   {
@@ -2540,7 +2540,7 @@
       "object_type": "transcript",
       "db_type": "core,otherfeatures,presite",
       "attrib_type_id": null,
-      "description": null,
+      "description": "Master BioType ",
       "biotype_group": "coding",
       "so_acc": "SO:0000458"
     }

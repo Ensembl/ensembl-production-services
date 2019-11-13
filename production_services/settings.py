@@ -157,9 +157,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-gb'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/London'
 
 USE_I18N = True
 
@@ -190,11 +190,11 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'app/admin/login'
 
 MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',
-    messages.INFO: 'alert-info',
-    messages.SUCCESS: 'alert-success',
-    messages.WARNING: 'alert-warning',
-    messages.ERROR: 'alert-danger',
+    messages.DEBUG: 'info alert-info',
+    messages.INFO: 'info alert-info',
+    messages.SUCCESS: 'success alert-success',
+    messages.WARNING: 'warning alert-warning',
+    messages.ERROR: 'danger alert-danger',
 }
 
 IS_TESTING = sys.argv[1:2] == ['test']
@@ -203,3 +203,8 @@ JET_DEFAULT_THEME = 'light-violet'
 JET_SIDE_MENU_COMPACT = False
 JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
 JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
+EMAIL_HOST = 'localhost'
+
