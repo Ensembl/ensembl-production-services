@@ -1,7 +1,6 @@
 {% extends 'home.html' %}
 {% load filter_tags %}
-{% block title %}{{ flask_app.app_name }} {{ request.get_full_path|app_path }}
-            {% endblock %}
+{% block title %}{{ flask_app.app_name }} {% endblock %}
 
 
 {% block content %}

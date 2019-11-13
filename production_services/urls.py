@@ -13,7 +13,7 @@
    limitations under the License.
 """
 from django.conf.urls import url, include
-from django.urls import path
+from django.urls import path, re_path
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView, RedirectView
@@ -31,7 +31,7 @@ urlpatterns = [
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
     # Production DB API
     url(r'^api/production_db/', include('ensembl_production_db.api.urls')),
-    url(r'^app/(?P<app_prod_url>[a-z\-]+)', views.FlaskAppView.as_view()),
+    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view()),
 ]
 
 handler404 = 'ensembl_production.views.handler404'
