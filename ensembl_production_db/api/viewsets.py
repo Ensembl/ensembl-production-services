@@ -28,13 +28,13 @@ class WebDataViewSet(viewsets.ModelViewSet):
 
 class AnalysisDescriptionViewSet(viewsets.ModelViewSet):
     serializer_class = AnalysisDescriptionSerializerUser
-    queryset = AnalysisDescription.objects.filter(is_current=1)
+    queryset = AnalysisDescription.objects.filter()
     lookup_field = 'logic_name'
 
 
 class BiotypeNameViewSet(viewsets.ModelViewSet):
     serializer_class = BiotypeSerializerUser
-    queryset = MasterBiotype.objects.filter(is_current=1)
+    queryset = MasterBiotype.objects.filter()
     lookup_field = 'name'
 
 
