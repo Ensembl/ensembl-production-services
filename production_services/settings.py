@@ -78,6 +78,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                # make your file entry here.
+                'filter_tags': 'ensembl_production.templatetags.filter',
+            }
         },
     },
 ]
@@ -183,6 +187,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # mailing
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'app/admin/login'
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
@@ -193,3 +198,8 @@ MESSAGE_TAGS = {
 }
 
 IS_TESTING = sys.argv[1:2] == ['test']
+
+JET_DEFAULT_THEME = 'light-violet'
+JET_SIDE_MENU_COMPACT = False
+JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
+JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'

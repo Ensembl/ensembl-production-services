@@ -13,11 +13,17 @@ footer {
 .page-content {
 }
 .frame-row{
-    top: 70px;
+    top: 65px;
     position: absolute;
     padding-left: 20px;
     padding-right: 20px;
+    padding-top: 10px;
     left: 0;
     right: 0;
     bottom: 0;
+}
+.frame-row.admin, .frame-row.ensembl_production_db, .frame-row.ensembl_website {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
 }

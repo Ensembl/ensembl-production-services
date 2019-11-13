@@ -25,9 +25,9 @@
                         Production BackEnds
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/admin/ensembl_production_db/">Production DB</a>
-                        <a class="dropdown-item" href="/admin/ensembl_website/">Help DB</a>
-                        <a class="dropdown-item" href="/admin/">Other Backends</a>
+                        <a class="dropdown-item" href="/app/admin/ensembl_production_db/">Production DB</a>
+                        <a class="dropdown-item" href="/app/admin/ensembl_website/">Help DB</a>
+                        <a class="dropdown-item" href="/app/admin/">BackOffice Home</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown {% if current and current|slice:":10" == datachecks %}active{% endif %}">
@@ -48,7 +48,7 @@
                 <li class="nav-item dropdown {% if current|slice:":10" == 'datachecks' %}active{% endif %}">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        DataChecks (Beta)
+                        DataChecks
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/app/datachecks-list">List</a>
