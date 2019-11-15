@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
+    'ensembl_dbcopy.apps.EnsemblDbcopyConfig',
     'multiselectfield',
     'ckeditor',
     'crispy_forms',
@@ -123,13 +124,27 @@ DATABASES = {
             'charset': 'utf8mb4',
             "init_command": "SET default_storage_engine=MYISAM",
         }
-    }
+    },
+    'dbcopy': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_dbcopy'),
+        'USER': os.getenv('PROD_DB_USER', 'ensembl'),
+        'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
+        'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('PROD_DB_PORT', '3306'),
+        'OPTIONS': {
+            # Tell MySQLdb to connect with 'utf8mb4' character set
+            'charset': 'utf8mb4',
+            "init_command": "SET default_storage_engine=InnoDB",
+        }
+    },
 }
 
 DATABASE_ROUTERS = [
     'ensembl_production.router.AuthRouter',
     'ensembl_production_db.router.ProductionRouter',
-    'ensembl_website.router.WebsiteRouter'
+    'ensembl_website.router.WebsiteRouter',
+    'ensembl_dbcopy.router.DbCopyRouter'
 ]
 
 # Password validation
