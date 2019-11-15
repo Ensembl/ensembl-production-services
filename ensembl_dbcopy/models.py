@@ -13,7 +13,6 @@ class Dbs2Exclude(models.Model):
     table_schema = models.CharField(db_column='TABLE_SCHEMA', max_length=64)  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'dbs_2_exclude'
 
 
@@ -21,15 +20,14 @@ class DebugLog(models.Model):
     job_id = models.CharField(max_length=128, blank=True, null=True)
     sequence = models.IntegerField(blank=True, null=True)
     function = models.CharField(max_length=128, blank=True, null=True)
-    value = models.CharField(max_length=8192, blank=True, null=True)
+    value = models.TextField(max_length=8192, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'debug_log'
 
 
 class RequestJob(models.Model):
-    job_id = models.UUIDField(primary_key=True, default=uuid.uuid1, editable=False)
+    job_id = models.CharField(primary_key=True, max_length=32, default=uuid.uuid1, editable=False)
     src_host = models.CharField(max_length=2048)
     src_incl_db = models.CharField(max_length=2048, blank=True, null=True)
     src_skip_db = models.CharField(max_length=2048, blank=True, null=True)
@@ -48,20 +46,16 @@ class RequestJob(models.Model):
     status = models.CharField(max_length=20, blank=True, null=True, editable=False)
 
     class Meta:
-        managed = False
         db_table = 'request_job'
+        app_label = 'ensembl_dbcopy'
 
     def __str__(self):
-        return self.job_id
+        return str(self.job_id)
 
 
 class TransferLog(models.Model):
-    #job_id = models.OneToOneField(RequestJob, db_column='job_id', on_delete=models.CASCADE, primary_key=True)
-    #job_id = models.ManyToManyField(RequestJob, db_column='job_id')
-    #job_id = models.UUIDField(max_length=128, editable=False)
-    #job_id = models.ForeignKey(RequestJob, db_column='job_id', on_delete=models.CASCADE)
-    job_id = models.CharField(primary_key=True, max_length=128, editable=False)
-    #job_id = models.ForeignKey(RequestJob, db_column='job_id', on_delete=models.CASCADE, primary_key=True)
+    auto_id = models.BigAutoField(primary_key=True)
+    job_id = models.ForeignKey(RequestJob, db_column='job_id', on_delete=models.CASCADE, related_name='transfer_logs')
     tgt_host = models.CharField(max_length=512, editable=False)
     table_schema = models.CharField(db_column='TABLE_SCHEMA', max_length=64, editable=False)  # Field name made lowercase.
     table_name = models.CharField(db_column='TABLE_NAME', max_length=64, editable=False)  # Field name made lowercase.
@@ -72,6 +66,5 @@ class TransferLog(models.Model):
     size = models.BigIntegerField(blank=True, null=True, editable=False)
 
     class Meta:
-        managed = False
         db_table = 'transfer_log'
         unique_together = (('job_id', 'tgt_host', 'table_schema', 'table_name'),)

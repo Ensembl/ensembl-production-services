@@ -19,12 +19,23 @@ from rest_framework.response import Response
 from ensembl_dbcopy.api.serializers import *
 from ensembl_dbcopy.models import *
 
+
 class RequestJobViewSet(viewsets.ModelViewSet):
-    serializer_class = RequestJobSerializerUser
+    serializer_class = RequestJobListSerializer
     queryset = RequestJob.objects.all()
+    pagination_class = None
+
+    serializers = {
+        'list': RequestJobListSerializer,
+        'detail': RequestJobDetailSerializer,
+    }
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return RequestJobListSerializer
+        else:
+            return RequestJobDetailSerializer
 
 
-class TransferLogViewSet(viewsets.ModelViewSet):
-    serializer_class = TransferLogSerializer
-    queryset = TransferLog.objects.filter()
-    http_method_names = ['get']
+
+

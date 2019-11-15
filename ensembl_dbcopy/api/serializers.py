@@ -23,7 +23,9 @@ from ensembl_dbcopy.models import *
 
 User = get_user_model()
 
+
 class BaseUserTimestampSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(required=False)
 
     def create(self, validated_data):
         if 'user' in validated_data:
@@ -52,12 +54,30 @@ class BaseUserTimestampSerializer(serializers.ModelSerializer):
         return data
 
 
-class RequestJobSerializerUser(BaseUserTimestampSerializer):
-    class Meta:
-        model = RequestJob
-        exclude = ('job_id','email_list','start_date','end_date','status')
-
 class TransferLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransferLog
+        fields = (
+            'job_id',
+            'tgt_host',
+            'table_schema',
+            'table_name',
+            'renamed_table_schema',
+            'target_directory',
+            'start_date',
+            'end_date',
+            'size')
+
+
+class RequestJobListSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = RequestJob
         fields = '__all__'
+
+
+class RequestJobDetailSerializer(BaseUserTimestampSerializer):
+    class Meta:
+        model = RequestJob
+        fields = '__all__'
+
+    transfer_log = TransferLogSerializer(many=True, source='transfer_logs', read_only=True)

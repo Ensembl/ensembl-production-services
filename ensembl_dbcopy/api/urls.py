@@ -13,23 +13,23 @@
    limitations under the License.
 """
 from django.conf.urls import url, include
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 from rest_framework_nested import routers
-from rest_framework_swagger.views import get_swagger_view
 
 from ensembl_dbcopy.api import viewsets
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
+
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Copy DB API snippets",
-      default_version='v1',
-      description="Copy DB Api Description",
-      contact=openapi.Contact(email="ensembl-production@ebi.ac.uk"),
-      license=openapi.License(name="Apache 2 License"),
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="Copy DB API snippets",
+        default_version='v1',
+        description="Copy DB Api Description",
+        contact=openapi.Contact(email="ensembl-production@ebi.ac.uk"),
+        license=openapi.License(name="Apache 2 License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 # API router setup
@@ -39,10 +39,6 @@ router = routers.DefaultRouter(trailing_slash=False)
 router.register(prefix=r'requestjob',
                 viewset=viewsets.RequestJobViewSet,
                 base_name='requestjob')
-
-router.register(prefix=r'transferlog',
-                viewset=viewsets.TransferLogViewSet,
-                base_name='transferlog')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

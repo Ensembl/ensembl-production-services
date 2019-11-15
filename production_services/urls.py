@@ -30,7 +30,7 @@ urlpatterns = [
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
     # Production DB API
     url(r'^api/production_db/', include('ensembl_production_db.api.urls')),
-    url(r'^api/ensembl_dbcopy/', include('ensembl_dbcopy.api.urls')),
+    url(r'^api/dbcopy/', include('ensembl_dbcopy.api.urls')),
     url(r'^app/(?P<app_prod_url>[a-z\-]+)', views.FlaskAppView.as_view()),
 ]
 
