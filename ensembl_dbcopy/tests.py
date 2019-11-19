@@ -38,7 +38,7 @@ class RequestJobTest(APITestCase):
                                     {'src_host': 'mysql-ens-sta-1', 'src_incl_db': 'homo_sapiens_core_99_38', 'tgt_host': 'mysql-ens-general-dev-1', 'user' : 'testuser'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         # Test user email
-        response_dict = json.loads(response.content)
+        response_dict = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_dict['email_list'], 'testuser@ebi.ac.uk')
         # Test bad post
         response = self.client.post(reverse('requestjob-list'),
@@ -52,7 +52,7 @@ class RequestJobTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test Transfer log
         response = self.client.get(reverse('requestjob-detail', kwargs={'job_id': 'ddbdc15a-07af-11ea-bdcd-9801a79243a5'}))
-        response_dict = json.loads(response.content)
+        response_dict = json.loads(response.content.decode('utf-8'))
         self.assertEqual(len(response_dict['transfer_log']), 2)
         # Test put
         response = self.client.put(reverse('requestjob-detail', kwargs={'job_id': '8f084180-07ae-11ea-ace0-9801a79243a5'}),
