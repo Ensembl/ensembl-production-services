@@ -24,18 +24,11 @@ class RequestJobViewSet(viewsets.ModelViewSet):
     serializer_class = RequestJobListSerializer
     queryset = RequestJob.objects.all()
     pagination_class = None
+    lookup_field = 'job_id'
 
-    serializers = {
-        'list': RequestJobListSerializer,
-        'detail': RequestJobDetailSerializer,
-    }
 
     def get_serializer_class(self):
         if self.action == 'list':
             return RequestJobListSerializer
         else:
             return RequestJobDetailSerializer
-
-
-
-

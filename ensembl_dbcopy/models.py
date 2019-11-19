@@ -27,19 +27,19 @@ class DebugLog(models.Model):
 
 
 class RequestJob(models.Model):
-    job_id = models.CharField(primary_key=True, max_length=32, default=uuid.uuid1, editable=False)
-    src_host = models.CharField(max_length=2048)
-    src_incl_db = models.CharField(max_length=2048, blank=True, null=True)
-    src_skip_db = models.CharField(max_length=2048, blank=True, null=True)
-    src_incl_tables = models.CharField(max_length=2048, blank=True, null=True)
-    src_skip_tables = models.CharField(max_length=2048, blank=True, null=True)
-    tgt_host = models.CharField(max_length=2048)
-    tgt_db_name = models.CharField(max_length=2048, blank=True, null=True)
-    tgt_directory = models.CharField(max_length=2048, blank=True, null=True)
+    job_id = models.CharField(primary_key=True, max_length=128, default=uuid.uuid1, editable=False)
+    src_host = models.TextField(max_length=2048)
+    src_incl_db = models.TextField(max_length=2048, blank=True, null=True)
+    src_skip_db = models.TextField(max_length=2048, blank=True, null=True)
+    src_incl_tables = models.TextField(max_length=2048, blank=True, null=True)
+    src_skip_tables = models.TextField(max_length=2048, blank=True, null=True)
+    tgt_host = models.TextField(max_length=2048)
+    tgt_db_name = models.TextField(max_length=2048, blank=True, null=True)
+    tgt_directory = models.TextField(max_length=2048, blank=True, null=True)
     skip_optimize = models.BooleanField(default=False)
     wipe_target = models.BooleanField(default=False)
     convert_innodb = models.BooleanField(default=False)
-    email_list = models.CharField(max_length=2048, blank=True, null=True)
+    email_list = models.TextField(max_length=2048, blank=True, null=True)
     start_date = models.DateTimeField(blank=True, null=True, editable=False)
     end_date = models.DateTimeField(blank=True, null=True, editable=False)
     user = models.CharField(max_length=64, blank=True, null=True)
@@ -60,7 +60,7 @@ class TransferLog(models.Model):
     table_schema = models.CharField(db_column='TABLE_SCHEMA', max_length=64, editable=False)  # Field name made lowercase.
     table_name = models.CharField(db_column='TABLE_NAME', max_length=64, editable=False)  # Field name made lowercase.
     renamed_table_schema = models.CharField(max_length=64, editable=False)
-    target_directory = models.CharField(max_length=2048, blank=True, null=True, editable=False)
+    target_directory = models.TextField(max_length=2048, blank=True, null=True, editable=False)
     start_date = models.DateTimeField(blank=True, null=True, editable=False)
     end_date = models.DateTimeField(blank=True, null=True, editable=False)
     size = models.BigIntegerField(blank=True, null=True, editable=False)
@@ -68,3 +68,5 @@ class TransferLog(models.Model):
     class Meta:
         db_table = 'transfer_log'
         unique_together = (('job_id', 'tgt_host', 'table_schema', 'table_name'),)
+        app_label = 'ensembl_dbcopy'
+        verbose_name = 'TransferLog'

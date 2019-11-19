@@ -73,6 +73,9 @@ class RequestJobListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RequestJob
         fields = '__all__'
+        extra_kwargs = {
+            'url': {'view_name': 'requestjob-detail', 'lookup_field': 'job_id'},
+        }
 
 
 class RequestJobDetailSerializer(BaseUserTimestampSerializer):
