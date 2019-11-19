@@ -1,0 +1,134 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$BkM2pAAYVtSW$PB6v/2vsjMZesWfzLzbzZjjdjxo19KFDaPr8vcTcuEc=",
+      "last_login": "2019-06-20T15:30:33.998Z",
+      "is_superuser": true,
+      "username": "testuser",
+      "first_name": "",
+      "last_name": "",
+      "email": "testuser@ebi.ac.uk",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-03-26T11:23:02.067Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$BkM2pAAYVtSW$PB6v/2vsjMZesWfzLzbzZjjdjxo19KFDaPr8vcTcuEc=",
+      "last_login": "2019-06-20T15:30:33.998Z",
+      "is_superuser": true,
+      "username": "testuserupdate",
+      "first_name": "",
+      "last_name": "",
+      "email": "testuserupdate@ebi.ac.uk",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-03-26T11:23:02.067Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "ensembl_dbcopy.requestjob",
+    "pk": "2e7497e6-07af-11ea-bdcd-9801a79243a5",
+    "fields": {
+        "src_host": "mysql-ens-sta-2:4520",
+        "src_incl_db": "homo_sapiens_core_37",
+        "src_skip_db": "",
+        "src_incl_tables": "",
+        "src_skip_tables": "",
+        "tgt_host": "mysql-ens-mirror-2:4603",
+        "tgt_db_name": "",
+        "tgt_directory": "",
+        "skip_optimize": false,
+        "wipe_target": false,
+        "convert_innodb": false,
+        "email_list": "testuser@ebi.ac.uk",
+        "start_date": null,
+        "end_date": null,
+        "user": "testuser",
+        "status": null
+    }
+  },
+  {
+    "model": "ensembl_dbcopy.requestjob",
+    "pk": "8f084180-07ae-11ea-ace0-9801a79243a5",
+    "fields": {
+        "src_host": "mysql-ens-sta-1:4519",
+        "src_incl_db": "homo_sapiens_variation_99_38",
+        "src_skip_db": "",
+        "src_incl_tables": "",
+        "src_skip_tables": "",
+        "tgt_host": "mysql-ens-general-prod-1:4525",
+        "tgt_db_name": "",
+        "tgt_directory": "",
+        "skip_optimize": false,
+        "wipe_target": false,
+        "convert_innodb": false,
+        "email_list": "testuser@ebi.ac.uk",
+        "start_date": null,
+        "end_date": null,
+        "user": "testuser",
+        "status": null
+    }
+  },
+  {
+    "model": "ensembl_dbcopy.requestjob",
+    "pk": "ddbdc15a-07af-11ea-bdcd-9801a79243a5",
+    "fields": {
+        "src_host": "mysql-ens-meta-prod-1:4483",
+        "src_incl_db": "ensembl_metadata",
+        "src_skip_db": "",
+        "src_incl_tables": "",
+        "src_skip_tables": "",
+        "tgt_host": "mysql-ens-sta-1:4519",
+        "tgt_db_name": "ensembl_metadata_99",
+        "tgt_directory": "",
+        "skip_optimize": false,
+        "wipe_target": false,
+        "convert_innodb": true,
+        "email_list": "testuser@ebi.ac.uk",
+        "start_date": null,
+        "end_date": null,
+        "user": "testuser",
+        "status": null
+    }
+  },
+  {
+    "model": "ensembl_dbcopy.transferLog",
+    "pk": "1",
+    "fields": {
+      "job_id": "ddbdc15a-07af-11ea-bdcd-9801a79243a5",
+      "tgt_host": "mysql-ens-sta-1:4519",
+      "table_schema": "ensembl_metadata",
+      "table_name": "assembly",
+      "renamed_table_schema": "ensembl_metadata_99",
+      "target_directory": "None",
+      "start_date": "2019-11-18T14:33:13Z",
+      "end_date": "2019-11-18T16:33:13Z",
+      "size": 78503684840
+    }
+  },
+  {
+    "model": "ensembl_dbcopy.transferLog",
+    "pk": "2",
+    "fields": {
+      "job_id": "ddbdc15a-07af-11ea-bdcd-9801a79243a5",
+      "tgt_host": "mysql-ens-sta-1:4519",
+      "table_schema": "ensembl_metadata",
+      "table_name": "genome",
+      "renamed_table_schema": "ensembl_metadata_99",
+      "target_directory": "None",
+      "start_date": "2019-11-18T16:33:13Z",
+      "end_date": "2019-11-18T17:00:13Z",
+      "size": 10664
+    }
+  }
+]
