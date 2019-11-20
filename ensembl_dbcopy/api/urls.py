@@ -17,7 +17,6 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework_nested import routers
-
 from ensembl_dbcopy.api import viewsets
 
 schema_view = get_schema_view(
@@ -39,6 +38,10 @@ router = routers.DefaultRouter(trailing_slash=False)
 router.register(prefix=r'requestjob',
                 viewset=viewsets.RequestJobViewSet,
                 base_name='requestjob')
+
+router.register(prefix=r'host',
+                viewset=viewsets.HostViewSet,
+                base_name='host')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

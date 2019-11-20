@@ -84,3 +84,8 @@ class RequestJobDetailSerializer(BaseUserTimestampSerializer):
         fields = '__all__'
 
     transfer_log = TransferLogSerializer(many=True, source='transfer_logs', read_only=True)
+
+class HostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Host
+        fields = '__all__'

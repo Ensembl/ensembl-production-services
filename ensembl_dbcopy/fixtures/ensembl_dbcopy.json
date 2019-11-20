@@ -130,5 +130,30 @@
       "end_date": "2019-11-18T17:00:13Z",
       "size": 10664
     }
+  },
+  {
+    "model": "ensembl_dbcopy.host",
+    "pk": "1",
+    "fields": {
+      "auto_id": 1,
+      "name": "mysql-ens-sta-1",
+      "port": 4519
+    }
+  },
+  {
+    "model": "ensembl_dbcopy.host",
+    "pk": "2",
+    "fields": {
+      "name": "mysql-ens-sta-2",
+      "port": 4520
+    }
+  },
+  {
+    "model": "ensembl_dbcopy.host",
+    "pk": "3",
+    "fields": {
+      "name": "mysql-ens-general-dev-1",
+      "port": 4484
+    }
   }
 ]

@@ -76,3 +76,20 @@ class RequestJobTest(APITestCase):
         # Test bad delete
         response = self.client.delete(reverse('requestjob-detail', kwargs={'job_id': '673f3b10-09e6-11ea-9206-9801a79243a5'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    # Test host endpoint
+    def testHost(self):
+        # Test get
+        response = self.client.get(reverse('host-detail', kwargs={'name': 'mysql-ens-sta-1'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Test bad get
+        response = self.client.get(reverse('host-detail', kwargs={'name': 'mysql-ens-compara-2'}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # Test getting 2 mysql-ens-sta-2 servers
+        response = self.client.get(reverse('host-list'), {'name': 'mysql-ens-sta'})
+        response_dict = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_dict['count'], 2)
+        # Test getting mysql-ens-general-dev-1 server
+        response = self.client.get(reverse('host-list'), {'name': 'mysql-ens-general'})
+        response_dict = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_dict['count'], 1)

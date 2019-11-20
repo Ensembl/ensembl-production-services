@@ -32,3 +32,19 @@ class RequestJobViewSet(viewsets.ModelViewSet):
             return RequestJobListSerializer
         else:
             return RequestJobDetailSerializer
+
+class HostViewSet(viewsets.ModelViewSet):
+    serializer_class = HostSerializer
+    http_method_names = ['get']
+    lookup_field = 'name'
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `name` query parameter in the URL.
+        """
+        queryset = Host.objects.all()
+        host_name = self.request.query_params.get('name', None)
+        if host_name is not None:
+            queryset = queryset.filter(name__contains=host_name)
+        return queryset

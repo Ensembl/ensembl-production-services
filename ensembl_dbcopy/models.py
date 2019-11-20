@@ -70,3 +70,14 @@ class TransferLog(models.Model):
         unique_together = (('job_id', 'tgt_host', 'table_schema', 'table_name'),)
         app_label = 'ensembl_dbcopy'
         verbose_name = 'TransferLog'
+
+class Host(models.Model):
+    auto_id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=64)
+    port = models.IntegerField()
+
+    class Meta:
+        db_table = 'host'
+        unique_together = (('name', 'port'),)
+        app_label = 'ensembl_dbcopy'
+        verbose_name = 'Host'
