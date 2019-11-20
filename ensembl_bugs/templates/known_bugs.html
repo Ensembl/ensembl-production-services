@@ -1,0 +1,28 @@
+{%  extends "home.html" %}
+
+{% block content %}
+<div class="container">
+  <h2>Ensembl Known Bugs</h2>
+  <p>Current Known bugs in Ensembl sites</p>
+  <table class="table">
+    <thead class="thead-light">
+      <tr>
+        <th>Summary</th>
+        <th>Affected Releases</th>
+        <th>status</th>
+        <th>Link</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for kb in known_bugs %}
+           <tr>
+               <td>{{ kb.fields.summary }}</td>
+               <td>{% for vers in kb.fields.versions %}{{ vers.name }}, {% endfor %}</td>
+               <td>{{ kb.fields.status }}</td>
+               <td><a href="{{ kb.permalink }}" target="_blank">Details</a></td>
+          </tr>
+     {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

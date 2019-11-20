@@ -1,3 +1,4 @@
+cryptography
 Django==2.1.7
 mysqlclient==1.4.1
 djangorestframework==3.9.1
@@ -11,3 +12,5 @@ django-jet==1.0.8
 django-ckeditor==5.6.1
 drf_yasg==1.15.0
 django-crispy-forms==1.7.2
+django-fernet-fields==0.6
+jira==2.0.0

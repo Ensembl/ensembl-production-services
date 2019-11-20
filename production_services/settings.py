@@ -14,6 +14,8 @@
 """
 import os
 import sys
+from os.path import dirname, realpath
+
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
+    'ensembl_bugs.apps.KnownBugsConfig',
     'multiselectfield',
     'ckeditor',
     'crispy_forms',
