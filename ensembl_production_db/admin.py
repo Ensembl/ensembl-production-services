@@ -75,6 +75,7 @@ class ProductionModelAdmin(ProductionUserAdminMixin):
             list_display = list_display + ('modified_at',)
         return list_display
 
+
 class IsCurrentFilter(SimpleListFilter):
     title = 'Is Current'
 

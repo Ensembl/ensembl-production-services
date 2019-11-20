@@ -13,10 +13,9 @@
    limitations under the License.
 """
 from django.views.generic import TemplateView
-from .models import Credentials
-from jira_project import JiraProject
-
 from jira import JIRA
+
+from .models import Credentials
 
 
 class KnownBugsView(TemplateView):
@@ -25,8 +24,8 @@ class KnownBugsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         jira_credentials = Credentials.objects.get(cred_name="Jira")
-        jira = JiraProject(credentials=(jira_credentials.user, jira_credentials.credentials), project_name='ENSINT',
-                           version_name="Ensembl 99")
-        known_bugs = jira.jira.search_issues("project = ENSINT AND issuetype = Bug ORDER BY Rank ASC")
+        jira = JIRA(server=jira_credentials.cred_url,
+                    basic_auth=(jira_credentials.user, jira_credentials.credentials))
+        known_bugs = jira.search_issues("project = ENSINT AND issuetype = Bug ORDER BY Rank ASC")
         context['known_bugs'] = known_bugs
         return context
