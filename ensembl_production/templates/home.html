@@ -37,7 +37,7 @@
                     {% endif %}
                 </p>
             </header>
-
+ {% if user.is_authenticated %}
             <!-- Page Features -->
             <div class="row text-center">
 
@@ -97,6 +97,7 @@
             <!-- /.row -->
 
         </div>
+        {% endif %}
         <!-- /.container -->
     {% endblock %}
 </div>

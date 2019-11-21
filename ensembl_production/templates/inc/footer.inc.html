@@ -1,20 +1,20 @@
 {% load static %}
 <!-- footer.inc.html -->
-<footer class="bg-dark" style="background-color: #{{ flask_app.app_theme|default:'343A40' }} !important">
+<footer class="bg-dark footer" style="background-color: #{{ flask_app.app_theme|default:'343A40' }} !important">
     <div class="container text-white small">
         <div class="row">
-            <div class="col-md-4"><p class="float-left">Tools for Production Fools</p></div>
+            <div class="col-md-4"><span class="float-left">Tools for Production Fools</span></div>
 
-            <div class="col-md-4"><p class="text-center">
+            <div class="col-md-4"><span class="text-center">
                 {% if not user.is_authenticated %}<a href="{% url 'password_reset' %}">Forgot password?</a>
                     {% else %}
                     Logged in as {{  user.email }}
-                {% endif %}</p>
+                {% endif %}</span>
             </div>
-            <div class="col-md-4"><p class="float-right">
+            <div class="col-md-4"><span class="float-right">
                 <img src="{% static "img/logo.png" %}" alt="Ensembl Production" class="img-fluid"
                      style="max-width: 60px;">
-                Ensembl Production 2019</p>
+                Ensembl Production 2019</span>
             </div>
         </div>
     </div>

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'crispy_forms',
     'drf_yasg',
+    'sitetree'
 ]
 
 MIDDLEWARE = [
@@ -207,4 +208,4 @@ JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
-
+LOGOUT_REDIRECT_URL="/"

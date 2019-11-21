@@ -1,61 +1,23 @@
 <!-- menu_bar.inc.html -->
 {% load static %}
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
+{% load sitetree %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-faded fixed-top"
      style="background-color: #{{ flask_app.app_theme|default:'343A40' }} !important">
     <div class="container">
-        <a class="navbar-brand" rel="home" href="#" title="Production Services portal">
-
-            <img style="max-height:50px; margin-top: -7px;"
-                 src="/static/img/{{ flask_app.img|default:'logo_industry.png' }}"/>
-        </a>
-        <a class="navbar-brand" href="/">{{ flask_app.app_name|default:"Production Service Portal" }}</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item {% if not current %}active{% endif %}">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Production BackEnds
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/app/admin/ensembl_production_db/">Production DB</a>
-                        <a class="dropdown-item" href="/app/admin/ensembl_website/">Help DB</a>
-                        <a class="dropdown-item" href="/app/admin/">BackOffice Home</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown {% if current and current|slice:":10" == datachecks %}active{% endif %}">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Services
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item {% if current == 'vertebrates' %}active{% endif %}" href="/app/vertebrates/">Vertebrates</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item {% if current == 'microbes' %}active{% endif %}" href="/app/microbes/">Microbes</a>
-                        <a class="dropdown-item {% if current == 'plants' %}active{% endif %}" href="/app/plants/">Plants</a>
-                        <a class="dropdown-item {% if current == 'metazoa' %}active{% endif %}" href="/app/metazoa/">Metazoa</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item {% if current == 'production' %}active{% endif %}" href="/app/production/">Production Int.</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown {% if current|slice:":10" == 'datachecks' %}active{% endif %}">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        DataChecks
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/app/datachecks-list">List</a>
-                        <a class="dropdown-item" href="/app/datachecks-submission">Submission</a>
-                    </div>
-                </li>
-            </ul>
+        <a class="navbar-brand" href="#">
+            <img style="max-height:50px; margin-top: -7px;"
+                 src="/static/img/{{ flask_app.img|default:'logo_industry.png' }}"/>
+            <span class="nav-item">{{ flask_app.app_name|default:"Production Service Portal" }}</span>
+        </a>
+        <div class="pull-right">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                {% sitetree_menu from "maintree" include "trunk" template "sitetree/menu_bootstrap4.html" %}
+            </div>
         </div>
     </div>
 </nav>
