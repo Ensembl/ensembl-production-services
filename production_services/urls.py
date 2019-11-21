@@ -13,10 +13,11 @@
    limitations under the License.
 """
 from django.conf.urls import url, include
-from django.urls import path
+from django.urls import path, re_path
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
+from django.contrib.auth.views import LoginView
 
 import ensembl_production.views as views
 
@@ -26,11 +27,11 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('login', auth_views.LoginView.as_view(), name='login'),
+    path('login/', RedirectView.as_view(url='/app/admin/login', permanent=True), name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
     # Production DB API
     url(r'^api/production_db/', include('ensembl_production_db.api.urls')),
-    url(r'^app/(?P<app_prod_url>[a-z\-]+)', views.FlaskAppView.as_view()),
+    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view()),
 ]
 
 handler404 = 'ensembl_production.views.handler404'
