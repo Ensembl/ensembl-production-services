@@ -93,3 +93,17 @@ class RequestJobTest(APITestCase):
         response = self.client.get(reverse('host-list'), {'name': 'mysql-ens-general'})
         response_dict = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_dict['count'], 1)
+
+    # Test DatabaseList endpoint
+    def testDatabaseList(self):
+        # Test getting test Production dbs
+        response = self.client.get(reverse('databaselist'), {'host': '127.0.0.1','port': '3306','user':'ensembl','database': 'test_ensembl_production'})
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(len(response_list), 2)
+
+    # Test TableList endpoint
+    def testTableList(self):
+        # Test getting meta_key table for Production dbs
+        response = self.client.get(reverse('tablelist'), {'host': '127.0.0.1','port': '3306','user':'ensembl','database': 'test_ensembl_production','table':'meta'})
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(len(response_list), 1)

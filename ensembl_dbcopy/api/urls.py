@@ -18,6 +18,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework_nested import routers
 from ensembl_dbcopy.api import viewsets
+from ensembl_dbcopy.api.views import ListDatabases,ListTables
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -45,6 +46,8 @@ router.register(prefix=r'host',
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'^databaselist$', ListDatabases.as_view(),name='databaselist'),
+    url(r'^tablelist$', ListTables.as_view(),name='tablelist'),
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     url(r'^docs/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

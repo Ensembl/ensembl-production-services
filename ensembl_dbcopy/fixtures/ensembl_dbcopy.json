@@ -137,7 +137,9 @@
     "fields": {
       "auto_id": 1,
       "name": "mysql-ens-sta-1",
-      "port": 4519
+      "port": 4519,
+      "user": "ensro",
+      "mysqld_file_owner": "ensmysql"
     }
   },
   {
@@ -145,7 +147,9 @@
     "pk": "2",
     "fields": {
       "name": "mysql-ens-sta-2",
-      "port": 4520
+      "port": 4520,
+      "user": "ensro",
+      "mysqld_file_owner": "ensmysql"
     }
   },
   {
@@ -153,7 +157,9 @@
     "pk": "3",
     "fields": {
       "name": "mysql-ens-general-dev-1",
-      "port": 4484
+      "port": 4484,
+      "user": "ensro",
+      "mysqld_file_owner": "ensmysql"
     }
   }
 ]
