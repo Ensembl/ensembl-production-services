@@ -75,6 +75,7 @@ class Host(models.Model):
     auto_id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=64)
     port = models.IntegerField()
+    mysqld_file_owner = models.CharField(max_length=128)
 
     class Meta:
         db_table = 'host'
