@@ -75,6 +75,8 @@ class Host(models.Model):
     auto_id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=64)
     port = models.IntegerField()
+    user = models.CharField(max_length=64)
+    virtual_machine = models.CharField(max_length=255,blank=True, null=True)
     mysqld_file_owner = models.CharField(max_length=128)
 
     class Meta:
