@@ -33,9 +33,8 @@ class RequestJobViewSet(viewsets.ModelViewSet):
         else:
             return RequestJobDetailSerializer
 
-class HostViewSet(viewsets.ModelViewSet):
+class HostViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = HostSerializer
-    http_method_names = ['get']
     lookup_field = 'name'
 
     def get_queryset(self):
