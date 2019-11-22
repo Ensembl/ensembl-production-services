@@ -2,17 +2,18 @@ body {
     padding-top: 65px;
 }
 
-footer {
+.footer {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 60px;
-    line-height: 60px;
-    background-color: #f5f5f5;
+    height: 30px;
+    line-height: 30px;
 }
+
 .page-content {
 }
-.frame-row{
+
+.frame-row {
     top: 65px;
     position: absolute;
     padding-left: 20px;
@@ -20,8 +21,9 @@ footer {
     padding-top: 10px;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: 30px;
 }
+
 .frame-row.admin, .frame-row.ensembl_production_db, .frame-row.ensembl_website {
     padding-left: 0px;
     padding-right: 0px;
