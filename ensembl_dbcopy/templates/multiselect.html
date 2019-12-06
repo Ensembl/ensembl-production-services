@@ -1,0 +1,11 @@
+{% load crispy_forms_field %}
+<div id="{{ field.id_for_label }}" class="form-group">
+{% if field.label and not field|is_checkbox and form_show_labels %}
+    <label for="{{ field.id_for_label }}" class="control-label {% if field.field.required %}requiredField{% endif %}">
+        {{ field.label|safe }}{% if field.field.required %}<span class="asteriskField">*</span>{% endif %}
+    </label>
+{% endif %}
+<div class="">
+{% crispy_field field 'class' 'form-control' %}
+</div>
+</div>

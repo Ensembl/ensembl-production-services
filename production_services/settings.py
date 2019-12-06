@@ -71,7 +71,7 @@ ROOT_URLCONF = 'production_services.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'ensembl_production/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'ensembl_production/templates'),os.path.join(BASE_DIR, 'ensembl_dbcopy/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,7 +85,7 @@ TEMPLATES = [
                 'filter_tags': 'ensembl_production.templatetags.filter',
             }
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = 'production_services.wsgi.application'

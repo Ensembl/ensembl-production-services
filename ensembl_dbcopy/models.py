@@ -8,7 +8,6 @@
 from django.db import models
 import uuid
 
-
 class Dbs2Exclude(models.Model):
     table_schema = models.CharField(db_column='TABLE_SCHEMA', max_length=64)  # Field name made lowercase.
 
@@ -52,7 +51,6 @@ class RequestJob(models.Model):
     def __str__(self):
         return str(self.job_id)
 
-
 class TransferLog(models.Model):
     auto_id = models.BigAutoField(primary_key=True)
     job_id = models.ForeignKey(RequestJob, db_column='job_id', on_delete=models.CASCADE, related_name='transfer_logs')
@@ -84,3 +82,6 @@ class Host(models.Model):
         unique_together = (('name', 'port'),)
         app_label = 'ensembl_dbcopy'
         verbose_name = 'Host'
+
+    def __str__(self):
+        return '{}:{}'.format(self.name, self.port)
