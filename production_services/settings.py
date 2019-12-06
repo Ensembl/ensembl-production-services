@@ -138,8 +138,6 @@ DATABASES = {
         'HOST': os.getenv('DB_COPY_HOST', '127.0.0.1'),
         'PORT': os.getenv('DB_COPY_PORT', '3306'),
         'OPTIONS': {
-            # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': 'utf8mb4',
             "init_command": "SET default_storage_engine=InnoDB",
         }
     },
