@@ -2,7 +2,7 @@ import json
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
-from ensembl_dbcopy.models import *
+from ensembl_dbcopy.models import Host
 
 class HostRecordForm(forms.ModelForm):
     class Meta:

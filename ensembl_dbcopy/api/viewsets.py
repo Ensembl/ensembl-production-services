@@ -16,8 +16,8 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from ensembl_dbcopy.api.serializers import *
-from ensembl_dbcopy.models import *
+from ensembl_dbcopy.api.serializers import RequestJobDetailSerializer,RequestJobListSerializer,HostSerializer
+from ensembl_dbcopy.models import RequestJob,Host
 
 
 class RequestJobViewSet(viewsets.ModelViewSet):

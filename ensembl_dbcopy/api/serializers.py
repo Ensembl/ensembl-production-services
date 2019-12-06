@@ -19,7 +19,7 @@ from rest_framework import serializers
 from rest_framework import status
 
 from rest_framework.exceptions import APIException
-from ensembl_dbcopy.models import *
+from ensembl_dbcopy.models import TransferLog,RequestJob,Host
 
 User = get_user_model()
 
