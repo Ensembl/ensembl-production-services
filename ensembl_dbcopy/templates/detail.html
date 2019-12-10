@@ -1,8 +1,105 @@
 {% extends 'home.html' %}
 {% load static %}
 {% block content %}
-  <div class="container">
-  <p>your Job id: {{ object.job_id }}</p>
-  <p>{{ object.src_host }}</p>
+  <div class="container p-3 my-3 border">
+    <div class="row">
+      <div class="col-sm-2">
+        <div class="tablekey">Job ID:</div>
+      </div>
+      <div class="col-sm-10 tablevalue">{{ object.job_id }}</div>
+    </div>
+    <div class="row">
+      <div class="col-sm-2">
+        <div class="tablekey">Source Host:</div>
+      </div>
+      <div class="col-sm-10 tablevalue">{{ object.src_host }}</div>
+    </div>
+    {% if object.src_incl_db %}
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="tablekey">Source DBs:</div>
+        </div>
+        <div class="col-sm-10 tablevalue">{{ object.src_incl_db }}</div>
+      </div>
+    {% else %}
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="tablekey">Source DBs:</div>
+        </div>
+        <div class="col-sm-10 tablevalue">All the databases</div>
+      </div>
+    {% endif %}
+    <div class="row">
+      <div class="col-sm-2">
+        <div class="tablekey">Target Host:</div>
+      </div>
+      <div class="col-sm-10 tablevalue">{{ object.tgt_host }}</div>
+    </div>
+    {% if object.tgt_db_name %}
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="tablekey">Target DB:</div>
+        </div>
+        <div class="col-sm-10 tablevalue">{{ object.tgt_db_name }}</div>
+      </div>
+    {% endif %}
+    {% if object.status == 'running' %}
+      <div class="row">
+          <div class="col-sm-2">
+            <div class="tablekey">Status:</div>
+          </div>
+          <div class="col-sm-10 tablevalue {{ object.status }}">{{ object.status }}: Copying table {{object.transfer_logs.last.table_name}} for {{object.transfer_logs.last.renamed_table_schema}} in progress...</div>
+      </div>
+      <div class="row">
+          <div class="col-sm-2">
+            <div class="tablekey">Progress:</div>
+          </div>
+          <div class="col-sm-10 tablevalue progress">
+            <div class="progress-bar tablevalue" style="width:{{object.progress}}%">
+              <span class="job-completed">{{object.tables_copied}}/{{object.total_tables}} tasks done</span>
+            </div>
+          </div>
+        </div>
+			</div>
+    {% else %}
+      <div class="row">
+          <div class="col-sm-2">
+            <div class="tablekey">Status:</div>
+          </div>
+          <div class="col-sm-10 tablevalue {{ object.status }}">{{ object.status }}</div>
+      </div>
+    {% endif %}
+  </div>
+  <div class="container p-3 my-3 border">
+  <button data-toggle="collapse" data-target="#demo">Job details</button>
+  </div>
+  <div id="demo" class="collapse">
+  {% if object.transfer_logs.all %}
+    <div class="container p-3 my-3 border">
+      <table class="table">
+          <thead>
+            <tr>
+              <th>Database name</th>
+              <th>Table name</th>
+              <th>Copy start</th>
+              <th>Copy end</th>
+              <th>Table size</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for log in object.transfer_logs.all %}
+          <tr>
+            <td>{{log.renamed_table_schema}}</td>
+            <td>{{log.table_name}}</td>
+            <td>{{log.start_date}}</td>
+            <td>{{log.end_date}}</td>
+            <td>{{log.size}}</td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
   </div>
 {% endblock content %}

@@ -1,14 +1,56 @@
 
 {% extends 'home.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
-
 {% block content %}
-  <div class="container">
-    {% block list -%}
+<div class="container p-3 my-3 border">
+      <table class="table">
+          <thead>
+            <tr>
+              <th>Job ID</th>
+              <th>Source host</th>
+              <th>Database list</th>
+              <th>Excluded databases</th>
+              <th>Target host</th>
+              <th>Target database name</th>
+              <th>Email list</th>
+              <th>Copy start date</th>
+              <th>Copy end date</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for job in object_list %}
+          <tr>
+            <td><a href="{% url 'detail' job_id=job.job_id %}">{{job.job_id}}</a></td>
+            <td>{{job.src_host}}</td>
+            <td>{{job.src_incl_db}}</td>
+            <td>{{job.src_skip_db}}</td>
+            <td>{{job.tgt_host}}</td>
+            <td>{{job.tgt_db_name}}</td>
+            <td>{{job.email_list}}</td>
+            <td>{{job.start_date}}</td>
+            <td>{{job.end_date}}</td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="pagination">
+      <span class="step-links">
+          {% if page_obj.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+          {% endif %}
 
+          <span class="current">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+          </span>
 
-
-    {%- endblock list %}
-  </div>
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">next</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+      </span>
+    </div>
+</div>
 {% endblock content %}

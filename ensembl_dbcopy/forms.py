@@ -16,7 +16,6 @@ from crispy_forms.helper import FormHelper
 from django import forms
 from ensembl_dbcopy.models import RequestJob
 from crispy_forms.layout import Submit,Field,Layout
-from ensembl_dbcopy.models import RequestJob,Host
 import re
 
 

@@ -51,6 +51,31 @@ class RequestJob(models.Model):
     def __str__(self):
         return str(self.job_id)
 
+    @property
+    def status(self):
+        if self.progress == 100.0:
+            return 'complete'
+        elif self.transfer_logs.count() > 0:
+            return 'running'
+        else:
+            return 'submitted'
+
+    @property
+    def total_tables(self):
+        return self.transfer_logs.count()
+
+
+    @property
+    def tables_copied(self):
+        nbr_tables=0
+        for table in self.transfer_logs.all():
+            if table.end_date: nbr_tables+=1
+        return nbr_tables
+
+    @property
+    def progress(self):
+        if self.tables_copied and self.total_tables: return (self.tables_copied/self.total_tables)*100 
+
 class TransferLog(models.Model):
     auto_id = models.BigAutoField(primary_key=True)
     job_id = models.ForeignKey(RequestJob, db_column='job_id', on_delete=models.CASCADE, related_name='transfer_logs')

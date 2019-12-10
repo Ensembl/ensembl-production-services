@@ -1,12 +1,8 @@
-from django.shortcuts import render
 from django.views.generic.edit import CreateView
-from django.views.generic import DetailView
+from django.views.generic import DetailView,ListView
 from ensembl_dbcopy.forms import SubmitForm
 from ensembl_dbcopy.models import RequestJob
 from django.urls import reverse
-from django.shortcuts import get_object_or_404
-
-
 
 class SubmitView(CreateView):
     template_name = "submit.html"
@@ -23,3 +19,8 @@ class JobView(DetailView):
     template_name = 'detail.html'
     queryset = RequestJob.objects.all()
     pk_url_kwarg = 'job_id'
+
+class JobListView(ListView):
+    model = RequestJob
+    paginate_by = 10
+    template_name = 'list.html'
