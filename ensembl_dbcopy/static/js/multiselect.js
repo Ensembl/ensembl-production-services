@@ -83,7 +83,7 @@ $( function() {
          data: {
           host : SrcHostDetails.name,
           port : SrcHostDetails.port,
-          user : SrcHostDetails.user,
+          user : SrcHostDetails.mysql_user,
           database : extractLast(request.term)
          },
          success: function( data ) {
@@ -116,7 +116,7 @@ $( function() {
          data: {
           host : SrcHostDetails.name,
           port : SrcHostDetails.port,
-          user : SrcHostDetails.user,
+          user : SrcHostDetails.mysql_user,
           database : extractLast(request.term)
          },
          success: function( data ) {
@@ -149,7 +149,7 @@ $( function() {
          data: {
           host : SrcHostDetails.name,
           port : SrcHostDetails.port,
-          user : SrcHostDetails.user,
+          user : SrcHostDetails.mysql_user,
           // Get the first database from the id_src_incl_db field 
           database : $("#id_src_incl_db").val().split(",")[0],
           table : extractLast(request.term)
@@ -184,7 +184,7 @@ $( function() {
          data: {
           host : SrcHostDetails.name,
           port : SrcHostDetails.port,
-          user : SrcHostDetails.user,
+          user : SrcHostDetails.mysql_user,
           // Get the first database from the id_src_incl_db field 
           database : $("#id_src_incl_db").val().split(",")[0],
           table : extractLast(request.term)

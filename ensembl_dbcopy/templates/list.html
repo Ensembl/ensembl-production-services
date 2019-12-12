@@ -2,8 +2,11 @@
 {% extends 'home.html' %}
 {% load static %}
 {% block content %}
-<div class="container p-3 my-3 border">
-      <table class="table">
+  <div class="container p-3 my-3 border">
+    <a href="/dbcopy/submit/" class="btn btn-dark" role="button">Submit Copy</a>
+  </div>
+  <div class="container p-4 my-4 border">
+      <table class="table table-bordered">
           <thead>
             <tr>
               <th>Job ID</th>
@@ -15,42 +18,44 @@
               <th>Email list</th>
               <th>Copy start date</th>
               <th>Copy end date</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
           {% for job in object_list %}
           <tr>
             <td><a href="{% url 'detail' job_id=job.job_id %}">{{job.job_id}}</a></td>
-            <td>{{job.src_host}}</td>
-            <td>{{job.src_incl_db}}</td>
-            <td>{{job.src_skip_db}}</td>
-            <td>{{job.tgt_host}}</td>
-            <td>{{job.tgt_db_name}}</td>
-            <td>{{job.email_list}}</td>
-            <td>{{job.start_date}}</td>
-            <td>{{job.end_date}}</td>
+            <td style ="word-break:break-all;">{{job.src_host}}</td>
+            <td style ="word-break:break-all;">{{job.src_incl_db}}</td>
+            <td style ="word-break:break-all;">{{job.src_skip_db}}</td>
+            <td style ="word-break:break-all;">{{job.tgt_host}}</td>
+            <td style ="word-break:break-all;">{{job.tgt_db_name}}</td>
+            <td style ="word-break:break-all;">{{job.email_list}}</td>
+            <td style ="word-break:break-all;">{{job.start_date}}</td>
+            <td style ="word-break:break-all;">{{job.end_date}}</td>
+            <td class ="{{job.status}}" style ="word-break:break-all;">{{job.status}}</td>
           </tr>
           {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
-    <div class="pagination">
-      <span class="step-links">
+    <div class="pagination container p-3 my-3">
+      <span class="pagination">
           {% if page_obj.has_previous %}
-              <a href="?page=1">&laquo; first</a>
-              <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+              <a class="page-link" href="?page=1">&laquo; first</a>
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
           {% endif %}
 
-          <span class="current">
+          <span class="page-link">
               Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
           </span>
 
           {% if page_obj.has_next %}
-              <a href="?page={{ page_obj.next_page_number }}">next</a>
-              <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+              <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
           {% endif %}
       </span>
     </div>
-</div>
+  </div>
 {% endblock content %}

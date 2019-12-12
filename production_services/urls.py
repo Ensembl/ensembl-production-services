@@ -27,9 +27,9 @@ urlpatterns = [
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
-    url(r'^dbcopy/submit/', CopyViews.SubmitView.as_view()),
-    url(r'^dbcopy/(?P<job_id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/', CopyViews.JobView.as_view(), name='detail'),
-    url(r'^dbcopy/list/', CopyViews.JobListView.as_view(), name='list'),
+    path('dbcopy/submit/', CopyViews.SubmitView.as_view()),
+    path('dbcopy/<uuid:job_id>/', CopyViews.JobView.as_view(), name='detail'),
+    path('dbcopy/list/', CopyViews.JobListView.as_view(), name='list'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', RedirectView.as_view(url='/app/admin/login', permanent=True), name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),

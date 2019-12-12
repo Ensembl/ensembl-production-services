@@ -29,6 +29,6 @@ class HostModelAdmin(admin.ModelAdmin):
 @admin.register(Host)
 class HostItemAdmin(HostModelAdmin):
     form = HostRecordForm
-    list_display = ('name','port','user','virtual_machine','mysqld_file_owner')
-    fields = ('name','port','user','virtual_machine','mysqld_file_owner')
-    search_fields = ('name','port','user','virtual_machine','mysqld_file_owner')
+    list_display = ('name','port','mysql_user','virtual_machine','mysqld_file_owner')
+    fields = ('name','port','mysql_user','virtual_machine','mysqld_file_owner')
+    search_fields = ('name','port','mysql_user','virtual_machine','mysqld_file_owner')

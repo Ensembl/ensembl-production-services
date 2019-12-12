@@ -66,7 +66,9 @@ class TransferLogSerializer(serializers.ModelSerializer):
             'target_directory',
             'start_date',
             'end_date',
-            'size')
+            'size',
+            'retries',
+            'message')
 
 
 class RequestJobListSerializer(serializers.HyperlinkedModelSerializer):
