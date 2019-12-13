@@ -52,8 +52,8 @@ class RequestJob(models.Model):
         return str(self.job_id)
 
     @property
-    def status(self):
-        if self.progress == 100.0:
+    def overall_status(self):
+        if self.end_date:
             return 'complete'
         elif self.transfer_logs.count() > 0:
             return 'running'
@@ -61,20 +61,30 @@ class RequestJob(models.Model):
             return 'submitted'
 
     @property
-    def total_tables(self):
-        return self.transfer_logs.count()
-
+    def detailed_status(self):
+        total_tables=self.transfer_logs.count()
+        table_copied=self.table_copied
+        progress=0
+        if table_copied and total_tables:
+            progress=(table_copied/total_tables)*100
+        if progress == 100.0:
+            return {'status_msg':'complete','table_copied':table_copied,'total_tables':total_tables,'progress':progress}
+        elif total_tables > 0:
+            return {'status_msg':'running','table_copied':table_copied,'total_tables':total_tables,'progress':progress}
+        else:
+            return {'status_msg':'submitted','table_copied':table_copied,'total_tables':total_tables,'progress':progress}
 
     @property
-    def tables_copied(self):
-        nbr_tables=0
-        for table in self.transfer_logs.all():
-            if table.end_date: nbr_tables+=1
+    def table_copied(self):
+        nbr_tables=sum(map(lambda log: self.count_copied(log),self.transfer_logs.all()))
         return nbr_tables
 
-    @property
-    def progress(self):
-        if self.tables_copied and self.total_tables: return (self.tables_copied/self.total_tables)*100 
+    def count_copied(self,log):
+        if log.end_date:
+            return 1
+        else:
+            return 0
+
 
 class TransferLog(models.Model):
     auto_id = models.BigAutoField(primary_key=True)

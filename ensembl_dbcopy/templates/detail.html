@@ -47,20 +47,20 @@
         <div class="col-sm-10 tablevalue">{{ object.tgt_db_name }}</div>
       </div>
     {% endif %}
-    {% if object.status == 'running' %}
+    {% if object.detailed_status.status_msg == 'running' %}
       <div class="row">
           <div class="col-sm-2">
             <div class="tablekey">Status:</div>
           </div>
-          <div class="col-sm-10 tablevalue {{ object.status }}">{{ object.status }}: Copying table {{object.transfer_logs.last.table_name}} for {{object.transfer_logs.last.renamed_table_schema}} in progress...</div>
+          <div class="col-sm-10 tablevalue {{ object.detailed_status.status_msg }}">{{ object.detailed_status.status_msg }}: Copying table {{object.transfer_logs.last.table_name}} for {{object.transfer_logs.last.renamed_table_schema}} in progress...</div>
       </div>
       <div class="row">
           <div class="col-sm-2">
             <div class="tablekey">Progress:</div>
           </div>
           <div class="col-sm-10 tablevalue progress">
-            <div class="progress-bar tablevalue" style="width:{{object.progress}}%">
-              <span class="job-completed">{{object.tables_copied}}/{{object.total_tables}} tasks done</span>
+            <div class="progress-bar tablevalue" style="width:{{object.detailed_status.progress}}%">
+              <span class="job-completed">{{object.detailed_status.table_copied}}/{{object.detailed_status.total_tables}} tasks done</span>
             </div>
           </div>
         </div>
@@ -70,14 +70,10 @@
           <div class="col-sm-2">
             <div class="tablekey">Status:</div>
           </div>
-          <div class="col-sm-10 tablevalue {{ object.status }}">{{ object.status }}</div>
+          <div class="col-sm-10 tablevalue {{ object.detailed_status.status_msg }}">{{ object.detailed_status.status_msg }}</div>
       </div>
     {% endif %}
   </div>
-  <div class="container p-3 my-3 border">
-    <button class="btn btn-dark" data-toggle="collapse" data-target="#demo">Copy detail</button>
-  </div>
-  <div id="demo" class="collapse">
   {% if transfer_logs %}
     <div class="container p-3 my-3 border">
       <table class="table table-bordered">
@@ -124,5 +120,4 @@
       </span>
     </div>
   {% endif %}
-  </div>
 {% endblock content %}
