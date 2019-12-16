@@ -98,7 +98,7 @@ class TransferLog(models.Model):
     end_date = models.DateTimeField(blank=True, null=True, editable=False)
     size = models.BigIntegerField(blank=True, null=True, editable=False)
     retries = models.IntegerField(blank=True, null=True, editable=False)
-    message = models.CharField(max_length=255, editable=False)
+    message = models.CharField(max_length=255, blank=True, null=True, editable=False)
 
     class Meta:
         db_table = 'transfer_log'
