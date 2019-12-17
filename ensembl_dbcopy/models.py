@@ -13,6 +13,7 @@ class Dbs2Exclude(models.Model):
 
     class Meta:
         db_table = 'dbs_2_exclude'
+        app_label = 'ensembl_dbcopy'
 
 
 class DebugLog(models.Model):
@@ -23,6 +24,7 @@ class DebugLog(models.Model):
 
     class Meta:
         db_table = 'debug_log'
+        app_label = 'ensembl_dbcopy'
 
 
 class RequestJob(models.Model):
