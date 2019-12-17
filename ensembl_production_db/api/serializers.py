@@ -25,70 +25,12 @@ from ensembl_production_db.models import *
 User = get_user_model()
 
 
-class PerlFieldElementSerializer(serializers.CharField):
-
-    def to_internal_value(self, data):
-        """Transform the supplied dict into a string representation of a Perl hash"""
-        pairs = []
-        for k, v in sorted([(k, v) for k, v in data.items() if v is not None], key=lambda x: x[0]):
-            # for k, v in sorted(filter((k, v) for k, v in web_data.items())):
-            k = str(k)
-            t = type(v).__name__
-            if t == 'str':
-                pairs.append("\"%s\" => \"%s\"" % (k, escape_perl_string(v)))
-            elif t == 'unicode':
-                pairs.append("\"%s\" => \"%s\"" % (k, escape_perl_string(str(v))))
-            elif t in ('int', 'long'):
-                pairs.append("\"%s\" => %d" % (k, v))
-            elif t == 'float':
-                pairs.append("\"%s\" => %f" % (k, v))
-            elif t == 'list':
-                pairs.append("\"%s\" => %s" % (k, list_to_perl_string(v)))
-            elif t == 'dict':
-                pairs.append("\"%s\" => %s" % (k, self.to_internal_value(v)))
-            elif t == 'bool':
-                if str(v) == "True":
-                    pairs.append("\"%s\" => %d" % (k, 1))
-            else:
-                raise Exception("Unsupported type " + str(t))
-        return "{%s}" % ", ".join(pairs)
-
-    def to_representation(self, instance):
-        return perl_string_to_python(instance)
-
-
-class BaseUserTimestampSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(write_only=True, required=False)
-
-    def create(self, validated_data):
-        if 'user' in validated_data:
-            validated_data['created_by'] = validated_data.pop('user')
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        if 'user' in validated_data:
-            validated_data['modified_by'] = validated_data.pop('user')
-        return super().update(instance, validated_data)
-
-    def validate(self, data):
-        if "user" in data:
-            try:
-                data['user'] = User.objects.get(username=data.pop('user', ''), is_staff=True)
-            except ObjectDoesNotExist:
-                exc = APIException(code='error', detail="User not found")
-                # hack to update status code. :-(
-                exc.status_code = status.HTTP_400_BAD_REQUEST
-                raise exc
-        data = super().validate(data)
-        return data
-
-
 class WebDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebData
         exclude = ('created_at', 'modified_at')
 
-    data = PerlFieldElementSerializer()
+    data = serializers.CharField(source="web_data")
 
 
 class BiotypeSerializerUser(BaseUserTimestampSerializer):

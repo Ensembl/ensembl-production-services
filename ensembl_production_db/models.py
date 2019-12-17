@@ -76,7 +76,7 @@ class WebData(BaseTimestampedModel, HasDecription):
         return self.data[:50] + '...' if self.data else ''
 
     def __str__(self):
-        return 'ID: {} [{}...]'.format(self.pk, self.label)
+        return 'ID: {} [{}...]'.format(self.pk, self.label[0:10])
 
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel, HasDecription):
