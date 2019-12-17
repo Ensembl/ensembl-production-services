@@ -34,7 +34,7 @@ def reverse_transform_json(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('ensembl_production_db', '0002_metakey_is_multi_value'),
+        ('ensembl_production_db', '0003_auto_20191015_0945'),
     ]
 
     operations = [

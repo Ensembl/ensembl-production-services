@@ -33,6 +33,32 @@ class WebDataSerializer(serializers.ModelSerializer):
     data = serializers.CharField(source="web_data")
 
 
+class BaseUserTimestampSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(write_only=True, required=False)
+
+    def create(self, validated_data):
+        if 'user' in validated_data:
+            validated_data['created_by'] = validated_data.pop('user')
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        if 'user' in validated_data:
+            validated_data['modified_by'] = validated_data.pop('user')
+        return super().update(instance, validated_data)
+
+    def validate(self, data):
+        if "user" in data:
+            try:
+                data['user'] = User.objects.get(username=data.pop('user', ''), is_staff=True)
+            except ObjectDoesNotExist:
+                exc = APIException(code='error', detail="User not found")
+                # hack to update status code. :-(
+                exc.status_code = status.HTTP_400_BAD_REQUEST
+                raise exc
+        data = super().validate(data)
+        return data
+
+
 class BiotypeSerializerUser(BaseUserTimestampSerializer):
     is_current = serializers.BooleanField(default=True, initial=True)
 
