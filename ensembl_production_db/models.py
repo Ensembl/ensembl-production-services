@@ -13,7 +13,6 @@ from django_mysql.models import EnumField
 from multiselectfield import MultiSelectField
 
 from ensembl_production.models import BaseTimestampedModel
-from ensembl_production.utils import perl_string_to_python
 
 DB_TYPE_CHOICES_BIOTYPE = (('cdna', 'cdna'),
                            ('core', 'core'),
@@ -67,16 +66,14 @@ class WebData(BaseTimestampedModel, HasDecription):
 
     @property
     def label(self):
-        try:
-            json_data = perl_string_to_python(self.data)
-            json_pretty = json.dumps(json_data, sort_keys=True, indent=4)
-            return json_pretty
-        except Exception:
-            pass
-        return self.data[:50] + '...' if self.data else ''
+        return json.dumps(self.data, sort_keys=True, indent=4)
+
+    @staticmethod
+    def autocomplete_search_fields():
+        return 'data', 'description'
 
     def __str__(self):
-        return 'ID: {} [{}...]'.format(self.pk, self.label[0:10])
+        return '{} [{}]'.format(self.pk, self.label.replace("\\", ""))
 
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel, HasDecription):

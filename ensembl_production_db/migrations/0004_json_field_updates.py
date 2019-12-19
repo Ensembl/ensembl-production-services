@@ -11,24 +11,26 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django.db import migrations
 import json
+
+from django.db import migrations
+
 from ensembl_production.utils import perl_string_to_python, to_internal_value
 
 
 def transform_json(apps, schema_editor):
     WebData = apps.get_model('ensembl_production_db', 'WebData')
     for record in WebData.objects.all():
-        python_value = perl_string_to_python(record.web_data)
-        record.web_data = json.dumps(python_value)
+        python_value = perl_string_to_python(record.data)
+        record.data = json.dumps(python_value)
         record.save()
 
 
 def reverse_transform_json(apps, schema_editor):
     WebData = apps.get_model('ensembl_production_db', 'WebData')
     for record in WebData.objects.all():
-        perl = to_internal_value(json.loads(record.web_data))
-        record.web_data = perl
+        perl = to_internal_value(json.loads(record.data))
+        record.data = perl
         record.save()
 
 

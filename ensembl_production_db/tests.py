@@ -18,7 +18,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from ensembl_production_db.api.serializers import WebDataSerializer, PerlFieldElementSerializer
+from ensembl_production_db.api.serializers import WebDataSerializer
 from ensembl_production_db.models import *
 
 User = get_user_model()
@@ -37,31 +37,85 @@ class AnalysisTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Test post
         response = self.client.post(reverse('analysisdescription-list'),
-                                    {'logic_name': 'test', 'description': 'test analysis', 'display_label': 'test',
-                                     'db_version': 1, 'displayable': 1})
+                                    {
+                                        'logic_name': 'test',
+                                        'description': 'test analysis',
+                                        'display_label': 'test',
+                                        'db_version': 1,
+                                        'displayable': 1
+                                    })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        first_analysis = AnalysisDescription.objects.filter(logic_name='test').first()
+        self.assertIsNotNone(first_analysis)
         # Test post wth webdata
-        valid_payload = {'logic_name': 'testwebtestdata', 'description': 'testwebdata analysis',
-                         'display_label': 'testwebdata', 'db_version': 1, 'displayable': 1,
-                         'web_data': {'description': 'test', 'data': {'default': {'contigviewbottom': 'normal'},
-                                                                      'dna_align_feature': {'do_not_display': '1'},
-                                                                      'type': 'cdna'}}}
-        response = self.client.post(reverse('analysisdescription-list'), data=json.dumps(valid_payload),
+        valid_payload = {
+            'logic_name': 'testwebtestdata',
+            'description': 'testwebdata analysis',
+            'display_label': 'testwebdata',
+            'db_version': 1,
+            'displayable': 1,
+            'web_data': {
+                'description': 'test',
+                'data': {
+                    'default': {
+                        'contigviewbottom': 'normal'
+                    },
+                    'dna_align_feature': {
+                        'do_not_display': '1'
+                    },
+                    'type': 'cdna'
+                }
+            }
+        }
+        response = self.client.post(reverse('analysisdescription-list'),
+                                    data=json.dumps(valid_payload),
                                     content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        analysis = AnalysisDescription.objects.filter(logic_name='testwebtestdata').first()
+        self.assertIsNotNone(analysis)
+        web_data = analysis.web_data
+        self.assertEqual(web_data.description, 'test')
+        data = json.loads(web_data.data)
+        self.assertTrue('dna_align_feature' in data)
+        self.assertTrue('type' in data and data['type'] == 'cdna')
+        web_data_id = web_data.web_data_id
         # Test post wth webdata, reusing existing webdata
-        valid_payload = {'logic_name': 'testwebtestdata2', 'description': 'testwebdata2 analysis',
-                         'display_label': 'testwebdata2', 'db_version': 1, 'displayable': 1,
-                         'web_data': {'description': 'test', 'data': {'default': {'contigviewbottom': 'normal'},
-                                                                      'dna_align_feature': {'do_not_display': '1'},
-                                                                      'type': 'cdna'}}}
-        response = self.client.post(reverse('analysisdescription-list'), data=json.dumps(valid_payload),
+        valid_payload = {
+            'logic_name': 'testwebtestdata2',
+            'description': 'testwebdata2 analysis',
+            'display_label': 'testwebdata2',
+            'db_version': 1,
+            'displayable': 1,
+            'web_data': {
+                'description': 'test',
+                'data': {
+                    'default': {
+                        'contigviewbottom': 'normal'
+                    },
+                    'dna_align_feature': {
+                        'do_not_display': '1'
+                    },
+                    'type': 'cdna'
+                }
+            }
+        }
+        response = self.client.post(reverse('analysisdescription-list'),
+                                    data=json.dumps(valid_payload),
                                     content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        analysis = AnalysisDescription.objects.filter(logic_name='testwebtestdata2').first()
+        self.assertIsNotNone(analysis)
+        web_data = analysis.web_data
+        self.assertEqual(web_data.web_data_id, web_data_id)
         # Test bad post
         response = self.client.post(reverse('analysisdescription-list'),
-                                    {'logic_name': '', 'description': 'test analysis', 'display_label': 'test',
-                                     'db_version': 1, 'displayable': 1})
+                                    {
+                                        'logic_name': '',
+                                        'description': 'test analysis',
+                                        'display_label': 'test',
+                                        'db_version': 1,
+                                        'displayable': 1
+                                    })
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # Test get
         response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name': 'test'}))
@@ -69,41 +123,91 @@ class AnalysisTest(APITestCase):
         # Test get wth webdata
         response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name': 'testwebtestdata'}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Test bad get
-        response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name': 'cantgetit'}))
+        self.assertTrue('description' in json.loads(response.content))
+        # Test get wrong logic_name
+        response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name': 'unknown'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test put
         response = self.client.put(reverse('analysisdescription-detail', kwargs={'logic_name': 'test'}),
-                                   {'logic_name': 'test2', 'description': 'test2 analysis updated',
-                                    'display_label': 'test2', 'db_version': 1, 'displayable': 1})
+                                   {
+                                       'logic_name': 'test',
+                                       'description': 'test2 analysis updated',
+                                       'display_label': 'test2',
+                                       'db_version': 1,
+                                       'displayable': 1
+                                   })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_analysis = AnalysisDescription.objects.filter(logic_name='test').first()
+        self.assertEqual(updated_analysis.analysis_description_id, first_analysis.analysis_description_id)
+        self.assertGreater(updated_analysis.modified_at, first_analysis.modified_at)
         # Test bad put
         response = self.client.put(reverse('analysisdescription-detail', kwargs={'logic_name': 'dontexist'}),
-                                   {'logic_name': 'newtest', 'description': 'newtest2 analysis',
-                                    'display_label': 'newtest2', 'db_version': 1, 'displayable': 1})
+                                   {
+                                       'logic_name': 'newtest',
+                                       'description': 'newtest2 analysis',
+                                        'display_label': 'newtest2',
+                                       'db_version': 1,
+                                       'displayable': 1
+                                   })
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test put changing webdata
-        valid_payload = {'logic_name': 'testwebtestdata2', 'description': 'testwebdata2 analysis',
-                         'display_label': 'testwebdata2', 'db_version': 1, 'displayable': 1,
-                         'web_data': {'description': 'test2', 'data': {'default': {'contigviewbottom': 'notnormal'},
-                                                                       'dna_align_feature': {'do_not_display': '1'},
-                                                                       'type': 'cdna'}}}
-        response = self.client.put(reverse('analysisdescription-detail', kwargs={'logic_name': 'testwebtestdata2'}),
-                                   data=json.dumps(valid_payload), content_type='application/json')
+        valid_payload = {
+            'logic_name': 'testwebtestdata2',
+            'description': 'Updated test analysis',
+            'display_label': 'testwebdata2', 'db_version': 1, 'displayable': 1,
+            'web_data': {
+                'description': 'test2',
+                'data': {
+                    'default': {
+                        'contigviewbottom': 'notnormal'
+                    },
+                    'dna_align_feature': {
+                        'do_not_display': '1'
+                    },
+                    'type': 'cdna'
+                }
+            }
+        }
+        response = self.client.put(reverse('analysisdescription-detail',
+                                           kwargs={'logic_name': 'testwebtestdata2'}),
+                                   data=json.dumps(valid_payload),
+                                   content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_analysis = AnalysisDescription.objects.filter(logic_name='testwebtestdata2').first()
+        self.assertEqual(updated_analysis.description, 'Updated test analysis')
         # Test bad put changing webdata
-        valid_payload = {'logic_name': 'testwebtestdata2', 'description': 'testwebdata2 analysis',
-                         'display_label': 'testwebdata2', 'db_version': 1, 'displayable': 1,
-                         'web_data': {'description': 'test2', 'data': {'default': {'contigviewbottom': 'notnormal'},
-                                                                       'dna_align_feature': {'do_not_display': '1'},
-                                                                       'type': 'cdna'}}}
+        valid_payload = {
+            'logic_name': 'testwebtestdata2',
+            'description': 'testwebdata2 analysis',
+            'display_label': 'testwebdata2',
+            'db_version': 1,
+            'displayable': 1,
+            'web_data': {
+                'description': 'test2',
+                'data': {
+                    'default': {
+                        'contigviewbottom': 'notnormal'
+                    },
+                    'dna_align_feature': {
+                        'do_not_display': '1'
+                    },
+                    'type': 'cdna'
+                }
+            }
+        }
         response = self.client.put(reverse('analysisdescription-detail', kwargs={'logic_name': 'dontexistwebdata'}),
-                                   data=json.dumps(valid_payload), content_type='application/json')
+                                   data=json.dumps(valid_payload),
+                                   content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test patch
-        response = self.client.patch(reverse('analysisdescription-detail', kwargs={'logic_name': 'test2'}),
-                                     {'logic_name': 'test3', 'description': 'test2 analysis updated',
-                                      'display_label': 'test2', 'db_version': 1, 'displayable': 1})
+        response = self.client.patch(reverse('analysisdescription-detail', kwargs={'logic_name': 'test'}),
+                                     {
+                                         'logic_name': 'test3',
+                                         'description': 'test2 analysis updated',
+                                         'display_label': 'test2',
+                                         'db_version': 1,
+                                         'displayable': 1
+                                     })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Test get
         response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name': 'test3'}))
@@ -227,7 +331,6 @@ class AnalysisTest(APITestCase):
         self.assertEqual(analysis.web_data.data, '{"default" => "normalupdated"}')
         self.assertEqual(WebData.objects.filter(data__contains="normalupdated").count(), 1)
 
-
     def testWebDataCreateUpdate(self):
         valid_payload = {
             "user": "testuser",
@@ -259,10 +362,9 @@ class AnalysisTest(APITestCase):
         self.assertEqual(new_elem.created_by.username, 'testuser')
         wdata_ser = WebDataSerializer(data=valid_payload["web_data"])
         if wdata_ser.is_valid():
-            serialized = PerlFieldElementSerializer()
-            web_data = WebData.objects.filter(
-                data=serialized.to_internal_value(valid_payload["web_data"]["data"])).first()
+            web_data = valid_payload["web_data"]["data"]
             self.assertIsNotNone(web_data)
+            self.assertEqual(wdata_ser, web_data)
 
         another_valid_payload = {
             "user": "testuser",

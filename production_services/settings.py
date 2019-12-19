@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'crispy_forms',
     'drf_yasg',
-    'sitetree'
+    'sitetree',
 ]
 
 MIDDLEWARE = [

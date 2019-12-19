@@ -14,23 +14,34 @@
 """
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseBadRequest
 from rest_framework import serializers
 from rest_framework import status
-
 from rest_framework.exceptions import APIException
-from ensembl_production.utils import escape_perl_string, list_to_perl_string
+
 from ensembl_production_db.models import *
 
 User = get_user_model()
+
+
+class JSONFieldSerializer(serializers.CharField):
+    def to_representation(self, instance):
+        return json.loads(instance)
+
+    def to_internal_value(self, data):
+        return json.dumps(data)
 
 
 class WebDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebData
         exclude = ('created_at', 'modified_at')
+        extra_kwargs = {
+            'data': {
+                'validators': [],
+            }
+        }
 
-    data = serializers.CharField(source="web_data")
+    data = JSONFieldSerializer()
 
 
 class BaseUserTimestampSerializer(serializers.ModelSerializer):
@@ -128,7 +139,8 @@ class AnalysisDescriptionSerializerUser(BaseUserTimestampSerializer):
 
         return super(AnalysisDescriptionSerializerUser, self).create(validated_data)
 
-    def process_web_data(self, web_data_content, user):
+    @staticmethod
+    def process_web_data(web_data_content, user):
         search_content = web_data_content.get('data', '')
         elem = WebData.objects.filter(data=search_content).first()
         if not elem:
