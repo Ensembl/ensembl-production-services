@@ -123,7 +123,7 @@ class AnalysisTest(APITestCase):
         # Test get wth webdata
         response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name': 'testwebtestdata'}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue('description' in json.loads(response.content))
+        self.assertTrue('description' in response.data)
         # Test get wrong logic_name
         response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name': 'unknown'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
