@@ -14,15 +14,13 @@
 """
 
 import collections
-import json
+
 from django import forms
 from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin import SimpleListFilter
-from django.core.exceptions import ValidationError
-from django.db import IntegrityError
 from django.utils.safestring import mark_safe
-from searchableselect.widgets import SearchableSelect
+
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
 from .models import *
