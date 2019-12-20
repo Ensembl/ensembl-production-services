@@ -5,16 +5,13 @@ python:
   - "3.7"
   - "3.6"
   - "3.5"
-services:
+services: remin
   - mysql
 env:
   - DJANGO=2.1.7 DB=mysql
 before_script:
   - mysql -u root -e "CREATE USER 'ensembl'@'127.0.0.1' IDENTIFIED BY '';"
   - mysql -u root -e "GRANT ALL ON *.* TO 'ensembl'@'127.0.0.1';"
-  - mysql -u root -e "create schema ensembl_production_services;"
-  - mysql -u root -e "create schema ensembl_production;"
-  - mysql -u root -e "create schema ensembl_website;"
 install:
   - pip install -r requirements.txt
   - pip install coverage==4.5.1
