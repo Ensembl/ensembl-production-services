@@ -5,7 +5,7 @@ python:
   - "3.7"
   - "3.6"
   - "3.5"
-services: remin
+services:
   - mysql
 env:
   - DJANGO=2.1.7 DB=mysql
