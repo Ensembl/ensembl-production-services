@@ -328,7 +328,7 @@ class AnalysisTest(APITestCase):
                                    data=json.dumps(valid_payload), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         analysis = AnalysisDescription.objects.get(logic_name='testwebtestdata5')
-        self.assertEqual(analysis.web_data.data, '{"default" => "normalupdated"}')
+        self.assertEqual(analysis.web_data.data, '{"default": "normalupdated"}')
         self.assertEqual(WebData.objects.filter(data__contains="normalupdated").count(), 1)
 
     def testWebDataCreateUpdate(self):
@@ -364,7 +364,7 @@ class AnalysisTest(APITestCase):
         if wdata_ser.is_valid():
             web_data = valid_payload["web_data"]["data"]
             self.assertIsNotNone(web_data)
-            self.assertEqual(wdata_ser, web_data)
+            self.assertEqual(wdata_ser.data['data'], web_data)
 
         another_valid_payload = {
             "user": "testuser",

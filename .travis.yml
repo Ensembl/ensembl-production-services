@@ -12,14 +12,11 @@ env:
 before_script:
   - mysql -u root -e "CREATE USER 'ensembl'@'127.0.0.1' IDENTIFIED BY '';"
   - mysql -u root -e "GRANT ALL ON *.* TO 'ensembl'@'127.0.0.1';"
-  # - mysql -u root -e "create schema ensembl_production_services;"
-  # - mysql -u root -e "create schema ensembl_production;"
-  # - mysql -u root -e "create schema ensembl_website;"
+  - mysql -u root -e "create schema ensembl_production_services;"
+  - mysql -u root -e "create schema ensembl_production;"
+  - mysql -u root -e "create schema ensembl_website;"
 install:
   - pip install -r requirements.txt
   - pip install coverage==4.5.1
 script:
-  # - python manage.py migrate --database website
-  # - python manage.py migrate --database production
-  # - python manage.py migrate
   - coverage run --source='.' manage.py test
