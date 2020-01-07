@@ -14,6 +14,17 @@
 """
 import os
 import sys
+import configparser
+
+
+def read_env():
+    config = configparser.ConfigParser()
+    config.read('./.env')
+    section = os.environ.get("DJANGO_ENV", "DEFAULT")
+
+    for var, value in config[section].items():
+        os.environ.setdefault(var, value)
+
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "production_services.settings")
@@ -32,4 +43,5 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
+    read_env()
     execute_from_command_line(sys.argv)
