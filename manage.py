@@ -18,6 +18,13 @@ import configparser
 
 
 def read_env():
+    """
+    Reads a INI file named .env in the same directory manage.py is invoked and
+    loads it as environment variables.
+    Note: At least one section must be present. If the environment variable
+    DJANGO_ENV is not set then the [DEFAULT] section will be loaded.
+    More info: https://docs.python.org/3/library/configparser.html
+    """
     config = configparser.ConfigParser()
     config.read('./.env')
     section = os.environ.get("DJANGO_ENV", "DEFAULT")
