@@ -55,7 +55,7 @@ class RequestJob(models.Model):
 
     @property
     def overall_status(self):
-        if self.end_date:
+        if self.end_date and self.status == 'Transfer Ended':
             return 'complete'
         elif self.transfer_logs.count() > 0:
             return 'running'

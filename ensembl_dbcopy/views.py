@@ -39,3 +39,5 @@ class JobListView(ListView):
     model = RequestJob
     paginate_by = 10
     template_name = 'list.html'
+    def get_queryset(self):
+        return RequestJob.objects.order_by(F('start_date').desc(nulls_first=True))
