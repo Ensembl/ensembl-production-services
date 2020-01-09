@@ -1,5 +1,6 @@
 {% extends 'home.html' %}
 {% load static %}
+<link href="{% static "css/db_copy.css" %}" rel="stylesheet"/>
 {% block content %}
   <div class="container p-3 my-3 border">
     <a href="/dbcopy/list/" class="btn btn-dark" role="button">Copy list</a>
@@ -121,3 +122,6 @@
     </div>
   {% endif %}
 {% endblock content %}
+{% block extra_script %}
+<link href="{% static "css/db_copy.css" %}" rel="stylesheet"/>
+{% endblock %}
