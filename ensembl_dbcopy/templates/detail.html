@@ -1,6 +1,5 @@
 {% extends 'home.html' %}
 {% load static %}
-<link href="{% static "css/db_copy.css" %}" rel="stylesheet"/>
 {% block content %}
   <div class="container">
     <div class="p-3 my-3 border">
@@ -65,7 +64,6 @@
                 <span class="job-completed">{{object.detailed_status.table_copied}}/{{object.detailed_status.total_tables}} tasks done</span>
               </div>
             </div>
-          </div>
         </div>
       {% else %}
         <div class="row">
@@ -102,27 +100,22 @@
             {% endfor %}
             </tbody>
           </table>
-        </div>
-      </div>
-      <div class="pagination p-3 my-3">
         <span class="pagination">
             {% if transfer_logs.has_previous %}
                 <a class="page-link" href="?page=1">&laquo; first</a>
                 <a class="page-link" href="?page={{ transfer_logs.previous_page_number }}">previous</a>
             {% endif %}
-
             <span class="page-link">
                 Page {{ transfer_logs.number }} of {{ transfer_logs.paginator.num_pages }}.
             </span>
-
             {% if transfer_logs.has_next %}
                 <a class="page-link" href="?page={{ transfer_logs.next_page_number }}">next</a>
                 <a class="page-link" href="?page={{ transfer_logs.paginator.num_pages }}">last &raquo;</a>
             {% endif %}
         </span>
       </div>
-    </div>
-  {% endif %}
+    {% endif %}
+  </div>
 {% endblock content %}
 {% block extra_script %}
 <link href="{% static "css/db_copy.css" %}" rel="stylesheet"/>
