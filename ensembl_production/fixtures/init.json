@@ -128,6 +128,21 @@
       "app_theme": "800066",
       "app_prod_url": "datachecks-submission",
       "app_groups": []
+  },
+  {
+      "model": "ensembl_production.productionflaskapp",
+      "pk": 8,
+      "fields": {
+        "created_by": null,
+        "created_at": null,
+        "modified_by": null,
+        "modified_at": null,
+        "app_name": "Ensembl Admin",
+        "app_url": "http://127.0.0.1:8000/admin/",
+        "app_theme": "336",
+        "app_prod_url": "admin",
+        "app_groups": []
+      }
     }
   }
 ]
