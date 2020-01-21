@@ -8,7 +8,7 @@
       "modified_by": null,
       "modified_at": null,
       "app_name": "Vertebrate Services",
-      "app_url": "http://127.0.0.1:5000",
+      "app_url": "http://127.0.0.1:6000",
       "app_theme": "336",
       "app_prod_url": "vertebrates",
       "app_groups": [
@@ -49,7 +49,7 @@
       "modified_by": null,
       "modified_at": null,
       "app_name": "Plants Services",
-      "app_url": "http://127.0.0.1:7000/#!/",
+      "app_url": "http://127.0.0.1:6000/#!/",
       "app_theme": "407253",
       "app_prod_url": "plants",
       "app_groups": [
@@ -71,7 +71,7 @@
       "modified_by": null,
       "modified_at": null,
       "app_name": "Metazoa Services",
-      "app_url": "http://127.0.0.1:7000/#!/",
+      "app_url": "http://127.0.0.1:6000/#!/",
       "app_theme": "015365",
       "app_prod_url": "metazoa",
       "app_groups": [
@@ -105,7 +105,7 @@
       "modified_by": null,
       "modified_at": null,
       "app_name": "Production Internal",
-      "app_url": "http://127.0.0.1:9000/",
+      "app_url": "http://127.0.0.1:6000/",
       "app_theme": "336",
       "app_prod_url": "production",
       "app_groups": [
