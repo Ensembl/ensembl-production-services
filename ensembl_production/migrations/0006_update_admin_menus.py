@@ -10,10 +10,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL(
-            "UPDATE ensembl_production_services.sitetree_treeitem "
-            "SET url = REPLACE(url, '/app/admin/', '/admin/') "
-            "WHERE url LIKE '/app/admin/'"),
+            """
+            UPDATE ensembl_production_services.sitetree_treeitem SET url = REPLACE(url, '/app/admin/', '/admin/') WHERE url LIKE '/app/admin/'
+            """),
         migrations.RunSQL(
-            "DELETE FROM ensembl_production_services.flask_app WHERE app_prod_url = 'admin'"
-        )
+            """
+            DELETE FROM ensembl_production_services.flask_app WHERE app_prod_url = 'admin'
+            """)
     ]
