@@ -11,3 +11,9 @@ ul.messagelist li.warning{
     background-color: #ffc107;
     border-color: #ffeeba;
 }
+
+ul.messagelist li.sucess{
+    color: #856404;
+    background-color: #ffc107;
+    border-color: #ffeeba;
+}

@@ -66,14 +66,14 @@ class WebData(BaseTimestampedModel, HasDecription):
 
     @property
     def label(self):
-        return json.dumps(self.data, sort_keys=True, indent=4)
+        return json.dumps(json.loads(self.data), sort_keys=True, indent=4)
 
     @staticmethod
     def autocomplete_search_fields():
         return 'data', 'description'
 
     def __str__(self):
-        return '{} [{}]'.format(self.pk, self.label.replace("\\", ""))
+        return '{} - {}...-'.format(self.pk, self.label[0:100])
 
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel, HasDecription):

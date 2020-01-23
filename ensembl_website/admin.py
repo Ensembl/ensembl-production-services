@@ -34,6 +34,7 @@ class WebSiteRecordForm(forms.ModelForm):
 
 class LookupItemForm(WebSiteRecordForm):
     word = forms.CharField(label='Word')
+    keyword = forms.CharField(widget=forms.Textarea({'rows': 3}))
     expanded = forms.CharField(label='Expanded', required=False, widget=forms.Textarea({'rows': 3}))
     meaning = forms.CharField(label='Meaning', widget=CKEditorWidget())
 
@@ -56,6 +57,7 @@ class MovieForm(WebSiteRecordForm):
     youtube_id = forms.CharField(label="Youtube ID")
     youku_id = forms.CharField(label="Youku ID", required=False)
     length = forms.CharField(label="Length", required=False)
+    keyword = forms.CharField(widget=forms.Textarea({'rows': 3}))
 
     def __init__(self, *args, **kwargs):
         # Populate the form with fields from the data object.
@@ -75,6 +77,7 @@ class FaqForm(WebSiteRecordForm):
     category = forms.CharField(label="Category")
     question = forms.CharField(label="Question", widget=CKEditorWidget())
     answer = forms.CharField(label="Answer", widget=CKEditorWidget())
+    keyword = forms.CharField(widget=forms.Textarea({'rows': 3}))
 
     def __init__(self, *args, **kwargs):
         # Populate the form with fields from the data object.
@@ -94,6 +97,7 @@ class ViewForm(WebSiteRecordForm):
     help_link = forms.CharField(label="Linked URLs")
     ensembl_action = forms.CharField(label="Ensembl Action", required=False)
     ensembl_object = forms.CharField(label="Ensembl Object", required=False)
+    keyword = forms.CharField(widget=forms.Textarea({'rows': 3}))
 
     def __init__(self, *args, **kwargs):
         # Populate the form with fields from the data object.

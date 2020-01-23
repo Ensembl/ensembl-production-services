@@ -22,7 +22,7 @@ def transform_json(apps, schema_editor):
     WebData = apps.get_model('ensembl_production_db', 'WebData')
     for record in WebData.objects.all():
         python_value = perl_string_to_python(record.data)
-        record.data = json.dumps(python_value)
+        record.data = json.dumps(python_value, sort_keys=True, indent=4)
         record.save()
 
 

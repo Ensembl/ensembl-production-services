@@ -2,12 +2,13 @@ body {
     padding-top: 65px;
 }
 
-.footer {
-    position: absolute;
+footer {
+    position: fixed;
     bottom: 0;
     width: 100%;
     height: 30px;
     line-height: 30px;
+    z-index: 1000;
 }
 
 .page-content {
@@ -28,4 +29,38 @@ body {
     padding-left: 0px;
     padding-right: 0px;
     padding-top: 0px;
+}
+
+#topNavBar {
+    margin-bottom: 10px;
+}
+
+#topNavBar {
+    margin-bottom: 10px;
+}
+
+.sidebar {
+    top: 50px;
+}
+.sidebar-popup-container {
+    top: 65px;
+}
+#topNavBar ul li {
+    list-style: none;
+}
+#user-tools .sidebar-dependent {
+    top: 80px;
+}
+.related-popup-container {
+    top: 65px;
+}
+.form-row.errors {
+    display: block;
+}
+
+#analysis-group .form-row {
+    display: contents;
+}
+.related-widget-wrapper {
+    display: flex;
 }
