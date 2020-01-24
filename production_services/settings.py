@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'crispy_forms',
     'drf_yasg',
-    'sitetree',
+    'sitetree'
 ]
 
 MIDDLEWARE = [
@@ -100,7 +100,7 @@ DATABASES = {
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
         'OPTIONS': {
-            "init_command": "SET default_storage_engine=MYISAM",
+            # "init_command": "SET default_storage_engine=MYISAM",
         }
     },
     'production': {
@@ -209,4 +209,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
 LOGOUT_REDIRECT_URL="/"
+
+USE_X_FORWARDED_HOST = True
 JET_DEFAULT_THEME = 'light-gray'
