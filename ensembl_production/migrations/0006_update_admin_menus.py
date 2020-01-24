@@ -2,6 +2,10 @@
 
 from django.db import migrations
 
+from django.conf import settings
+
+default_db_name = settings.DATABASES['default']['NAME']
+
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -9,15 +13,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(
-            """
-            UPDATE ensembl_production_services.sitetree_treeitem 
-            SET url = REPLACE(url, '/app/admin/', '/admin/') 
-            WHERE url LIKE '/app/admin/%'
-            """),
-        migrations.RunSQL(
-            """
-            DELETE FROM ensembl_production_services.flask_app 
-            WHERE app_prod_url = 'admin'
-            """)
+        migrations.RunSQL("UPDATE `" + default_db_name + "`.sitetree_treeitem "
+                          "SET url = REPLACE(url, '/app/admin/', '/admin/') WHERE url LIKE '/app/admin/%';"),
+        migrations.RunSQL("DELETE FROM `" + default_db_name + "`.flask_app WHERE app_prod_url = 'admin';")
     ]
