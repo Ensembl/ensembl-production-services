@@ -4,7 +4,7 @@ from django.db import migrations
 from ensembl_production.models import ProductionFlaskApp
 
 def load_fixture(apps, schema_editor):
-    call_command('loaddata', 'elastic_hq', app_label='ensembl_production')
+    call_command('loaddata', 'ensembl_production/fixtures/elastic_hq.json', app_label='ensembl_production')
 
 
 class Migration(migrations.Migration):

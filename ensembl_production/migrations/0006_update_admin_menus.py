@@ -5,8 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('ensembl_production', '0005_update_flask_apps'),
-        ('sitetree', '0001_initial'),
+        ('ensembl_production', '0005_update_flask_apps')
     ]
 
     operations = [
