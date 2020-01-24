@@ -26,6 +26,7 @@ def read_env():
     More info: https://docs.python.org/3/library/configparser.html
     """
     config = configparser.ConfigParser()
+    config.optionxform = str
     config.read('./.env')
     section = os.environ.get("DJANGO_ENV", "DEFAULT")
 
