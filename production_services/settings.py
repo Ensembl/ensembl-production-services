@@ -209,3 +209,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
 LOGOUT_REDIRECT_URL="/"
+
+USE_X_FORWARDED_HOST = True
