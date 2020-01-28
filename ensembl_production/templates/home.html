@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
 
 <head>
@@ -7,13 +8,15 @@
     <title>{% block title %}Production Services Portal {{ page_name }}{% endblock %}</title>
     {% include "inc/headers.inc.html"  with app_theme=flask_app.app_theme %}
     {% block extra_headers %}{% endblock %}
-
+    {% block extrastyle %}{% endblock %}
 </head>
 
 <body>
 
 <!-- Navigation -->
+<header>
 {% include "inc/menu_bar.inc.html"  with current=flask_app.app_prod_url flask_app=flask_app %}
+</header>
 <!-- Page Content -->
 <div class="page-content">
 
@@ -32,11 +35,11 @@
                     {% if user.is_authenticated %}
                         <a class="btn btn-dark" href="{% url 'logout' %}?next=/">Log out</a>
                     {% else %}
-                        <a class="btn btn-primary" href="{% url 'login' %}?next={% url 'home' %}">Sign In</a>
+                        <a class="btn btn-outline-dark" href="{% url 'admin:login' %}?next={% url 'home' %}">Sign In</a>
                     {% endif %}
                 </p>
             </header>
-
+ {% if user.is_authenticated %}
             <!-- Page Features -->
             <div class="row text-center">
 
@@ -96,6 +99,7 @@
             <!-- /.row -->
 
         </div>
+        {% endif %}
         <!-- /.container -->
     {% endblock %}
 </div>

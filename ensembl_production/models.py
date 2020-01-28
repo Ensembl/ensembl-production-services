@@ -19,6 +19,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
+from django.contrib.staticfiles import finders
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
@@ -144,4 +145,7 @@ class ProductionFlaskApp(BaseTimestampedModel):
 
     @property
     def img(self):
-        return self.app_prod_url.split('-')[0] + ".png"
+        if finders.find('img' + self.app_prod_url.split('-')[0] + ".png"):
+            return self.app_prod_url.split('-')[0] + ".png"
+        else:
+            return False
