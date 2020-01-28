@@ -112,7 +112,7 @@ DATABASES = {
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': 'utf8mb4',
+            'charset': os.getenv('PROD_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
         }
     },
@@ -125,7 +125,7 @@ DATABASES = {
         'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': 'utf8mb4',
+            'charset': os.getenv('WEBSITE_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
         }
     }
