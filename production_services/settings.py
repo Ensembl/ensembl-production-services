@@ -100,9 +100,7 @@ DATABASES = {
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
         'OPTIONS': {
-            "init_command": "SET default_storage_engine={}".format(
-                os.getenv('USER_DB_ENGINE', 'MYISAM')
-            ),
+            "init_command": "SET default_storage_engine=MYISAM",
         }
     },
     'production': {
@@ -113,10 +111,9 @@ DATABASES = {
         'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
         'OPTIONS': {
+            # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': os.getenv('PROD_DB_CHARSET', 'utf8mb4'),
-            "init_command": "SET default_storage_engine={}".format(
-                os.getenv('WEBSITE_DB_ENGINE', 'MYISAM')
-            ),
+            "init_command": "SET default_storage_engine=MYISAM",
         }
     },
     'website': {
@@ -129,9 +126,7 @@ DATABASES = {
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': os.getenv('WEBSITE_DB_CHARSET', 'utf8mb4'),
-            "init_command": "SET default_storage_engine={}".format(
-                os.getenv('WEBSITE_DB_ENGINE', 'MYISAM')
-            ),
+            "init_command": "SET default_storage_engine=MYISAM",
         }
     }
 }
