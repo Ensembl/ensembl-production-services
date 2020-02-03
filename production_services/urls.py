@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.views import LoginView
+from django.views import static
+from django.conf import settings
 
 import ensembl_production.views as views
 
@@ -27,12 +29,22 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('login/', RedirectView.as_view(url='/app/admin/login', permanent=True), name='login'),
+    path('login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
+    re_path(r'^app/(?P<app_prod_url>production|vertebrates|microbes|metazoa|plants)/$', views.AngularView.as_view()),
+    re_path(r'^app/(?P<app_prod_url>production|vertebrates|microbes|metazoa|plants)/scripts/config.js',
+            views.AngularConfigView.as_view()),
     # Production DB API
-    url(r'^api/production_db/', include('ensembl_production_db.api.urls')),
-    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view()),
+    # url(r'^api/production_db/', include('ensembl_production_db.api.urls')),
+    # re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view()),
 ]
+
+if settings.DEBUG:
+    urlpatterns.extend([
+        url(r'^web-app/scripts/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/web-app/app/scripts/"}),
+        url(r'^views/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/web-app/app/views/"}),
+        url(r'^web-app/bower_components/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/web-app/bower_components/"}),
+    ])
 
 handler404 = 'ensembl_production.views.handler404'
 handler500 = 'ensembl_production.views.handler500'

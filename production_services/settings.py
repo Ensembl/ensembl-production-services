@@ -174,6 +174,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+#ANGULAR_APP_DIR = os.path.join(BASE_DIR, 'web-app/')
+#STATICFILES_DIRS = [
+#    ('app', os.path.join(ANGULAR_APP_DIR)),
+#]
+
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',

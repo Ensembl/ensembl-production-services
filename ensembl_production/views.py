@@ -14,34 +14,64 @@
 """
 from django.core.exceptions import PermissionDenied
 import random
+import json
 from django.shortcuts import render_to_response
-from django.views.generic import DetailView
+from django.views.generic import DetailView, TemplateView
 
 from .models import ProductionFlaskApp
 
 
 class FlaskAppView(DetailView):
-    template_name = "app.html"
+    template_name = "app/iframe.html"
     model = ProductionFlaskApp
     context_object_name = 'flask_app'
     queryset = ProductionFlaskApp.objects.all()
     slug_field = 'app_prod_url'
     slug_url_kwarg = "app_prod_url"
+    object = None
 
-    def render_to_response(self, context, **response_kwargs):
-        return super().render_to_response(context, **response_kwargs)
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'url_cache': random.random(),
+            'flask_img': self.object.img
+        })
+        return super().get_context_data(**kwargs)
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if "Production" in self.object.app_groups.values_list('name', flat=True) and not (
-                request.user.is_authenticated and request.user.is_superuser):
+                self.request.user.is_authenticated and self.request.user.is_superuser):
             raise PermissionDenied()
-
-        context = self.get_context_data(object=self.object, url_cache=random.random(), flask_img=self.object.img)
+        context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+
+class AngularView(FlaskAppView):
+    template_name = "app/index.html"
+
+
+class AngularConfigView(FlaskAppView):
+    template_name = "app/config.js.tpl"
+    content_type = 'application/javascript'
+
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            "config": {
+                'LIVE_URI': 'mysql://ensro@mysql-eg-publicsql:4157/',
+                'STAGING_URI': 'mysql://ensro@mysql-ens-sta-3:4160/',
+                'COMPARA_URI': 'mysql://ensro@mysql-eg-pan-prod:4276/ensembl_compara_master',
+                'PROD_URI': 'mysql://ensro@mysql-ens-meta-prod-1:4483/ensembl_production',
+                'HC_SRV_URL': 'http://production-services.ensembl.org/api/production/hc/',
+                'DB_SRV_URL': 'http://production-services.ensembl.org/api/production/db/',
+                'URI_USER': 'ensro',
+                'COPY_SOURCE_USER': 'ensro',
+                'COPY_TARGET_USER': 'ensrw',
+                'DATA_FILES_PATH': '/nfs/panda/ensembl/production/ensemblftp/data_files/',
+                'METADATA_SRV_URL': '/api/production/meta/',
+                'HANDOVER_SRV_URL': '/api/production/ho/',
+                'WEBSITE_NAME': 'Non-Vertebrates !'
+            }})
+        return super().get_context_data(**kwargs)
 
 
 def handler404(request, *args, **argv):

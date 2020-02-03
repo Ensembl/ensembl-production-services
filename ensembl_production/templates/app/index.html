@@ -1,0 +1,160 @@
+{% extends 'home.html' %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" href="/web-app/bower_components/ng-tags-input/ng-tags-input.css"/>
+    <link rel="stylesheet" href="/web-app/bower_components/components-font-awesome/css/font-awesome.css"/>
+{% endblock %}
+{% block content %}
+    <div class="row" id="body-row" ng-app="ProdSrvApp" ng-controller="mainController">
+        <div id="sidebar-container" class="sidebar-expanded d-none d-md-block"
+             style="background-color: #{{ flask_app.app_theme|default:'343A40' }} !important;">
+            <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
+            <!-- Bootstrap List Group -->
+            <ul class="list-group">
+                <!-- Separator with title -->
+                <li class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed">
+                    <small>{{ flask_app.app_name|default:"Production Service" }}</small>
+                </li>
+                <!-- /END Separator -->
+                <!-- Menu with submenu -->
+                <a href="#submenu1" data-toggle="collapse" aria-expanded="false"
+                   class="bg-transparent list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-start align-items-center">
+                        <span class="fa fa-calendar-check-o fa-fw mr-3" data-toggle="collapse"></span>
+                        <span class="menu-collapsed">HealthChecks</span>
+                        <span class="submenu-icon ml-auto"></span>
+                    </div>
+                </a>
+                <!-- Submenu content -->
+                <div id='submenu1' class="collapse sidebar-submenu">
+                    <a data-match-route="/hc_submit" href="#!hc_submit" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">Submit HC job</span>
+                    </a>
+                    <a data-match-route="/hc_list" href="#!hc_list" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">List HC job</span>
+                    </a>
+                    <a data-match-route="/hc_result" href="#!hc_result" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">View HC job</span>
+                    </a>
+                </div>
+                <a href="#submenu2" data-toggle="collapse" aria-expanded="false"
+                   class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-start align-items-center">
+                        <span class="fa fa-user fa-fw mr-3"></span>
+                        <span class="menu-collapsed">DB Copy</span>
+                        <span class="submenu-icon ml-auto"></span>
+                    </div>
+                </a>
+                <!-- Submenu content -->
+                <div id='submenu2' class="collapse sidebar-submenu">
+                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">Settings</span>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">Password</span>
+                    </a>
+                </div>
+                <a href="#" class="bg-dark list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-start align-items-center">
+                        <span class="fa fa-tasks fa-fw mr-3"></span>
+                        <span class="menu-collapsed">Tasks</span>
+                    </div>
+                </a>
+                <!-- Separator with title -->
+                <li class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed">
+                    <small>OPTIONS</small>
+                </li>
+                <!-- /END Separator -->
+                <a href="#" class="bg-dark list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-start align-items-center">
+                        <span class="fa fa-calendar fa-fw mr-3"></span>
+                        <span class="menu-collapsed">Calendar</span>
+                    </div>
+                </a>
+                <a href="#" class="bg-dark list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-start align-items-center">
+                        <span class="fa fa-envelope-o fa-fw mr-3"></span>
+                        <span class="menu-collapsed">Messages <span
+                                class="badge badge-pill badge-primary ml-2">5</span></span>
+                    </div>
+                </a>
+                <!-- Separator without title -->
+                <li class="list-group-item sidebar-separator menu-collapsed"></li>
+                <!-- /END Separator -->
+                <a href="#" class="bg-dark list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-start align-items-center">
+                        <span class="fa fa-question fa-fw mr-3"></span>
+                        <span class="menu-collapsed">Help</span>
+                    </div>
+                </a>
+                <a href="#top" data-toggle="sidebar-colapse"
+                   class="bg-dark list-group-item list-group-item-action d-flex align-items-center">
+                    <div class="d-flex w-100 justify-content-start align-items-center">
+                        <span id="collapse-icon" class="fa fa-2x mr-3"></span>
+                        <span id="collapse-text" class="menu-collapsed">Collapse</span>
+                    </div>
+                </a>
+            </ul><!-- List Group END-->
+        </div><!-- sidebar-container END -->
+        <div ng-view class="col p-4"></div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="/web-app/bower_components/angular/angular.js"></script>
+    <script src="/web-app/bower_components/angular-animate/angular-animate.js"></script>
+    <script src="/web-app/bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="/web-app/bower_components/angular-resource/angular-resource.js"></script>
+    <script src="/web-app/bower_components/angular-route/angular-route.js"></script>
+    <script src="/web-app/bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="/web-app/bower_components/angular-touch/angular-touch.js"></script>
+    <script src="/web-app/bower_components/ng-tags-input/ng-tags-input.js"></script>
+    <script src="/web-app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="/web-app/bower_components/angular-strap/dist/angular-strap.js"></script>
+    <script src="/web-app/bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="/web-app/scripts/app.js"></script>
+    <script src="/web-app/scripts/controllers/hc_list.js"></script>
+    <script src="/web-app/scripts/controllers/hc_result.js"></script>
+    <script src="/web-app/scripts/controllers/hc_submit.js"></script>
+    <script src="/web-app/scripts/controllers/database_server_status.js"></script>
+    <script src="/web-app/scripts/controllers/database_server_size.js"></script>
+    <script src="/web-app/scripts/controllers/copy_submit.js"></script>
+    <script src="/web-app/scripts/controllers/copy_result.js"></script>
+    <script src="/web-app/scripts/controllers/copy_list.js"></script>
+    <script src="/web-app/scripts/controllers/database_handover_submit.js"></script>
+    <script src="/web-app/scripts/controllers/database_handover_result.js"></script>
+    <script src="/web-app/scripts/controllers/database_handover_list.js"></script>
+    <script src="/web-app/scripts/controllers/homepage.js"></script>
+    <script src="scripts/config.js"></script>
+    <!-- endbuild -->
+    <script>
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+        // Collapse/Expand icon
+        $('#collapse-icon').addClass('fa-angle-double-left');
+        $('[data-toggle=sidebar-colapse]').click(function () {
+            SidebarCollapse();
+        });
+
+        function SidebarCollapse() {
+            $('.menu-collapsed').toggleClass('d-none');
+            $('.sidebar-submenu').toggleClass('d-none');
+            $('.submenu-icon').toggleClass('d-none');
+            $('#sidebar-container').toggleClass('sidebar-expanded sidebar-collapsed');
+
+            // Treating d-flex/d-none on separators with title
+            var SeparatorTitle = $('.sidebar-separator-title');
+            if (SeparatorTitle.hasClass('d-flex')) {
+                SeparatorTitle.removeClass('d-flex');
+            } else {
+                SeparatorTitle.addClass('d-flex');
+            }
+
+            // Collapse/Expand icon
+            $('#collapse-icon').toggleClass('fa-angle-double-left fa-angle-double-right');
+        }
+    </script>
+{% endblock %}
