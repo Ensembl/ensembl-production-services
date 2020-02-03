@@ -2,9 +2,18 @@
 
 from django.db import migrations
 
-from django.conf import settings
+def remove_app_admin(apps, schema_editor):
+    TreeItem = apps.get_model('sitetree', 'TreeItem')
+    for record in TreeItem.objects.filter(url__startswith='/app/admin/'):
+        record.url = record.url.replace('/app/admin/', '/admin/')
+        record.save()
 
-default_db_name = settings.DATABASES['default']['NAME']
+
+def reverse_app_admin(apps, schema_editor):
+    TreeItem = apps.get_model('sitetree', 'TreeItem')
+    for record in TreeItem.objects.filter(url__startswith='/admin/'):
+        record.url = record.url.replace('/admin/', '/app/admin/')
+        record.save()
 
 
 class Migration(migrations.Migration):
@@ -13,7 +22,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL("UPDATE `" + default_db_name + "`.sitetree_treeitem "
-                          "SET url = REPLACE(url, '/app/admin/', '/admin/') WHERE url LIKE '/app/admin/%';"),
-        migrations.RunSQL("DELETE FROM `" + default_db_name + "`.flask_app WHERE app_prod_url = 'admin';")
+        migrations.RunPython(remove_app_admin, reverse_app_admin),
     ]

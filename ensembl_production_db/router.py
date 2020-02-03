@@ -51,8 +51,8 @@ class ProductionRouter:
         Make sure the production production_services only appears in the 'production'
         database.
         """
-        #if 'target_db' in hints:
-        #    return hints['target_db'] == "ensembl_production_db"
+        if 'target_db' in hints:
+            return hints['target_db'] == "ensembl_production_db"
         if app_label == 'ensembl_production_db':
             return db == 'production'
         return None
