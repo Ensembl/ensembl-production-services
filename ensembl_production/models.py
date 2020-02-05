@@ -52,11 +52,9 @@ class SpanningForeignKey(models.ForeignKey):
             )
 
     def __init__(self, model_on_other_db=None, **kwargs):
-        # print('received ', model_on_other_db, '!!!', kwargs)
         self.model_on_other_db = model_on_other_db or kwargs.pop('to')
         kwargs['on_delete'] = models.SET_NULL
         kwargs['db_constraint'] = False
-
         super(SpanningForeignKey, self).__init__(self.model_on_other_db, **kwargs)
 
     def to_python(self, value):
@@ -73,12 +71,13 @@ class SpanningForeignKey(models.ForeignKey):
             value = value.pk
         return super(SpanningForeignKey, self).get_prep_value(value)
 
-    def formfield(self, **kwargs):
-        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
-        return super().formfield(**{
-            'form_class': forms.CharField,
-            **kwargs,
-        })
+#    def formfield(self, **kwargs):
+#        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
+#        print(kwargs)
+#        return super().formfield(**{
+#            'form_class': forms.CharField,
+#            **kwargs,
+#        })
 
     def get_cached_value(self, instance, default=NOT_PROVIDED):
         cache_name = self.get_cache_name()

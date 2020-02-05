@@ -13,6 +13,7 @@
    limitations under the License.
 """
 import os
+
 import sys
 from django.contrib.messages import constants as messages
 
@@ -94,69 +95,15 @@ WSGI_APPLICATION = 'production_services.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_production_services'),
+        'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_tests'),
         'USER': os.getenv('USER_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
+        'PASSWORD': os.getenv('USER_DB_PASSWORD', 'ensembl'),
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
-        'OPTIONS': {
-            # "init_command": "SET default_storage_engine=MYISAM",
-        }
-    },
-    'production': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production'),
-        'USER': os.getenv('PROD_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
-        'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('PROD_DB_PORT', '3306'),
-        'OPTIONS': {
-            # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': os.getenv('PROD_DB_CHARSET', 'utf8mb4'),
-            "init_command": "SET default_storage_engine=MYISAM",
-        }
-    },
-    'website': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website'),
-        'USER': os.getenv('WEBSITE_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', ''),
-        'HOST': os.getenv('WEBSITE_DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
-        'OPTIONS': {
-            # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': os.getenv('WEBSITE_DB_CHARSET', 'utf8mb4'),
-            "init_command": "SET default_storage_engine=MYISAM",
-        }
     }
 }
 
-DATABASE_ROUTERS = [
-    'ensembl_production.router.AuthRouter',
-    'ensembl_production_db.router.ProductionRouter',
-    'ensembl_website.router.WebsiteRouter'
-]
-
-# Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
 # Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-gb'
 
@@ -208,8 +155,6 @@ JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
-LOGOUT_REDIRECT_URL="/"
+LOGOUT_REDIRECT_URL = "/"
 
 USE_X_FORWARDED_HOST = True
-
-JET_DEFAULT_THEME = 'light-gray'
