@@ -31,7 +31,7 @@ def reverse_transform_json(apps, schema_editor):
     for record in WebData.objects.using('production').all():
         perl = to_internal_value(json.loads(record.data))
         record.data = perl
-        record.save()
+        record.save(using="production")
 
 
 class Migration(migrations.Migration):

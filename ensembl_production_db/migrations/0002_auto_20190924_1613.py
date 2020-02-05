@@ -10,13 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
+        migrations.RenameField(
             model_name='webdata',
-            name='web_data',
-        ),
-        migrations.AddField(
-            model_name='webdata',
-            name='data',
-            field=models.TextField(null=True),
-        ),
+            old_name='web_data',
+            new_name='data'
+        )
     ]
