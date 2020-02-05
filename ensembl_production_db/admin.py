@@ -285,17 +285,9 @@ class WebDataForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'rows': 7, 'class': 'vLargeTextField'}),
         }
 
-    def clean_data(self):
-        value = self.cleaned_data.get('data', None)
-        try:
-            json.loads(value)
-            return value
-        except json.JSONDecodeError:
-            raise ValidationError('JSON is not valid', code='invalid')
-
     def get_initial_for_field(self, field, field_name):
         if field_name == 'data':
-            return json.dumps(json.loads(self.initial.get('data', field.initial)), sort_keys=True, indent=4)
+            return json.dumps(self.initial.get('data', field.initial), sort_keys=True, indent=4)
         else:
             return super().get_initial_for_field(field, field_name)
 
@@ -316,7 +308,7 @@ class WebDataAdmin(ProductionModelAdmin):
         return super().change_view(request, object_id, form_url, extra_context)
 
     def data_label(self, obj):
-        return mark_safe('<pre>' + json.dumps(json.loads(obj.data), indent=4) + '</pre>') if obj.data else 'None'
+        return mark_safe('<pre>' + json.dumps(obj.data, indent=4) + '</pre>') if obj.data else 'None'
 
     data_label.short_description = "Web Data"
 

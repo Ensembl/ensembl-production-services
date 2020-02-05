@@ -12,14 +12,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django import forms
+import json
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.staticfiles import finders
 from django.core import exceptions
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
-from django.contrib.staticfiles import finders
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
@@ -71,13 +72,13 @@ class SpanningForeignKey(models.ForeignKey):
             value = value.pk
         return super(SpanningForeignKey, self).get_prep_value(value)
 
-#    def formfield(self, **kwargs):
-#        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
-#        print(kwargs)
-#        return super().formfield(**{
-#            'form_class': forms.CharField,
-#            **kwargs,
-#        })
+    #    def formfield(self, **kwargs):
+    #        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
+    #        print(kwargs)
+    #        return super().formfield(**{
+    #            'form_class': forms.CharField,
+    #            **kwargs,
+    #        })
 
     def get_cached_value(self, instance, default=NOT_PROVIDED):
         cache_name = self.get_cache_name()
@@ -148,3 +149,14 @@ class ProductionFlaskApp(BaseTimestampedModel):
             return self.app_prod_url.split('-')[0] + ".png"
         else:
             return False
+
+
+class JSONField(models.TextField):
+
+    def to_python(self, value):
+        return json.dumps(json.loads(value))
+
+    def from_db_value(self, value, expression, connection):
+        if value is None:
+            return value
+        return json.dumps(json.loads(value), sort_keys=True, indent=4)

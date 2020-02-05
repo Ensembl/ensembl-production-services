@@ -23,14 +23,6 @@ from ensembl_production_db.models import *
 User = get_user_model()
 
 
-class JSONFieldSerializer(serializers.CharField):
-    def to_representation(self, instance):
-        return json.loads(instance)
-
-    def to_internal_value(self, data):
-        return json.dumps(data)
-
-
 class WebDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebData
@@ -40,8 +32,6 @@ class WebDataSerializer(serializers.ModelSerializer):
                 'validators': [],
             }
         }
-
-    data = JSONFieldSerializer()
 
 
 class BaseUserTimestampSerializer(serializers.ModelSerializer):
