@@ -14,47 +14,34 @@
 """
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseBadRequest
 from rest_framework import serializers
 from rest_framework import status
-
 from rest_framework.exceptions import APIException
-from ensembl_production.utils import escape_perl_string, list_to_perl_string
+
 from ensembl_production_db.models import *
 
 User = get_user_model()
 
 
-class PerlFieldElementSerializer(serializers.CharField):
+class JSONFieldSerializer(serializers.CharField):
+    def to_representation(self, instance):
+        return json.loads(instance)
 
     def to_internal_value(self, data):
-        """Transform the supplied dict into a string representation of a Perl hash"""
-        pairs = []
-        for k, v in sorted([(k, v) for k, v in data.items() if v is not None], key=lambda x: x[0]):
-            # for k, v in sorted(filter((k, v) for k, v in web_data.items())):
-            k = str(k)
-            t = type(v).__name__
-            if t == 'str':
-                pairs.append("\"%s\" => \"%s\"" % (k, escape_perl_string(v)))
-            elif t == 'unicode':
-                pairs.append("\"%s\" => \"%s\"" % (k, escape_perl_string(str(v))))
-            elif t in ('int', 'long'):
-                pairs.append("\"%s\" => %d" % (k, v))
-            elif t == 'float':
-                pairs.append("\"%s\" => %f" % (k, v))
-            elif t == 'list':
-                pairs.append("\"%s\" => %s" % (k, list_to_perl_string(v)))
-            elif t == 'dict':
-                pairs.append("\"%s\" => %s" % (k, self.to_internal_value(v)))
-            elif t == 'bool':
-                if str(v) == "True":
-                    pairs.append("\"%s\" => %d" % (k, 1))
-            else:
-                raise Exception("Unsupported type " + str(t))
-        return "{%s}" % ", ".join(pairs)
+        return json.dumps(data)
 
-    def to_representation(self, instance):
-        return perl_string_to_python(instance)
+
+class WebDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WebData
+        exclude = ('created_at', 'modified_at')
+        extra_kwargs = {
+            'data': {
+                'validators': [],
+            }
+        }
+
+    data = JSONFieldSerializer()
 
 
 class BaseUserTimestampSerializer(serializers.ModelSerializer):
@@ -81,14 +68,6 @@ class BaseUserTimestampSerializer(serializers.ModelSerializer):
                 raise exc
         data = super().validate(data)
         return data
-
-
-class WebDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WebData
-        exclude = ('created_at', 'modified_at')
-
-    data = PerlFieldElementSerializer()
 
 
 class BiotypeSerializerUser(BaseUserTimestampSerializer):
@@ -160,7 +139,8 @@ class AnalysisDescriptionSerializerUser(BaseUserTimestampSerializer):
 
         return super(AnalysisDescriptionSerializerUser, self).create(validated_data)
 
-    def process_web_data(self, web_data_content, user):
+    @staticmethod
+    def process_web_data(web_data_content, user):
         search_content = web_data_content.get('data', '')
         elem = WebData.objects.filter(data=search_content).first()
         if not elem:

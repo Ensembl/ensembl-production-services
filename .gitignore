@@ -145,3 +145,4 @@ venv.bak/
 /bin/gunicorn.conf.py
 /bin/*.pid
 /staticfiles
+/production_services/settings_local.py

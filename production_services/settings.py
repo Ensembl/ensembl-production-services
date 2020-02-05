@@ -100,7 +100,7 @@ DATABASES = {
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
         'OPTIONS': {
-            "init_command": "SET default_storage_engine=MYISAM",
+            # "init_command": "SET default_storage_engine=MYISAM",
         }
     },
     'production': {
@@ -200,7 +200,7 @@ MESSAGE_TAGS = {
 
 IS_TESTING = sys.argv[1:2] == ['test']
 
-JET_DEFAULT_THEME = 'light-violet'
+JET_DEFAULT_THEME = 'light-gray'
 JET_SIDE_MENU_COMPACT = False
 JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
 JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
@@ -211,3 +211,5 @@ EMAIL_HOST = 'localhost'
 LOGOUT_REDIRECT_URL="/"
 
 USE_X_FORWARDED_HOST = True
+
+

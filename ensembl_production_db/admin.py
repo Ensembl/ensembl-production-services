@@ -19,10 +19,8 @@ from django import forms
 from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin import SimpleListFilter
-from django.core.exceptions import ValidationError
-from django.db import IntegrityError
 from django.utils.safestring import mark_safe
-
+from django.forms import ValidationError
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
 from .models import *
@@ -74,6 +72,7 @@ class ProductionModelAdmin(ProductionUserAdminMixin):
         if issubclass(self.model, BaseTimestampedModel):
             list_display = list_display + ('modified_at',)
         return list_display
+
 
 class IsCurrentFilter(SimpleListFilter):
     title = 'Is Current'
@@ -153,14 +152,14 @@ class AttribSetInline(ProductionTabularInline):
 class AnalysisDescriptionInline(ProductionTabularInline):
     model = AnalysisDescription
     extra = 0
-    fields = ('logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable')
-    readonly_fields = ['logic_name', 'display_label', 'description', 'web_data', 'db_version', 'displayable']
+    fields = ('logic_name', 'display_label', 'description', 'db_version', 'displayable')
+    readonly_fields = ('logic_name', 'display_label', 'description', 'db_version', 'displayable')
 
     def has_add_permission(self, request, obj=None):
         return False
 
-    def has_view_permission(self, request, obj=None):
-        return True
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 class HasCurrentAdmin(ProductionModelAdmin):
@@ -209,12 +208,35 @@ class BioTypeAdmin(HasCurrentAdmin):
 
 
 class WebDataChoiceField(forms.ModelChoiceField):
+
     def label_from_instance(self, obj):
+        print('in label for instance ')
         return "WebData: {} - {}".format(obj.pk, obj.data[:50] + '...' if obj.data else '')
 
 
+class AnalysisDescriptionForm(forms.ModelForm):
+    class Meta:
+        model = AnalysisDescription
+        exclude = ('created_at', 'modified_at')
+
+    # web_data = WebDataChoiceField(queryset=WebData.objects.all(), required=False)
+    web_data_label = forms.CharField(required=False,
+                                     label="WebData content (ReadOnly)",
+                                     widget=forms.Textarea(attrs={'rows': 20, 'cols': 40, 'class': 'vLargeTextField',
+                                                                  'readonly': 'readonly'}))
+
+    def __init__(self, *args, **kwargs):
+        super(AnalysisDescriptionForm, self).__init__(*args, **kwargs)
+        current = kwargs.get('instance')
+        self.fields['web_data_label'].initial = current.web_data.label if current.web_data else ''
+        if not current.web_data:
+            self.fields['web_data_label'].widget.attrs.update({'style': 'display:None'})
+
+
 class AnalysisDescriptionAdmin(HasCurrentAdmin):
+    form = AnalysisDescriptionForm
     fields = ('logic_name', 'description', 'display_label', 'web_data',
+              'web_data_label',
               ('db_version', 'displayable', 'is_current'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
@@ -224,12 +246,7 @@ class AnalysisDescriptionAdmin(HasCurrentAdmin):
     def web_data_label(self, obj):
         return obj.web_data.label if obj.web_data else 'EMPTY'
 
-    web_data_label.short_description = "Web Data"
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'web_data':
-            return WebDataChoiceField(queryset=WebData.objects.all(), required=False)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    web_data_label.short_description = "Web Data Content"
 
 
 class MetaKeyForm(forms.BaseModelForm):
@@ -263,14 +280,24 @@ class WebDataForm(forms.ModelForm):
     class Meta:
         model = WebData
         fields = ('data', 'comment')
+        widgets = {
+            'data': forms.Textarea(attrs={'rows': 20, 'class': 'vLargeTextField'}),
+            'comment': forms.Textarea(attrs={'rows': 7, 'class': 'vLargeTextField'}),
+        }
 
-    def clean_web_data(self):
+    def clean_data(self):
         value = self.cleaned_data.get('data', None)
         try:
-            perl_string_to_python(value)
+            json.loads(value)
             return value
-        except ValueError:
-            raise ValidationError('Value is not valid Perl string')
+        except json.JSONDecodeError:
+            raise ValidationError('JSON is not valid', code='invalid')
+
+    def get_initial_for_field(self, field, field_name):
+        if field_name == 'data':
+            return json.dumps(json.loads(self.initial.get('data', field.initial)), sort_keys=True, indent=4)
+        else:
+            return super().get_initial_for_field(field, field_name)
 
 
 class WebDataAdmin(ProductionModelAdmin):
@@ -289,7 +316,7 @@ class WebDataAdmin(ProductionModelAdmin):
         return super().change_view(request, object_id, form_url, extra_context)
 
     def data_label(self, obj):
-        return mark_safe('<pre>' + obj.label + '</pre>') if obj else ''
+        return mark_safe('<pre>' + json.dumps(json.loads(obj.data), indent=4) + '</pre>') if obj.data else 'None'
 
     data_label.short_description = "Web Data"
 

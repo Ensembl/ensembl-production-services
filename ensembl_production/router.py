@@ -19,7 +19,7 @@ class AuthRouter:
     A router to control all database operations on models in the
     auth application.
     """
-    app_list = ('auth', 'admin', 'contenttypes', 'jet', 'sessions', 'ensembl_production')
+    app_list = ('auth', 'admin', 'contenttypes', 'jet', 'sessions', 'ensembl_production', 'sitetree')
 
     def db_for_read(self, model, **hints):
         """
