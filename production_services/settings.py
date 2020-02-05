@@ -200,7 +200,7 @@ MESSAGE_TAGS = {
 
 IS_TESTING = sys.argv[1:2] == ['test']
 
-JET_DEFAULT_THEME = 'light-violet'
+JET_DEFAULT_THEME = 'light-gray'
 JET_SIDE_MENU_COMPACT = False
 JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
 JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
@@ -212,4 +212,4 @@ LOGOUT_REDIRECT_URL="/"
 
 USE_X_FORWARDED_HOST = True
 
-JET_DEFAULT_THEME = 'light-gray'
+
