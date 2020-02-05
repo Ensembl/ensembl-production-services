@@ -20,10 +20,10 @@ from ensembl_production.utils import perl_string_to_python, to_internal_value
 
 def transform_json(apps, schema_editor):
     WebData = apps.get_model('ensembl_production_db', 'WebData')
-    for record in WebData.objects.using('production').all():
+    for record in WebData.objects.all():
         python_value = perl_string_to_python(record.data)
         record.data = json.dumps(python_value, sort_keys=True)
-        record.save(using="production")
+        record.save()
 
 
 def reverse_transform_json(apps, schema_editor):
@@ -31,7 +31,7 @@ def reverse_transform_json(apps, schema_editor):
     for record in WebData.objects.using('production').all():
         perl = to_internal_value(json.loads(record.data))
         record.data = perl
-        record.save(using="production")
+        record.save()
 
 
 class Migration(migrations.Migration):
