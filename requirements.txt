@@ -12,4 +12,4 @@ django-ckeditor==5.6.1
 drf_yasg==1.15.0
 django-crispy-forms==1.7.2
 django-sitetree==1.13.1
-sqlparse==0.3.0
+django-jsonfield==1.4.0
