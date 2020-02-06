@@ -257,6 +257,10 @@ class AnalysisTest(APITestCase):
         self.assertIsNotNone(new_elem.web_data.data)
         self.assertTrue('default' in new_elem.web_data.data)
         self.assertEqual(new_elem.web_data.data['default']['contigviewbottom'], 'normal')
+        self.assertIsNotNone(WebData.objects.get(description='test', data={
+            'default': {'contigviewbottom': 'normal'},
+            'dna_align_feature': {'do_not_display': '1'},
+            'type': 'core'}))
         # Test delete with webdata
         response = self.client.delete(reverse('analysisdescription-detail', kwargs={'logic_name': 'testwebtestdata'}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -394,7 +398,7 @@ class AnalysisTest(APITestCase):
         if wdata_ser.is_valid():
             web_data = valid_payload["web_data"]["data"]
             self.assertIsNotNone(web_data)
-            self.assertEqual(wdata_ser.data['data'], web_data)
+            self.assertEqual(json.dumps(wdata_ser.validated_data['data'], sort_keys=True), json.dumps(web_data, sort_keys=True))
 
         another_valid_payload = {
             "user": "testuser",

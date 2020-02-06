@@ -27,11 +27,6 @@ class WebDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebData
         exclude = ('created_at', 'modified_at')
-        extra_kwargs = {
-            'data': {
-                'validators': [],
-            }
-        }
 
 
 class BaseUserTimestampSerializer(serializers.ModelSerializer):
@@ -131,7 +126,7 @@ class AnalysisDescriptionSerializerUser(BaseUserTimestampSerializer):
 
     @staticmethod
     def process_web_data(web_data_content, user):
-        search_content = web_data_content.get('data', '')
+        search_content = web_data_content.get('data', None)
         elem = WebData.objects.filter(data=search_content).first()
         if not elem:
             web_data_content['created_by'] = user
