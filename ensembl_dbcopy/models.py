@@ -8,6 +8,25 @@
 from django.db import models
 import uuid
 
+class NullTextField(models.TextField):
+    empty_strings_allowed = False
+    description = "Set Textfield to NULL instead of empty string"
+
+    def __init__(self, *args, **kwargs):
+        kwargs['null'] = True
+        kwargs['blank'] = True
+        super(NullTextField, self).__init__(*args, **kwargs)
+
+    def to_python(self, value):
+        if value == '':
+            return None
+        else:
+            return value
+
+    def get_internal_type(self):
+        return "TextField"
+
+
 class Dbs2Exclude(models.Model):
     table_schema = models.CharField(db_column='TABLE_SCHEMA', max_length=64)  # Field name made lowercase.
 
@@ -30,13 +49,13 @@ class DebugLog(models.Model):
 class RequestJob(models.Model):
     job_id = models.CharField(primary_key=True, max_length=128, default=uuid.uuid1, editable=False)
     src_host = models.TextField(max_length=2048)
-    src_incl_db = models.TextField(max_length=2048, blank=True, null=True)
-    src_skip_db = models.TextField(max_length=2048, blank=True, null=True)
-    src_incl_tables = models.TextField(max_length=2048, blank=True, null=True)
-    src_skip_tables = models.TextField(max_length=2048, blank=True, null=True)
+    src_incl_db = NullTextField(max_length=2048, blank=True, null=True)
+    src_skip_db = NullTextField(max_length=2048, blank=True, null=True)
+    src_incl_tables = NullTextField(max_length=2048, blank=True, null=True)
+    src_skip_tables = NullTextField(max_length=2048, blank=True, null=True)
     tgt_host = models.TextField(max_length=2048)
-    tgt_db_name = models.TextField(max_length=2048, blank=True, null=True)
-    tgt_directory = models.TextField(max_length=2048, blank=True, null=True)
+    tgt_db_name = NullTextField(max_length=2048, blank=True, null=True)
+    tgt_directory = NullTextField(max_length=2048, blank=True, null=True)
     skip_optimize = models.BooleanField(default=False)
     wipe_target = models.BooleanField(default=False)
     convert_innodb = models.BooleanField(default=False)
