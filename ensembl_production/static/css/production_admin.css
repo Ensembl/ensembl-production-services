@@ -17,3 +17,6 @@ ul.messagelist li.sucess{
     background-color: #ffc107;
     border-color: #ffeeba;
 }
+#select2-id_web_data-container {
+    max-width: 400px;
+}

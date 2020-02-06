@@ -207,33 +207,30 @@ class BioTypeAdmin(HasCurrentAdmin):
     search_fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type__name', 'description')
 
 
-class WebDataChoiceField(forms.ModelChoiceField):
-
-    def label_from_instance(self, obj):
-        print('in label for instance ')
-        return "WebData: {} - {}".format(obj.pk, obj.data[:50] + '...' if obj.data else '')
-
-
 class AnalysisDescriptionForm(forms.ModelForm):
     class Meta:
         model = AnalysisDescription
         exclude = ('created_at', 'modified_at')
 
-    # web_data = WebDataChoiceField(queryset=WebData.objects.all(), required=False)
     web_data_label = forms.CharField(required=False,
                                      label="WebData content (ReadOnly)",
-                                     widget=forms.Textarea(attrs={'rows': 20, 'cols': 40, 'class': 'vLargeTextField',
+                                     widget=forms.Textarea(attrs={'rows': 10, 'cols': 40, 'class': 'vLargeTextField',
                                                                   'readonly': 'readonly'}))
 
     def __init__(self, *args, **kwargs):
         super(AnalysisDescriptionForm, self).__init__(*args, **kwargs)
         current = kwargs.get('instance')
-        self.fields['web_data_label'].initial = current.web_data.label if current.web_data else ''
-        if not current.web_data:
+        if current:
+            self.fields['web_data_label'].initial = current.web_data.label if current.web_data else ''
+        if not current or not current.web_data:
             self.fields['web_data_label'].widget.attrs.update({'style': 'display:None'})
 
 
 class AnalysisDescriptionAdmin(HasCurrentAdmin):
+    class Media:
+        css = {
+            'all': ('css/production_admin.css',)
+        }
     form = AnalysisDescriptionForm
     fields = ('logic_name', 'description', 'display_label', 'web_data',
               'web_data_label',
