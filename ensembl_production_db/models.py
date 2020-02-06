@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 import json
 
+import jsonfield
 from django.db import models
 from django.template.defaultfilters import truncatechars
 from django_mysql.models import EnumField
@@ -55,7 +56,7 @@ class HasDecription(object):
 
 class WebData(BaseTimestampedModel, HasDecription):
     web_data_id = models.AutoField(primary_key=True)
-    data = models.TextField(null=True)
+    data = jsonfield.JSONField(null=True)
     comment = models.TextField(blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
 
@@ -66,14 +67,14 @@ class WebData(BaseTimestampedModel, HasDecription):
 
     @property
     def label(self):
-        return json.dumps(json.loads(self.data), sort_keys=True, indent=4)
+        return json.dumps(self.data, sort_keys=True, indent=4)
 
     @staticmethod
     def autocomplete_search_fields():
         return 'data', 'description'
 
     def __str__(self):
-        return '{} - {}...-'.format(self.pk, self.label[0:100])
+        return '{} - {}...-'.format(self.pk, self.data)
 
 
 class AnalysisDescription(HasCurrent, BaseTimestampedModel, HasDecription):
