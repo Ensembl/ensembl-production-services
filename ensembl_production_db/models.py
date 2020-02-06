@@ -39,6 +39,23 @@ DB_TYPE_CHOICES_METAKEY = (('cdna', 'cdna'),
                            ('presite', 'presite'),
                            ('sangervega', 'sangervega'))
 
+class NullTextField(models.TextField):
+    empty_strings_allowed = False
+    description = "Set Textfield to NULL instead of empty string"
+
+    def __init__(self, *args, **kwargs):
+        kwargs['null'] = True
+        kwargs['blank'] = True
+        super(NullTextField, self).__init__(*args, **kwargs)
+
+    def to_python(self, value):
+        if value == '':
+            return None
+        else:
+            return value
+
+    def get_internal_type(self):
+        return "TextField"
 
 class HasCurrent(models.Model):
     class Meta:
@@ -57,7 +74,7 @@ class HasDecription(object):
 class WebData(BaseTimestampedModel, HasDecription):
     web_data_id = models.AutoField(primary_key=True)
     data = jsonfield.JSONField(null=True)
-    comment = models.TextField(blank=True, null=True)
+    comment = NullTextField(blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
@@ -80,7 +97,7 @@ class WebData(BaseTimestampedModel, HasDecription):
 class AnalysisDescription(HasCurrent, BaseTimestampedModel, HasDecription):
     analysis_description_id = models.AutoField(primary_key=True)
     logic_name = models.CharField(unique=True, max_length=128)
-    description = models.TextField(blank=True, null=True)
+    description = NullTextField(blank=True, null=True)
     display_label = models.CharField(max_length=256)
     db_version = models.BooleanField('Use DB version', default=True)
     web_data = models.ForeignKey(WebData, null=True, blank=True, on_delete=models.SET_NULL,
@@ -99,7 +116,7 @@ class MasterAttribType(HasCurrent, BaseTimestampedModel, HasDecription):
     attrib_type_id = models.AutoField(primary_key=True)
     code = models.CharField(unique=True, max_length=20)
     name = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
+    description = NullTextField(blank=True, null=True)
 
     class Meta:
         db_table = 'master_attrib_type'
@@ -147,7 +164,7 @@ class MasterBiotype(HasCurrent, BaseTimestampedModel, HasDecription):
     is_dumped = models.BooleanField(default=True)
     object_type = EnumField(choices=['gene', 'transcript'], default='gene')
     db_type = MultiSelectField(choices=DB_TYPE_CHOICES_BIOTYPE, default='core')
-    description = models.TextField(blank=True, null=True)
+    description = NullTextField(blank=True, null=True)
     biotype_group = EnumField(
         choices=['coding', 'pseudogene', 'snoncoding', 'lnoncoding', 'mnoncoding', 'LRG', 'undefined', 'no_group'],
         default='no_group')
@@ -174,7 +191,7 @@ class MasterExternalDb(HasCurrent, BaseTimestampedModel, HasDecription):
                      blank=False, null=False)
     secondary_db_name = models.CharField(max_length=255, blank=True, null=True)
     secondary_db_table = models.CharField(max_length=255, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
+    description = NullTextField(blank=True, null=True)
 
     class Meta:
         db_table = 'master_external_db'
@@ -214,7 +231,7 @@ class MetaKey(HasCurrent, BaseTimestampedModel, HasDecription):
     name = models.CharField(max_length=64, unique=True)
     is_optional = models.BooleanField(default=False)
     db_type = MultiSelectField(choices=DB_TYPE_CHOICES_METAKEY)
-    description = models.TextField(blank=True, null=True)
+    description = NullTextField(blank=True, null=True)
     is_multi_value = models.BooleanField(default=False)
 
     class Meta:
