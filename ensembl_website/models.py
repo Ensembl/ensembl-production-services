@@ -60,7 +60,7 @@ class HelpLink(models.Model):
         app_label = 'ensembl_website'
 
     help_link_id = models.AutoField(primary_key=True)
-    page_url = SizedTextField(size_class=1, blank=True, null=True)
+    page_url = SizedTextField(size_class=1,null=True)
     help_record = models.OneToOneField(ViewRecord, db_column='help_record_id', blank=True, null=True,
                                        on_delete=models.CASCADE)
 
