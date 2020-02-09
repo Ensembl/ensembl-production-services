@@ -22,6 +22,7 @@ from fernet_fields import EncryptedCharField
 class Credentials(models.Model):
     class Meta:
         app_label = 'ensembl_bugs'
+        verbose_name_plural = 'Credentials'
 
     cred_id = models.AutoField(primary_key=True)
     cred_name = models.CharField("Name", unique=True, max_length=150)

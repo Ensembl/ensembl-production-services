@@ -20,5 +20,5 @@ from django.utils.translation import gettext_lazy as _
 
 class KnownBugsConfig(AppConfig):
     name = 'ensembl_bugs'
-    verbose_name = "Known bugs App"
+    verbose_name = "Known Bugs"
 
