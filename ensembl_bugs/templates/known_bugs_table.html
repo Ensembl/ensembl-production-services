@@ -1,0 +1,35 @@
+<table class="table table-bordered">
+  <thead class="thead-light">
+    <tr>
+      <th colspan="2">Known bugs in Ensembl</th>
+    </tr>
+  </thead>
+  <tbody id="known_bugs_table">
+    {% for kb in known_bugs %}
+      <tr>
+        <td>
+          <table class="table table-bordered">
+            <tr>
+              <td colspan="2"><h3>{{ kb.fields.summary }}</h3></td>
+            </tr>
+            <tr>
+              <td class="col-md-2"><strong>Affects: </strong>{{ kb.affected_sites }}</td>
+              <td class="col-md-4"><strong>Versions: </strong>{{ kb.versions_list }}</td>
+            </tr>
+            <tr>
+              <td colspan="2"><strong>Description: </strong>{{ kb.renderedFields.description | safe }}</td>
+            </tr>
+            <tr>
+              <td colspan="2"><strong>Workaround: </strong>{{ kb.workaround | safe }}</td>
+            </tr>
+            {% if jira_link %}
+              <tr>
+                <td colspan="2" class="text-right"><a href="{{ kb.permalink }}" target="_blank">View in JIRA</a></td>
+              </tr>
+            {% endif %}
+          </table>
+        </td>
+      </tr>
+   {% endfor %}
+  </tbody>
+</table>
