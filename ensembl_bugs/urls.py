@@ -13,10 +13,11 @@
    limitations under the License.
 """
 from django.urls import path
-from .views import KnownBugsView
+from .views import KnownBugsView, known_bugs_export
 
 app_name = 'ensembl_bugs'
 
 urlpatterns = [
     path("known_bugs", KnownBugsView.as_view(), name='index'),
+    path("known_bugs_export.txt", known_bugs_export, name='export'),
 ]
