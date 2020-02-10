@@ -70,6 +70,7 @@ def get_jira_issues(request=None):
 
 def matches_filter(jira_issue, known_bugs_filter):
     fields_string = " ".join(filter(None, [
+        jira_issue.key,
         jira_issue.fields.summary,
         jira_issue.fields.description,
         jira_issue.affected_sites,
