@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'crispy_forms',
     'drf_yasg',
+    'sitetree'
 ]
 
 MIDDLEWARE = [
@@ -81,6 +82,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                # make your file entry here.
+                'filter_tags': 'ensembl_production.templatetags.filter',
+            }
         },
     },
 ]
@@ -98,7 +103,7 @@ DATABASES = {
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
         'OPTIONS': {
-            "init_command": "SET default_storage_engine=MYISAM",
+            # "init_command": "SET default_storage_engine=MYISAM",
         }
     },
     'production': {
@@ -110,7 +115,7 @@ DATABASES = {
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': 'utf8mb4',
+            'charset': os.getenv('PROD_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
         }
     },
@@ -123,7 +128,7 @@ DATABASES = {
         'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': 'utf8mb4',
+            'charset': os.getenv('WEBSITE_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
         }
     }
@@ -186,6 +191,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # mailing
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'app/admin/login'
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'info alert-info',
@@ -196,6 +202,17 @@ MESSAGE_TAGS = {
 }
 
 IS_TESTING = sys.argv[1:2] == ['test']
+
+JET_DEFAULT_THEME = 'light-gray'
+JET_SIDE_MENU_COMPACT = False
+JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
+JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
+LOGOUT_REDIRECT_URL="/"
+
+USE_X_FORWARDED_HOST = True
+
+

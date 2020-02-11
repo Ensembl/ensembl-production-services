@@ -1,5 +1,5 @@
 cryptography
-Django==2.1.7
+Django==2.1.15
 mysqlclient==1.4.1
 djangorestframework==3.9.1
 django-rest-swagger==2.2.0
@@ -14,3 +14,5 @@ drf_yasg==1.15.0
 django-crispy-forms==1.7.2
 django-fernet-fields==0.6
 jira==2.0.0
+django-sitetree==1.13.1
+django-jsonfield==1.4.0

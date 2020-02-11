@@ -50,7 +50,7 @@ class BiotypeObjectTypeViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = BiotypeSerializerUser(queryset, many=True)
-        if len(serializer.data) is 0:
+        if len(serializer.data) == 0:
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(serializer.data)

@@ -12,10 +12,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django import forms
+import json
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.staticfiles import finders
 from django.core import exceptions
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
@@ -51,11 +53,9 @@ class SpanningForeignKey(models.ForeignKey):
             )
 
     def __init__(self, model_on_other_db=None, **kwargs):
-        # print('received ', model_on_other_db, '!!!', kwargs)
         self.model_on_other_db = model_on_other_db or kwargs.pop('to')
         kwargs['on_delete'] = models.SET_NULL
         kwargs['db_constraint'] = False
-
         super(SpanningForeignKey, self).__init__(self.model_on_other_db, **kwargs)
 
     def to_python(self, value):
@@ -72,12 +72,13 @@ class SpanningForeignKey(models.ForeignKey):
             value = value.pk
         return super(SpanningForeignKey, self).get_prep_value(value)
 
-    def formfield(self, **kwargs):
-        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
-        return super().formfield(**{
-            'form_class': forms.CharField,
-            **kwargs,
-        })
+    #    def formfield(self, **kwargs):
+    #        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
+    #        print(kwargs)
+    #        return super().formfield(**{
+    #            'form_class': forms.CharField,
+    #            **kwargs,
+    #        })
 
     def get_cached_value(self, instance, default=NOT_PROVIDED):
         cache_name = self.get_cache_name()
@@ -144,4 +145,18 @@ class ProductionFlaskApp(BaseTimestampedModel):
 
     @property
     def img(self):
-        return self.app_prod_url.split('-')[0] + ".png"
+        if finders.find('img' + self.app_prod_url.split('-')[0] + ".png"):
+            return self.app_prod_url.split('-')[0] + ".png"
+        else:
+            return False
+
+
+class JSONField(models.TextField):
+
+    def to_python(self, value):
+        return json.dumps(json.loads(value))
+
+    def from_db_value(self, value, expression, connection):
+        if value is None:
+            return value
+        return json.dumps(json.loads(value), sort_keys=True, indent=4)
