@@ -44,7 +44,6 @@ class BiotypeObjectTypeViewSet(viewsets.ModelViewSet):
     lookup_url_kwarg = 'type'
 
     def get_queryset(self):
-        self.request.query_params
         return MasterBiotype.objects.filter(name=self.kwargs['biotype_name'])
 
     def list(self, request, *args, **kwargs):
