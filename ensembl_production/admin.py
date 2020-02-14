@@ -41,10 +41,7 @@ class ProductionUserAdminMixin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-@admin.register(ProductionFlaskApp)
-class FlaskAppAdmin(ProductionUserAdminMixin):
-    list_display = ('app_name', 'app_url', 'app_theme', 'app_prod_url')
-
+class SuperUserAdmin:
     def has_add_permission(self, request):
         return request.user.is_superuser
 
@@ -58,8 +55,13 @@ class FlaskAppAdmin(ProductionUserAdminMixin):
         return request.user.is_superuser
 
 
+@admin.register(ProductionFlaskApp)
+class FlaskAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
+    list_display = ('app_name', 'app_url', 'app_theme', 'app_prod_url')
+
+
 @admin.register(Credentials)
-class CredentialsAdmin(admin.ModelAdmin):
+class CredentialsAdmin(admin.ModelAdmin, SuperUserAdmin):
     formfield_overrides = {
         EncryptedCharField: {'widget': forms.widgets.PasswordInput},
     }
