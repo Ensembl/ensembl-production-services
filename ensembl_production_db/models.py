@@ -39,6 +39,7 @@ DB_TYPE_CHOICES_METAKEY = (('cdna', 'cdna'),
                            ('presite', 'presite'),
                            ('sangervega', 'sangervega'))
 
+
 class NullTextField(models.TextField):
     empty_strings_allowed = False
     description = "Set Textfield to NULL instead of empty string"
@@ -57,6 +58,7 @@ class NullTextField(models.TextField):
     def get_internal_type(self):
         return "TextField"
 
+
 class HasCurrent(models.Model):
     class Meta:
         abstract = True
@@ -65,7 +67,7 @@ class HasCurrent(models.Model):
     is_current = models.BooleanField(default=True)
 
 
-class HasDecription(object):
+class HasDecription:
     @property
     def short_description(self):
         return truncatechars(self.description, 150)
@@ -197,7 +199,7 @@ class MasterExternalDb(HasCurrent, BaseTimestampedModel, HasDecription):
         db_table = 'master_external_db'
         app_label = 'ensembl_production_db'
         unique_together = (('db_name', 'db_release', 'is_current'),)
-        verbose_name = 'ExternalDB'
+        verbose_name = 'External DB'
 
 
 class MasterMiscSet(HasCurrent, BaseTimestampedModel, HasDecription):
