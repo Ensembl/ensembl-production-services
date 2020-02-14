@@ -12,12 +12,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import re
+
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from jira import JIRA
-import re
 
-from .models import Credentials
+from ensembl_production.models import Credentials
 
 
 class KnownBugsView(TemplateView):
@@ -47,10 +48,10 @@ def get_jira_issues(request=None):
 
     name_map = {field['name']: field['id'] for field in jira.fields()}
 
-    jira_filter =\
-        'project = ENSINT AND ' +\
+    jira_filter = \
+        'project = ENSINT AND ' + \
         'issuetype = Bug AND ' + \
-        'Website in (Archives, Blog, GRCh37, "Live site", Mirrors, Mobile) ' +\
+        'Website in (Archives, Blog, GRCh37, "Live site", Mirrors, Mobile) ' + \
         'ORDER BY Rank DESC'
     jira_issues = jira.search_issues(jira_filter, expand='renderedFields')
 

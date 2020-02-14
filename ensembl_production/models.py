@@ -21,6 +21,7 @@ from django.contrib.staticfiles import finders
 from django.core import exceptions
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
+from fernet_fields import EncryptedCharField
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
@@ -71,14 +72,6 @@ class SpanningForeignKey(models.ForeignKey):
         if isinstance(value, self.model_on_other_db):
             value = value.pk
         return super(SpanningForeignKey, self).get_prep_value(value)
-
-    #    def formfield(self, **kwargs):
-    #        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
-    #        print(kwargs)
-    #        return super().formfield(**{
-    #            'form_class': forms.CharField,
-    #            **kwargs,
-    #        })
 
     def get_cached_value(self, instance, default=NOT_PROVIDED):
         cache_name = self.get_cache_name()
@@ -151,12 +144,18 @@ class ProductionFlaskApp(BaseTimestampedModel):
             return False
 
 
-class JSONField(models.TextField):
+class Credentials(models.Model):
+    class Meta:
+        app_label = 'ensembl_production'
+        verbose_name = 'Credential'
+        verbose_name_plural = 'Credentials'
 
-    def to_python(self, value):
-        return json.dumps(json.loads(value))
+    cred_id = models.AutoField(primary_key=True)
+    cred_name = models.CharField("Name", unique=True, max_length=150)
+    cred_url = models.CharField("Access Url", max_length=255)
+    user = models.CharField("User Name", max_length=100)
+    credentials = EncryptedCharField("Password", max_length=255)
 
-    def from_db_value(self, value, expression, connection):
-        if value is None:
-            return value
-        return json.dumps(json.loads(value), sort_keys=True, indent=4)
+    def __str__(self):
+        return self.cred_name
+

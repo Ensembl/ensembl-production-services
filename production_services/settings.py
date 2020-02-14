@@ -102,9 +102,7 @@ DATABASES = {
         'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
-        'OPTIONS': {
-            # "init_command": "SET default_storage_engine=MYISAM",
-        }
+        'OPTIONS': {}
     },
     'production': {
         'ENGINE': 'django.db.backends.mysql',

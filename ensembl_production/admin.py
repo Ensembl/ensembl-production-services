@@ -12,13 +12,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-import logging
 
+from django import forms
 from django.contrib import admin
-from django.db import IntegrityError
-from django.http import HttpResponseRedirect
+from fernet_fields import EncryptedCharField
 
-from .models import ProductionFlaskApp
+from .models import ProductionFlaskApp, Credentials
 
 
 class ProductionUserAdminMixin(admin.ModelAdmin):
@@ -57,3 +56,10 @@ class FlaskAppAdmin(ProductionUserAdminMixin):
 
     def has_module_permission(self, request):
         return request.user.is_superuser
+
+
+@admin.register(Credentials)
+class CredentialsAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        EncryptedCharField: {'widget': forms.widgets.PasswordInput},
+    }

@@ -13,12 +13,8 @@
    limitations under the License.
 """
 from django.apps import AppConfig
-from django.conf import settings
-from django.db.models.signals import class_prepared
-from django.utils.translation import gettext_lazy as _
 
 
 class KnownBugsConfig(AppConfig):
     name = 'ensembl_bugs'
     verbose_name = "Known Bugs"
-
