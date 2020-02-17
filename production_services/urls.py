@@ -23,10 +23,12 @@ from django.conf import settings
 
 import ensembl_production.views as views
 
+
 urlpatterns = [
     # Production Admin
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
     url(r'^admin/', admin.site.urls),
+    url(r'^', include('ensembl_bugs.urls')),
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),

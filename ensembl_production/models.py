@@ -12,7 +12,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django import forms
+import json
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
@@ -21,6 +22,7 @@ from django.core import exceptions
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
+from fernet_fields import EncryptedCharField
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
@@ -71,14 +73,6 @@ class SpanningForeignKey(models.ForeignKey):
         if isinstance(value, self.model_on_other_db):
             value = value.pk
         return super(SpanningForeignKey, self).get_prep_value(value)
-
-    #    def formfield(self, **kwargs):
-    #        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
-    #        print(kwargs)
-    #        return super().formfield(**{
-    #            'form_class': forms.CharField,
-    #            **kwargs,
-    #        })
 
     def get_cached_value(self, instance, default=NOT_PROVIDED):
         cache_name = self.get_cache_name()
@@ -156,4 +150,19 @@ class ProductionFlaskApp(BaseTimestampedModel):
         super().clean()
         if self.app_is_framed and not self.app_url:
             raise ValidationError('You must set url if app is iframed')
+
+class Credentials(models.Model):
+    class Meta:
+        app_label = 'ensembl_production'
+        verbose_name = 'Credential'
+        verbose_name_plural = 'Credentials'
+
+    cred_id = models.AutoField(primary_key=True)
+    cred_name = models.CharField("Name", unique=True, max_length=150)
+    cred_url = models.CharField("Access Url", max_length=255)
+    user = models.CharField("User Name", max_length=100)
+    credentials = EncryptedCharField("Password", max_length=255)
+
+    def __str__(self):
+        return self.cred_name
 

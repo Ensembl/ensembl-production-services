@@ -20,3 +20,7 @@ ul.messagelist li.sucess{
 #select2-id_web_data-container {
     max-width: 400px;
 }
+
+.field-is_current img {
+    display: block;
+}
