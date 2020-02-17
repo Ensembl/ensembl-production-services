@@ -14,7 +14,7 @@
 """
 from crispy_forms.helper import FormHelper
 from django import forms
-from ensembl_dbcopy.models import RequestJob
+from ensembl_dbcopy.models import RequestJob,Group,Host
 from crispy_forms.layout import Submit,Field,Layout
 import re
 
@@ -75,6 +75,14 @@ class SubmitForm(forms.ModelForm):
         data = self.cleaned_data['tgt_host'].rstrip(',')
         if not tgt_host_pattern.fullmatch(data):
             raise forms.ValidationError("Source Host should be formatted like this host:port or host1:port1,host2:port2")
+        # Checking that user is allowed to copy to the target server.
+        for host in self.cleaned_data['tgt_host'].rstrip(',').split(','):
+            cleaned_host = host.split(':')[0]
+            host_queryset = Host.objects.filter(name=cleaned_host)
+            group = Group.objects.filter(host_id=host_queryset[0].auto_id)
+            if group:
+                if str(group.first().group_name) not in self.user.groups.all():
+                    raise forms.ValidationError("You are not allowed to copy to "+cleaned_host)
         return data
     def clean_src_incl_db(self):
         data = self.cleaned_data['src_incl_db'].rstrip(',')

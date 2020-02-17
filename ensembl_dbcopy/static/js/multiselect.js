@@ -15,7 +15,7 @@ $( function() {
   $( "#id_src_host" ).autocomplete({
     source :function( request, response ) {
       $.ajax({
-         url: "/api/dbcopy/host",
+         url: "/api/dbcopy/src_host",
          dataType: "json",
          data: {
           name : request.term
@@ -46,7 +46,7 @@ $( function() {
   $( "#id_tgt_host" ).autocomplete({
     source :function( request, response ) {
       $.ajax({
-         url: "/api/dbcopy/host",
+         url: "/api/dbcopy/tgt_host",
          dataType: "json",
          data: {
           name : extractLast(request.term)

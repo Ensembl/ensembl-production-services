@@ -17,7 +17,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 
 from ensembl_dbcopy.api.serializers import RequestJobDetailSerializer,RequestJobListSerializer,HostSerializer
-from ensembl_dbcopy.models import RequestJob,Host
+from ensembl_dbcopy.models import RequestJob,Host,Group
 
 
 class RequestJobViewSet(viewsets.ModelViewSet):
@@ -33,17 +33,40 @@ class RequestJobViewSet(viewsets.ModelViewSet):
         else:
             return RequestJobDetailSerializer
 
-class HostViewSet(viewsets.ReadOnlyModelViewSet):
+class SourceHostViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = HostSerializer
     lookup_field = 'name'
 
     def get_queryset(self):
         """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `name` query parameter in the URL.
+        Return a list of hosts according to a keyword
         """
         queryset = Host.objects.all()
         host_name = self.request.query_params.get('name', None)
         if host_name is not None:
             queryset = queryset.filter(name__contains=host_name)
         return queryset
+
+class TargetHostViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = HostSerializer
+    lookup_field = 'name'
+
+    def get_queryset(self):
+        """
+        Return a list of hosts according to a keyword
+
+        """
+        host_queryset = Host.objects.all()
+        group_queryset = Group.objects.all()
+        host_name = self.request.query_params.get('name', None)
+        # Checking that user is allowed to copy to the matching server
+        # If he is not allowed, the server will be removed from the autocomplete
+        if host_name is not None:
+            host_queryset = host_queryset.filter(name__contains=host_name)
+            host_queryset_final = host_queryset
+            for host in host_queryset:
+                group = group_queryset.filter(host_id=host.auto_id)
+                if group:
+                    if str(group.first().group_name) not in self.request.user.groups.all():
+                        host_queryset_final=host_queryset.exclude(name=host.name)
+        return host_queryset_final

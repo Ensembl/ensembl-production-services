@@ -8,6 +8,15 @@
 from django.db import models
 import uuid
 
+NAME_CHOICES_GROUP = (('Vertebrates', 'Vertebrates'),
+                           ('Microbes', 'Microbes'),
+                           ('Metazoa', 'Metazoa'),
+                           ('VectorBase', 'VectorBase'),
+                           ('Plants', 'Plants'),
+                           ('WormBase', 'WormBase'),
+                           ('Compara', 'Compara'),
+                           ('Production', 'Production'))
+
 class NullTextField(models.TextField):
     empty_strings_allowed = False
     description = "Set Textfield to NULL instead of empty string"
@@ -150,3 +159,13 @@ class Host(models.Model):
 
     def __str__(self):
         return '{}:{}'.format(self.name, self.port)
+
+class Group(models.Model):
+    group_id = models.BigAutoField(primary_key=True)
+    host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE)
+    group_name = models.CharField(choices=NAME_CHOICES_GROUP,max_length=80, default='Vertebrates')
+
+    class Meta:
+        db_table = 'group'
+        app_label = 'ensembl_dbcopy'
+        verbose_name = 'Group'

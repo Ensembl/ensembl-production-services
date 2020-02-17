@@ -40,9 +40,13 @@ router.register(prefix=r'requestjob',
                 viewset=viewsets.RequestJobViewSet,
                 base_name='requestjob')
 
-router.register(prefix=r'host',
-                viewset=viewsets.HostViewSet,
-                base_name='host')
+router.register(prefix=r'src_host',
+                viewset=viewsets.SourceHostViewSet,
+                base_name='src_host')
+
+router.register(prefix=r'tgt_host',
+                viewset=viewsets.TargetHostViewSet,
+                base_name='tgt_host')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
