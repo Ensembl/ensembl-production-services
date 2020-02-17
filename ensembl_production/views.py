@@ -32,8 +32,7 @@ class FlaskAppView(DetailView):
 
     def get_context_data(self, **kwargs):
         kwargs.update({
-            'url_cache': random.random(),
-            'flask_img': self.object.img
+            'url_cache': random.random()
         })
         return super().get_context_data(**kwargs)
 
@@ -59,26 +58,6 @@ class AngularView(FlaskAppView):
 class AngularConfigView(FlaskAppView):
     template_name = "app/config.js.tpl"
     content_type = 'application/javascript'
-
-    def get_context_data(self, **kwargs):
-        kwargs.update({
-            "config": {
-                'LIVE_URI': 'mysql://ensro@mysql-eg-publicsql:4157/',
-                'STAGING_URI': 'mysql://ensro@mysql-ens-sta-3:4160/',
-                'COMPARA_URI': 'mysql://ensro@mysql-eg-pan-prod:4276/ensembl_compara_master',
-                'PROD_URI': 'mysql://ensro@mysql-ens-meta-prod-1:4483/ensembl_production',
-                'HC_SRV_URL': 'http://production-services.ensembl.org/api/production/hc/',
-                'DB_SRV_URL': 'http://production-services.ensembl.org/api/production/db/',
-                'URI_USER': 'ensro',
-                'COPY_SOURCE_USER': 'ensro',
-                'COPY_TARGET_USER': 'ensrw',
-                'DATA_FILES_PATH': '/nfs/panda/ensembl/production/ensemblftp/data_files/',
-                'METADATA_SRV_URL': '/api/production/meta/',
-                'HANDOVER_SRV_URL': '/api/production/ho/',
-                'WEBSITE_NAME': 'Non-Vertebrates !'
-            }})
-
-        return super().get_context_data(**kwargs)
 
     def get_template_names(self):
         return [self.template_name]

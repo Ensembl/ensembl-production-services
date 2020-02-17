@@ -35,7 +35,7 @@ urlpatterns = [
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
     path('api/production_db/', include('ensembl_production_db.api.urls')),
     re_path(r'^app/(?P<app_prod_url>[a-z]+)/scripts/config.js', views.AngularConfigView.as_view()),
-    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view()),
+    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view(), name='production_app_view'),
 ]
 
 if settings.DEBUG:

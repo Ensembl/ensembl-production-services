@@ -1,6 +1,7 @@
 angular.module('app.config', [])
     .constant('CONFIG', {
-        {% for key, value in config.items %}
+        'flask_app': '{{ flask_app.app_name }}',
+        {% for key, value in flask_app.app_config_params.items %}
 	    '{{ key }}': '{{ value }}',
 	    {% empty %}
     	'LIVE_URI': 'mysql://ensembl@ensro@127.0.0.1:3306/',
