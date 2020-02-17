@@ -31,12 +31,9 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
-    re_path(r'^app/(?P<app_prod_url>production|vertebrates|microbes|metazoa|plants)/$', views.AngularView.as_view()),
-    re_path(r'^app/(?P<app_prod_url>production|vertebrates|microbes|metazoa|plants)/scripts/config.js',
-            views.AngularConfigView.as_view()),
-    # Production DB API
-    # url(r'^api/production_db/', include('ensembl_production_db.api.urls')),
-    # re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view()),
+    path('api/production_db/', include('ensembl_production_db.api.urls')),
+    re_path(r'^app/(?P<app_prod_url>[a-z]+)/scripts/config.js', views.AngularConfigView.as_view()),
+    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view()),
 ]
 
 if settings.DEBUG:

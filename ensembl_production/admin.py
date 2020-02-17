@@ -44,7 +44,7 @@ class ProductionUserAdminMixin(admin.ModelAdmin):
 
 @admin.register(ProductionFlaskApp)
 class FlaskAppAdmin(ProductionUserAdminMixin):
-    list_display = ('app_name', 'app_url', 'app_theme', 'app_prod_url')
+    list_display = ('app_name', 'app_url', 'app_theme', 'app_prod_url', 'app_is_framed')
 
     def has_add_permission(self, request):
         return request.user.is_superuser

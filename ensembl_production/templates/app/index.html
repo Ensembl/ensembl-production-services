@@ -1,4 +1,4 @@
-{% extends 'home.html' %}
+{% extends 'app/iframe.html' %}
 
 {% block extrastyle %}
     <link rel="stylesheet" href="/web-app/bower_components/ng-tags-input/ng-tags-input.css"/>
@@ -7,8 +7,7 @@
 {% block content %}
     <div class="row" id="body-row" ng-app="ProdSrvApp" ng-controller="mainController">
         <div id="sidebar-container" class="sidebar-expanded d-none d-md-block"
-             style="background-color: #{{ flask_app.app_theme|default:'343A40' }} !important;">
-            <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
+             style="background-color: #{{ flask_app.app_theme|default:'343A40' }}">
             <!-- Bootstrap List Group -->
             <ul class="list-group">
                 <!-- Separator with title -->
@@ -17,7 +16,7 @@
                 </li>
                 <!-- /END Separator -->
                 <!-- Menu with submenu -->
-                <a href="#submenu1" data-toggle="collapse" aria-expanded="false"
+                <a data-target="#healthchecks" data-toggle="collapse" aria-expanded="false"
                    class="bg-transparent list-group-item list-group-item-action flex-column align-items-start">
                     <div class="d-flex w-100 justify-content-start align-items-center">
                         <span class="fa fa-calendar-check-o fa-fw mr-3" data-toggle="collapse"></span>
@@ -26,7 +25,7 @@
                     </div>
                 </a>
                 <!-- Submenu content -->
-                <div id='submenu1' class="collapse sidebar-submenu">
+                <div id='healthchecks' class="collapse sidebar-submenu">
                     <a data-match-route="/hc_submit" href="#!hc_submit" class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">Submit HC job</span>
                     </a>
@@ -37,7 +36,7 @@
                         <span class="menu-collapsed">View HC job</span>
                     </a>
                 </div>
-                <a href="#submenu2" data-toggle="collapse" aria-expanded="false"
+                <a data-target="#dbcopy" data-toggle="collapse" aria-expanded="false"
                    class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
                     <div class="d-flex w-100 justify-content-start align-items-center">
                         <span class="fa fa-user fa-fw mr-3"></span>
@@ -46,42 +45,40 @@
                     </div>
                 </a>
                 <!-- Submenu content -->
-                <div id='submenu2' class="collapse sidebar-submenu">
-                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                        <span class="menu-collapsed">Settings</span>
+                <div id='dbcopy' class="collapse sidebar-submenu">
+                    <a data-match-route="/copy_submit.*" href="#!copy_submit" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">Submit copy</span>
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                        <span class="menu-collapsed">Password</span>
+                    <a data-match-route="/copy_list.*" href="#!copy_list" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">List copy jobs</span>
+                    </a>
+                    <a data-match-route="/copy_result.*" href="#!copy_result" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">View copy jobs</span>
                     </a>
                 </div>
-                <a href="#" class="bg-dark list-group-item list-group-item-action">
+                <a data-target="#handover" data-toggle="collapse" aria-expanded="false"
+                   class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
                     <div class="d-flex w-100 justify-content-start align-items-center">
                         <span class="fa fa-tasks fa-fw mr-3"></span>
-                        <span class="menu-collapsed">Tasks</span>
+                        <span class="menu-collapsed">Handovers</span>
+                        <span class="submenu-icon ml-auto"></span>
                     </div>
                 </a>
-                <!-- Separator with title -->
-                <li class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed">
-                    <small>OPTIONS</small>
-                </li>
-                <!-- /END Separator -->
-                <a href="#" class="bg-dark list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-start align-items-center">
-                        <span class="fa fa-calendar fa-fw mr-3"></span>
-                        <span class="menu-collapsed">Calendar</span>
-                    </div>
-                </a>
-                <a href="#" class="bg-dark list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-start align-items-center">
-                        <span class="fa fa-envelope-o fa-fw mr-3"></span>
-                        <span class="menu-collapsed">Messages <span
-                                class="badge badge-pill badge-primary ml-2">5</span></span>
-                    </div>
-                </a>
+                <div id='handover' class="collapse sidebar-submenu">
+                    <a  data-match-route="/database_handover_submit.*" href="#!database_handover_submit" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">Submit copy job</span>
+                    </a>
+                    <a data-match-route="/database_handover_list.*" href="#!database_handover_list" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">List copy jobs</span>
+                    </a>
+                    <a data-match-route="/database_handover_result.*" href="#!database_handover_result" class="list-group-item list-group-item-action bg-dark text-white">
+                        <span class="menu-collapsed">View copy jobs</span>
+                    </a>
+                </div>
                 <!-- Separator without title -->
                 <li class="list-group-item sidebar-separator menu-collapsed"></li>
                 <!-- /END Separator -->
-                <a href="#" class="bg-dark list-group-item list-group-item-action">
+                <a href="#!help" class="bg-dark list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-start align-items-center">
                         <span class="fa fa-question fa-fw mr-3"></span>
                         <span class="menu-collapsed">Help</span>

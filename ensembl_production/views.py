@@ -12,11 +12,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django.core.exceptions import PermissionDenied
 import random
-import json
+
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render_to_response
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView
 
 from .models import ProductionFlaskApp
 
@@ -45,6 +45,12 @@ class FlaskAppView(DetailView):
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
+    def get_template_names(self):
+        if self.object and self.object.app_is_framed:
+            return ["app/iframe.html"]
+        else:
+            return ["app/index.html"]
+
 
 class AngularView(FlaskAppView):
     template_name = "app/index.html"
@@ -71,7 +77,11 @@ class AngularConfigView(FlaskAppView):
                 'HANDOVER_SRV_URL': '/api/production/ho/',
                 'WEBSITE_NAME': 'Non-Vertebrates !'
             }})
+
         return super().get_context_data(**kwargs)
+
+    def get_template_names(self):
+        return [self.template_name]
 
 
 def handler404(request, *args, **argv):

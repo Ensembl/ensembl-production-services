@@ -17,6 +17,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
 from django.contrib.staticfiles import finders
@@ -118,8 +119,8 @@ class ProductionFlaskApp(BaseTimestampedModel):
     class Meta:
         db_table = 'flask_app'
         app_label = 'ensembl_production'
-        verbose_name = 'Flask App'
-        verbose_name_plural = 'Flask Apps'
+        verbose_name = 'Production App'
+        verbose_name_plural = 'Production Apps'
 
     def __str__(self):
         return self.app_name
@@ -137,14 +138,22 @@ class ProductionFlaskApp(BaseTimestampedModel):
     # TODO add menu organisation
     app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
-    app_url = models.URLField("App flask url", max_length=255)
+    app_is_framed = models.BooleanField('Display app in iframe', default=True, null=True, help_text='Need an url then')
+    app_url = models.URLField("App flask url", max_length=255, null=True, blank=True)
     app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)
     app_groups = models.ManyToManyField(Group, blank=True)
     app_prod_url = models.CharField('App Url', max_length=200, null=False, unique=True)
+    app_config_params = models.TextField('Configuration parameters', null=True, blank=True)
 
     @property
     def img(self):
-        if finders.find('img' + self.app_prod_url.split('-')[0] + ".png"):
+        if finders.find('img/' + self.app_prod_url.split('-')[0] + ".png"):
             return self.app_prod_url.split('-')[0] + ".png"
         else:
             return False
+
+    def clean(self):
+        super().clean()
+        if self.app_is_framed and not self.app_url:
+            raise ValidationError('You must set url if app is iframed')
+
