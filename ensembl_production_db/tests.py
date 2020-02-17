@@ -31,7 +31,7 @@ class AnalysisTest(APITestCase):
     fixtures = ['ensembl_production_api']
 
     # Test Analysis description endpoints
-    def test_AnalysisDescription(self):
+    def testBasicAnalysisDescription(self):
         # Check get all
         response = self.client.get(reverse('analysisdescription-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -75,9 +75,8 @@ class AnalysisTest(APITestCase):
         self.assertIsNotNone(analysis)
         web_data = analysis.web_data
         self.assertEqual(web_data.description, 'test')
-        data = json.loads(web_data.data)
-        self.assertTrue('dna_align_feature' in data)
-        self.assertTrue('type' in data and data['type'] == 'cdna')
+        self.assertTrue('dna_align_feature' in web_data.data)
+        self.assertTrue('type' in web_data.data and web_data.data['type'] == 'cdna')
         web_data_id = web_data.web_data_id
         # Test post wth webdata, reusing existing webdata
         valid_payload = {
@@ -107,6 +106,7 @@ class AnalysisTest(APITestCase):
         self.assertIsNotNone(analysis)
         web_data = analysis.web_data
         self.assertEqual(web_data.web_data_id, web_data_id)
+
         # Test bad post
         response = self.client.post(reverse('analysisdescription-list'),
                                     {
@@ -145,7 +145,7 @@ class AnalysisTest(APITestCase):
                                    {
                                        'logic_name': 'newtest',
                                        'description': 'newtest2 analysis',
-                                        'display_label': 'newtest2',
+                                       'display_label': 'newtest2',
                                        'db_version': 1,
                                        'displayable': 1
                                    })
@@ -201,13 +201,12 @@ class AnalysisTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test patch
         response = self.client.patch(reverse('analysisdescription-detail', kwargs={'logic_name': 'test'}),
-                                     {
-                                         'logic_name': 'test3',
-                                         'description': 'test2 analysis updated',
-                                         'display_label': 'test2',
-                                         'db_version': 1,
-                                         'displayable': 1
-                                     })
+                                     {'logic_name': 'test3',
+                                      'description': 'test2 analysis updated',
+                                      'display_label': 'test2',
+                                      'db_version': 1,
+                                      'displayable': 1
+                                      })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Test get
         response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name': 'test3'}))
@@ -239,14 +238,29 @@ class AnalysisTest(APITestCase):
         response = self.client.delete(reverse('analysisdescription-detail', kwargs={'logic_name': 'test3'}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         # Test post wth webdata, reusing existing webdata for delete
-        valid_payload = {'logic_name': 'testwebtestdata3', 'description': 'testwebdata3 analysis',
-                         'display_label': 'testwebdata3', 'db_version': 1, 'displayable': 1,
-                         'web_data': {'description': 'test', 'data': {'default': {'contigviewbottom': 'normal'},
-                                                                      'dna_align_feature': {'do_not_display': '1'},
-                                                                      'type': 'core'}}}
+        valid_payload = {'logic_name': 'testwebtestdata3',
+                         'description': 'testwebdata3 analysis',
+                         'display_label': 'testwebdata3',
+                         'db_version': 1,
+                         'displayable': 1,
+                         'web_data': {
+                             'description': 'test',
+                             'data': {
+                                 'default': {'contigviewbottom': 'normal'},
+                                 'dna_align_feature': {'do_not_display': '1'},
+                                 'type': 'core'}
+                         }}
         response = self.client.post(reverse('analysisdescription-list'), data=json.dumps(valid_payload),
                                     content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        new_elem = AnalysisDescription.objects.get(logic_name='testwebtestdata3')
+        self.assertIsNotNone(new_elem.web_data.data)
+        self.assertTrue('default' in new_elem.web_data.data)
+        self.assertEqual(new_elem.web_data.data['default']['contigviewbottom'], 'normal')
+        self.assertIsNotNone(WebData.objects.get(description='test', data={
+            'default': {'contigviewbottom': 'normal'},
+            'dna_align_feature': {'do_not_display': '1'},
+            'type': 'core'}))
         # Test delete with webdata
         response = self.client.delete(reverse('analysisdescription-detail', kwargs={'logic_name': 'testwebtestdata'}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -258,11 +272,22 @@ class AnalysisTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_AnalysisDescriptionUserName(self):
-        valid_payload = {'logic_name': 'testwebtestdata4', 'description': 'testwebdata4 analysis',
-                         'display_label': 'testwebdata4', 'db_version': 1, 'displayable': 1, "user": "testuser",
-                         'web_data': {'description': 'test', 'data': {'default': {'contigviewbottom': 'normal'},
-                                                                      'dna_align_feature': {'do_not_display': '1'},
-                                                                      'type': 'core'}}}
+        valid_payload = {'logic_name': 'testwebtestdata4',
+                         'description': 'testwebdata4 analysis',
+                         'display_label': 'testwebdata4',
+                         'db_version': 1,
+                         'displayable': 1, "user": "testuser",
+                         'web_data': {
+                             'description': 'test',
+                             'data': {
+                                 'default': {
+                                     'contigviewbottom': 'normal'
+                                 },
+                                 'dna_align_feature': {
+                                     'do_not_display': '1'
+                                 },
+                                 'type': 'core'}
+                         }}
         response = self.client.post(reverse('analysisdescription-list'), data=json.dumps(valid_payload),
                                     content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -297,14 +322,24 @@ class AnalysisTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         new_elem = AnalysisDescription.objects.get(logic_name='testwebtestdata5')
         self.assertIsNone(new_elem.created_by)
+        self.assertIsNotNone(new_elem.web_data.data)
+        self.assertTrue(json.dumps(new_elem.web_data.data))
         # test update with username
-        valid_payload = {'logic_name': 'testwebtestdata5', 'description': 'testwebdata5 analysis updated',
-                         'display_label': 'testwebdata5', 'db_version': 1, 'displayable': 1, 'user': "testuserupdate"}
+        valid_payload = {'logic_name': 'testwebtestdata5',
+                         'description': 'testwebdata5 analysis updated',
+                         'display_label': 'testwebdata5',
+                         'db_version': 1,
+                         'displayable': 1,
+                         'user': "testuserupdate"
+                         }
         response = self.client.patch(reverse('analysisdescription-detail', kwargs={'logic_name': 'testwebtestdata5'}),
                                      data=json.dumps(valid_payload), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_elem = AnalysisDescription.objects.get(logic_name='testwebtestdata5')
         self.assertIsNotNone(new_elem.modified_by)
+        self.assertIsNotNone(new_elem.web_data.data)
+        self.assertTrue('dna_align_feature' in new_elem.web_data.data)
+        self.assertEqual(new_elem.web_data.data['dna_align_feature']['do_not_display'], '1')
         self.assertEqual(new_elem.modified_by.username, 'testuserupdate')
         # test unknown user
         valid_payload = {'logic_name': 'testwebtestdata5', 'description': 'testwebdata5 analysis updated wrong user',
@@ -322,13 +357,12 @@ class AnalysisTest(APITestCase):
                              'data': {
                                  'default': 'normalupdated'
                              }
-                         }
-                         }
+                         }}
         response = self.client.put(reverse('analysisdescription-detail', kwargs={'logic_name': 'testwebtestdata5'}),
                                    data=json.dumps(valid_payload), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         analysis = AnalysisDescription.objects.get(logic_name='testwebtestdata5')
-        self.assertEqual(analysis.web_data.data, '{"default": "normalupdated"}')
+        self.assertEqual(analysis.web_data.data, json.loads('{"default": "normalupdated"}'))
         self.assertEqual(WebData.objects.filter(data__contains="normalupdated").count(), 1)
 
     def testWebDataCreateUpdate(self):
@@ -364,7 +398,7 @@ class AnalysisTest(APITestCase):
         if wdata_ser.is_valid():
             web_data = valid_payload["web_data"]["data"]
             self.assertIsNotNone(web_data)
-            self.assertEqual(wdata_ser.data['data'], web_data)
+            self.assertEqual(json.dumps(wdata_ser.validated_data['data'], sort_keys=True), json.dumps(web_data, sort_keys=True))
 
         another_valid_payload = {
             "user": "testuser",

@@ -23,25 +23,10 @@ from ensembl_production_db.models import *
 User = get_user_model()
 
 
-class JSONFieldSerializer(serializers.CharField):
-    def to_representation(self, instance):
-        return json.loads(instance)
-
-    def to_internal_value(self, data):
-        return json.dumps(data)
-
-
 class WebDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WebData
         exclude = ('created_at', 'modified_at')
-        extra_kwargs = {
-            'data': {
-                'validators': [],
-            }
-        }
-
-    data = JSONFieldSerializer()
 
 
 class BaseUserTimestampSerializer(serializers.ModelSerializer):
@@ -141,7 +126,7 @@ class AnalysisDescriptionSerializerUser(BaseUserTimestampSerializer):
 
     @staticmethod
     def process_web_data(web_data_content, user):
-        search_content = web_data_content.get('data', '')
+        search_content = web_data_content.get('data', None)
         elem = WebData.objects.filter(data=search_content).first()
         if not elem:
             web_data_content['created_by'] = user

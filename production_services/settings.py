@@ -112,7 +112,7 @@ DATABASES = {
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': 'utf8mb4',
+            'charset': os.getenv('PROD_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
         }
     },
@@ -125,7 +125,7 @@ DATABASES = {
         'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': 'utf8mb4',
+            'charset': os.getenv('WEBSITE_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
         }
     }
@@ -205,7 +205,7 @@ MESSAGE_TAGS = {
 
 IS_TESTING = sys.argv[1:2] == ['test']
 
-JET_DEFAULT_THEME = 'light-violet'
+JET_DEFAULT_THEME = 'light-gray'
 JET_SIDE_MENU_COMPACT = False
 JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
 JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
@@ -216,4 +216,5 @@ EMAIL_HOST = 'localhost'
 LOGOUT_REDIRECT_URL="/"
 
 USE_X_FORWARDED_HOST = True
-JET_DEFAULT_THEME = 'light-gray'
+
+

@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin import SimpleListFilter
 from django.utils.safestring import mark_safe
-from django.forms import ValidationError
+
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
 from .models import *
@@ -207,33 +207,30 @@ class BioTypeAdmin(HasCurrentAdmin):
     search_fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type__name', 'description')
 
 
-class WebDataChoiceField(forms.ModelChoiceField):
-
-    def label_from_instance(self, obj):
-        print('in label for instance ')
-        return "WebData: {} - {}".format(obj.pk, obj.data[:50] + '...' if obj.data else '')
-
-
 class AnalysisDescriptionForm(forms.ModelForm):
     class Meta:
         model = AnalysisDescription
         exclude = ('created_at', 'modified_at')
 
-    # web_data = WebDataChoiceField(queryset=WebData.objects.all(), required=False)
     web_data_label = forms.CharField(required=False,
                                      label="WebData content (ReadOnly)",
-                                     widget=forms.Textarea(attrs={'rows': 20, 'cols': 40, 'class': 'vLargeTextField',
+                                     widget=forms.Textarea(attrs={'rows': 10, 'cols': 40, 'class': 'vLargeTextField',
                                                                   'readonly': 'readonly'}))
 
     def __init__(self, *args, **kwargs):
         super(AnalysisDescriptionForm, self).__init__(*args, **kwargs)
         current = kwargs.get('instance')
-        self.fields['web_data_label'].initial = current.web_data.label if current.web_data else ''
-        if not current.web_data:
+        if current:
+            self.fields['web_data_label'].initial = current.web_data.label if current.web_data else ''
+        if not current or not current.web_data:
             self.fields['web_data_label'].widget.attrs.update({'style': 'display:None'})
 
 
 class AnalysisDescriptionAdmin(HasCurrentAdmin):
+    class Media:
+        css = {
+            'all': ('css/production_admin.css',)
+        }
     form = AnalysisDescriptionForm
     fields = ('logic_name', 'description', 'display_label', 'web_data',
               'web_data_label',
@@ -285,17 +282,10 @@ class WebDataForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'rows': 7, 'class': 'vLargeTextField'}),
         }
 
-    def clean_data(self):
-        value = self.cleaned_data.get('data', None)
-        try:
-            json.loads(value)
-            return value
-        except json.JSONDecodeError:
-            raise ValidationError('JSON is not valid', code='invalid')
-
     def get_initial_for_field(self, field, field_name):
         if field_name == 'data':
-            return json.dumps(json.loads(self.initial.get('data', field.initial)), sort_keys=True, indent=4)
+            return json.dumps(self.initial.get('data', field.initial), sort_keys=True, indent=4) if self.initial.get(
+                'data', field.initial) is not None else ""
         else:
             return super().get_initial_for_field(field, field_name)
 
@@ -311,17 +301,16 @@ class WebDataAdmin(ProductionModelAdmin):
     inlines = (AnalysisDescriptionInline,)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        messages.warning(request,
-                         "WARNING: Updating web data with multiple analysis description update it for all of them")
+        msg = "Updating web data with multiple analysis description update it for all of them"
+        if msg not in [m.message for m in messages.get_messages(request)]:
+            messages.warning(request, msg)
+
         return super().change_view(request, object_id, form_url, extra_context)
 
     def data_label(self, obj):
-        return mark_safe('<pre>' + json.dumps(json.loads(obj.data), indent=4) + '</pre>') if obj.data else 'None'
+        return mark_safe('<pre>' + json.dumps(obj.data, indent=4) + '</pre>') if obj.data else 'None'
 
     data_label.short_description = "Web Data"
-
-    def get_queryset(self, request):
-        return super().get_queryset(request)
 
 
 class MasterExternalDbAdmin(HasCurrentAdmin):

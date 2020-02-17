@@ -16,11 +16,11 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.staticfiles import finders
 from django.core import exceptions
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
-from django.contrib.staticfiles import finders
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
@@ -72,13 +72,13 @@ class SpanningForeignKey(models.ForeignKey):
             value = value.pk
         return super(SpanningForeignKey, self).get_prep_value(value)
 
-#    def formfield(self, **kwargs):
-#        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
-#        print(kwargs)
-#        return super().formfield(**{
-#            'form_class': forms.CharField,
-#            **kwargs,
-#        })
+    #    def formfield(self, **kwargs):
+    #        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
+    #        print(kwargs)
+    #        return super().formfield(**{
+    #            'form_class': forms.CharField,
+    #            **kwargs,
+    #        })
 
     def get_cached_value(self, instance, default=NOT_PROVIDED):
         cache_name = self.get_cache_name()

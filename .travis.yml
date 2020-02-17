@@ -10,10 +10,10 @@ services:
 env:
   - DJANGO=2.1.11 DB=mysql
 before_script:
-  - mysql -u root -e "CREATE USER 'ensembl'@'127.0.0.1' IDENTIFIED BY '';"
+  - mysql -u root -e "CREATE USER 'ensembl'@'127.0.0.1' IDENTIFIED BY 'ensembl';"
   - mysql -u root -e "GRANT ALL ON *.* TO 'ensembl'@'127.0.0.1';"
 install:
   - pip install -r requirements.txt
   - pip install coverage==4.5.1
 script:
-  - coverage run --source='.' manage.py test
+  - coverage run --source='.' manage.py test --settings=production_services.settings_tests

@@ -22,13 +22,13 @@ def transform_json(apps, schema_editor):
     WebData = apps.get_model('ensembl_production_db', 'WebData')
     for record in WebData.objects.all():
         python_value = perl_string_to_python(record.data)
-        record.data = json.dumps(python_value, sort_keys=True, indent=4)
+        record.data = json.dumps(python_value, sort_keys=True)
         record.save()
 
 
 def reverse_transform_json(apps, schema_editor):
     WebData = apps.get_model('ensembl_production_db', 'WebData')
-    for record in WebData.objects.all():
+    for record in WebData.objects.using('production').all():
         perl = to_internal_value(json.loads(record.data))
         record.data = perl
         record.save()
