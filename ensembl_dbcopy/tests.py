@@ -21,7 +21,6 @@ import json
 
 User = get_user_model()
 
-
 class RequestJobTest(APITestCase):
     """ Test module for RequestJob model """
     multi_db = True
@@ -76,22 +75,47 @@ class RequestJobTest(APITestCase):
         response = self.client.delete(reverse('requestjob-detail', kwargs={'job_id': '673f3b10-09e6-11ea-9206-9801a79243a5'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    # Test host endpoint
-    def testHost(self):
+    # Test Source host endpoint
+    def testSourceHost(self):
         # Test get
-        response = self.client.get(reverse('host-detail', kwargs={'name': 'mysql-ens-sta-1'}))
+        response = self.client.get(reverse('src_host-detail', kwargs={'name': 'mysql-ens-sta-1'}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Test bad get
-        response = self.client.get(reverse('host-detail', kwargs={'name': 'mysql-ens-compara-2'}))
+        response = self.client.get(reverse('src_host-detail', kwargs={'name': 'mysql-ens-compara-2'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test getting 2 mysql-ens-sta-2 servers
-        response = self.client.get(reverse('host-list'), {'name': 'mysql-ens-sta'})
+        response = self.client.get(reverse('src_host-list'), {'name': 'mysql-ens-sta'})
         response_dict = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_dict['count'], 2)
         # Test getting mysql-ens-general-dev-1 server
-        response = self.client.get(reverse('host-list'), {'name': 'mysql-ens-general'})
+        response = self.client.get(reverse('src_host-list'), {'name': 'mysql-ens-general'})
+        response_dict = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_dict['count'], 2)
+
+    # Test Target host endpoint
+    def testTargetHost(self):
+        # Test get
+        response = self.client.get(reverse('tgt_host-detail', kwargs={'name': 'mysql-ens-sta-1'}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Test bad get
+        response = self.client.get(reverse('tgt_host-detail', kwargs={'name': 'mysql-ens-compara-2'}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # Test getting 2 mysql-ens-sta servers with allowed user
+        User.objects.get(username='testuser')
+        self.client.login(username='testuser',password='testgroup123')
+        response = self.client.get(reverse('tgt_host-list'), {'name': 'mysql-ens-sta'})
+        response_dict = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_dict['count'], 2)
+        # Test getting 2 mysql-ens-sta servers with non-allowed user
+        User.objects.get(username='testuser2')
+        self.client.login(username='testuser2',password='testgroup1234')
+        response = self.client.get(reverse('tgt_host-list'), {'name': 'mysql-ens-sta'})
         response_dict = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_dict['count'], 1)
+        # Test getting mysql-ens-general-dev-1 server
+        response = self.client.get(reverse('tgt_host-list'), {'name': 'mysql-ens-general'})
+        response_dict = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response_dict['count'], 2)
 
     # Test DatabaseList endpoint
     def testDatabaseList(self):

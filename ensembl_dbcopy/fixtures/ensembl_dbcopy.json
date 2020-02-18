@@ -1,9 +1,25 @@
 [
   {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "Vertebrates",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 8,
+    "fields": {
+      "name": "Production",
+      "permissions": []
+    }
+  },
+  {
     "model": "auth.user",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$120000$BkM2pAAYVtSW$PB6v/2vsjMZesWfzLzbzZjjdjxo19KFDaPr8vcTcuEc=",
+      "password": "pbkdf2_sha256$120000$Lv1h0YuCzznU$j3Z/jpv84BdjQuH+UZvFrHBx+2uC2mkb4DutcGlEDcs=",
       "last_login": "2019-06-20T15:30:33.998Z",
       "is_superuser": true,
       "username": "testuser",
@@ -13,7 +29,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2019-03-26T11:23:02.067Z",
-      "groups": [],
+      "groups": [8],
       "user_permissions": []
     }
   },
@@ -21,17 +37,17 @@
     "model": "auth.user",
     "pk": 2,
     "fields": {
-      "password": "pbkdf2_sha256$120000$BkM2pAAYVtSW$PB6v/2vsjMZesWfzLzbzZjjdjxo19KFDaPr8vcTcuEc=",
+      "password": "pbkdf2_sha256$120000$NEVUH96SuBQv$UpCW2v4S0R6j6+LBvD5AAO3tkAWNynezgd0DF+lXmbI=",
       "last_login": "2019-06-20T15:30:33.998Z",
       "is_superuser": true,
-      "username": "testuserupdate",
+      "username": "testuser2",
       "first_name": "",
       "last_name": "",
-      "email": "testuserupdate@ebi.ac.uk",
+      "email": "testuser2@ebi.ac.uk",
       "is_staff": true,
       "is_active": true,
       "date_joined": "2019-03-26T11:23:02.067Z",
-      "groups": [],
+      "groups": [1],
       "user_permissions": []
     }
   },
@@ -164,6 +180,24 @@
       "port": 4484,
       "mysql_user": "ensro",
       "mysqld_file_owner": "ensmysql"
+    }
+  },
+  {
+    "model": "ensembl_dbcopy.host",
+    "pk": "4",
+    "fields": {
+      "name": "mysql-ens-general-dev-2",
+      "port": 4586,
+      "mysql_user": "ensro",
+      "mysqld_file_owner": "ensmysql"
+    }
+  },
+  {
+    "model": "ensembl_dbcopy.group",
+    "pk": "1",
+    "fields": {
+      "host_id": 1,
+      "group_name": "Production"
     }
   }
 ]

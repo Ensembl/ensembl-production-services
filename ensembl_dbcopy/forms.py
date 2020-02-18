@@ -81,7 +81,10 @@ class SubmitForm(forms.ModelForm):
             host_queryset = Host.objects.filter(name=cleaned_host)
             group = Group.objects.filter(host_id=host_queryset[0].auto_id)
             if group:
-                if str(group.first().group_name) not in self.user.groups.all():
+                host_groups = group.values_list('group_name', flat=True)
+                user_groups = self.user.groups.values_list('name', flat=True)
+                common_groups = set(host_groups).intersection(set(user_groups))
+                if not common_groups:
                     raise forms.ValidationError("You are not allowed to copy to "+cleaned_host)
         return data
     def clean_src_incl_db(self):

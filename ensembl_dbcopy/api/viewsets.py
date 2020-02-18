@@ -59,6 +59,7 @@ class TargetHostViewSet(viewsets.ReadOnlyModelViewSet):
         host_queryset = Host.objects.all()
         group_queryset = Group.objects.all()
         host_name = self.request.query_params.get('name', None)
+        host_queryset_final = host_queryset
         # Checking that user is allowed to copy to the matching server
         # If he is not allowed, the server will be removed from the autocomplete
         if host_name is not None:
@@ -67,6 +68,9 @@ class TargetHostViewSet(viewsets.ReadOnlyModelViewSet):
             for host in host_queryset:
                 group = group_queryset.filter(host_id=host.auto_id)
                 if group:
-                    if str(group.first().group_name) not in self.request.user.groups.all():
+                    host_groups = group.values_list('group_name', flat=True)
+                    user_groups = self.request.user.groups.values_list('name', flat=True)
+                    common_groups = set(host_groups).intersection(set(user_groups))
+                    if not common_groups:
                         host_queryset_final=host_queryset.exclude(name=host.name)
         return host_queryset_final
