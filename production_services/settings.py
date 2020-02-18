@@ -210,6 +210,6 @@ DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
 LOGOUT_REDIRECT_URL="/"
 
-USE_X_FORWARDED_HOST = True
-
+## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
+# USE_X_FORWARDED_HOST = True
 
