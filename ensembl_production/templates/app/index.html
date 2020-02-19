@@ -1,20 +1,22 @@
 {% extends 'app/iframe.html' %}
+{% load static %}
 
 {% block extrastyle %}
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <base href="/app/vertebrates/">
     <link rel="stylesheet" href="/web-app/bower_components/ng-tags-input/ng-tags-input.css"/>
     <link rel="stylesheet" href="/web-app/bower_components/components-font-awesome/css/font-awesome.css"/>
+    <link rel="stylesheet" href="{% static "/css/app_main.css" %}"/>
+
 {% endblock %}
 {% block content %}
-    <div class="row" id="body-row" ng-app="ProdSrvApp" ng-controller="mainController">
+        <div class="row" id="body-row" ng-app="ProdSrvApp" ng-controller="mainController">
         <div id="sidebar-container" class="sidebar-expanded d-none d-md-block"
              style="background-color: #{{ flask_app.app_theme|default:'343A40' }}">
             <!-- Bootstrap List Group -->
             <ul class="list-group">
-                <!-- Separator with title -->
-                <li class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed">
-                    <small>{{ flask_app.app_name|default:"Production Service" }}</small>
-                </li>
-                <!-- /END Separator -->
                 <!-- Menu with submenu -->
                 <a data-target="#healthchecks" data-toggle="collapse" aria-expanded="false"
                    class="bg-transparent list-group-item list-group-item-action flex-column align-items-start">
@@ -26,13 +28,16 @@
                 </a>
                 <!-- Submenu content -->
                 <div id='healthchecks' class="collapse sidebar-submenu">
-                    <a data-match-route="/hc_submit" href="#!hc_submit" class="list-group-item list-group-item-action bg-dark text-white">
+                    <a data-match-route="/hc_submit" href="/app/{{ flask_app.app_prod_url }}/#!hc_submit"
+                       class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">Submit HC job</span>
                     </a>
-                    <a data-match-route="/hc_list" href="#!hc_list" class="list-group-item list-group-item-action bg-dark text-white">
+                    <a data-match-route="/hc_list" href="/app/{{ flask_app.app_prod_url }}/#!hc_list"
+                       class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">List HC job</span>
                     </a>
-                    <a data-match-route="/hc_result" href="#!hc_result" class="list-group-item list-group-item-action bg-dark text-white">
+                    <a data-match-route="/hc_result" href="/app/{{ flask_app.app_prod_url }}/#!hc_result"
+                       class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">View HC job</span>
                     </a>
                 </div>
@@ -46,13 +51,16 @@
                 </a>
                 <!-- Submenu content -->
                 <div id='dbcopy' class="collapse sidebar-submenu">
-                    <a data-match-route="/copy_submit.*" href="#!copy_submit" class="list-group-item list-group-item-action bg-dark text-white">
+                    <a data-match-route="/copy_submit.*" href="/app/{{ flask_app.app_prod_url }}/#!copy_submit"
+                       class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">Submit copy</span>
                     </a>
-                    <a data-match-route="/copy_list.*" href="#!copy_list" class="list-group-item list-group-item-action bg-dark text-white">
+                    <a data-match-route="/copy_list.*" href="/app/{{ flask_app.app_prod_url }}/#!copy_list"
+                       class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">List copy jobs</span>
                     </a>
-                    <a data-match-route="/copy_result.*" href="#!copy_result" class="list-group-item list-group-item-action bg-dark text-white">
+                    <a data-match-route="/copy_result.*" href="/app/{{ flask_app.app_prod_url }}/#!copy_result"
+                       class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">View copy jobs</span>
                     </a>
                 </div>
@@ -65,20 +73,23 @@
                     </div>
                 </a>
                 <div id='handover' class="collapse sidebar-submenu">
-                    <a  data-match-route="/database_handover_submit.*" href="#!database_handover_submit" class="list-group-item list-group-item-action bg-dark text-white">
+                    <a data-match-route="/database_handover_submit.*" href="/app/{{ flask_app.app_prod_url }}/#!database_handover_submit"
+                       class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">Handover DB</span>
                     </a>
-                    <a data-match-route="/database_handover_list.*" href="#!database_handover_list" class="list-group-item list-group-item-action bg-dark text-white">
+                    <a data-match-route="/database_handover_list.*" href="/app/{{ flask_app.app_prod_url }}/#!database_handover_list"
+                       class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">List handover jobs</span>
                     </a>
-                    <a data-match-route="/database_handover_result.*" href="#!database_handover_result" class="list-group-item list-group-item-action bg-dark text-white">
+                    <a data-match-route="{[{app_path}]}/database_handover_result.*" href="/app/{{ flask_app.app_prod_url }}/#!database_handover_result"
+                       class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">View handover jobs</span>
                     </a>
                 </div>
                 <!-- Separator without title -->
                 <li class="list-group-item sidebar-separator menu-collapsed"></li>
                 <!-- /END Separator -->
-                <a href="#!help" class="bg-dark list-group-item list-group-item-action">
+                <a href="/app/{{ flask_app.app_prod_url }}/#!help" class="bg-dark list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-start align-items-center">
                         <span class="fa fa-question fa-fw mr-3"></span>
                         <span class="menu-collapsed">Help</span>
@@ -110,6 +121,7 @@
     <script src="/web-app/bower_components/angular-strap/dist/angular-strap.js"></script>
     <script src="/web-app/bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="/app/{{ flask_app.app_prod_url }}/scripts/config.js?{{ url_cache }}"></script>
     <script src="/web-app/scripts/app.js"></script>
     <script src="/web-app/scripts/controllers/hc_list.js"></script>
     <script src="/web-app/scripts/controllers/hc_result.js"></script>
@@ -123,7 +135,6 @@
     <script src="/web-app/scripts/controllers/database_handover_result.js"></script>
     <script src="/web-app/scripts/controllers/database_handover_list.js"></script>
     <script src="/web-app/scripts/controllers/homepage.js"></script>
-    <script src="scripts/config.js"></script>
     <!-- endbuild -->
     <script>
         $("#menu-toggle").click(function (e) {
