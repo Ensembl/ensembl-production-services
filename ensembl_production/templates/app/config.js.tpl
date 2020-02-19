@@ -1,6 +1,7 @@
 angular.module('app.config', [])
     .constant('CONFIG', {
-        'flask_app': '{{ flask_app.app_name }}',
+        'FLASK_APP': '{{ flask_app.app_name }}',
+        'FLASK_PATH': '/app/{{ flask_app.app_prod_url }}/',
         {% for key, value in flask_app.app_config_params.items %}
 	    '{{ key }}': '{{ value }}',
 	    {% empty %}
