@@ -56,6 +56,6 @@ class Migration(migrations.Migration):
                 'db_table': 'flask_app',
             },
         ),
-        migrations.RunPython(initial_flask_app, None),
+        # migrations.RunPython(initial_flask_app, None),
 
     ]
