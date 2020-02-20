@@ -47,12 +47,9 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
-<<<<<<< HEAD
     'ensembl_dbcopy.apps.EnsemblDbcopyConfig',
-=======
     'ensembl_bugs.apps.KnownBugsConfig',
     'multiselectfield',
->>>>>>> 0ac51f0c6665f73d8428565a4fe69e404db8690e
     'ckeditor',
     'crispy_forms',
     'drf_yasg',
