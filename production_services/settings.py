@@ -14,6 +14,8 @@
 """
 import os
 import sys
+from os.path import dirname, realpath
+
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -45,7 +47,12 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
+<<<<<<< HEAD
     'ensembl_dbcopy.apps.EnsemblDbcopyConfig',
+=======
+    'ensembl_bugs.apps.KnownBugsConfig',
+    'multiselectfield',
+>>>>>>> 0ac51f0c6665f73d8428565a4fe69e404db8690e
     'ckeditor',
     'crispy_forms',
     'drf_yasg',
@@ -99,9 +106,7 @@ DATABASES = {
         'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
-        'OPTIONS': {
-            "init_command": "SET default_storage_engine=MYISAM",
-        }
+        'OPTIONS': {}
     },
     'production': {
         'ENGINE': 'django.db.backends.mysql',
@@ -112,7 +117,7 @@ DATABASES = {
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': 'utf8mb4',
+            'charset': os.getenv('PROD_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
         }
     },
@@ -125,7 +130,7 @@ DATABASES = {
         'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
         'OPTIONS': {
             # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': 'utf8mb4',
+            'charset': os.getenv('WEBSITE_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
         }
     },
@@ -212,7 +217,7 @@ MESSAGE_TAGS = {
 
 IS_TESTING = sys.argv[1:2] == ['test']
 
-JET_DEFAULT_THEME = 'light-violet'
+JET_DEFAULT_THEME = 'light-gray'
 JET_SIDE_MENU_COMPACT = False
 JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
 JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
@@ -221,3 +226,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
 LOGOUT_REDIRECT_URL="/"
+
+USE_X_FORWARDED_HOST = True
+
+

@@ -148,3 +148,5 @@ venv.bak/
 
 # MacOSX
 .DS_Store
+# Local settings
+/production_services/settings_local.py

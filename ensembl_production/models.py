@@ -12,14 +12,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django import forms
+import json
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.staticfiles import finders
 from django.core import exceptions
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
-from django.contrib.staticfiles import finders
+from fernet_fields import EncryptedCharField
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
@@ -52,11 +54,9 @@ class SpanningForeignKey(models.ForeignKey):
             )
 
     def __init__(self, model_on_other_db=None, **kwargs):
-        # print('received ', model_on_other_db, '!!!', kwargs)
         self.model_on_other_db = model_on_other_db or kwargs.pop('to')
         kwargs['on_delete'] = models.SET_NULL
         kwargs['db_constraint'] = False
-
         super(SpanningForeignKey, self).__init__(self.model_on_other_db, **kwargs)
 
     def to_python(self, value):
@@ -72,13 +72,6 @@ class SpanningForeignKey(models.ForeignKey):
         if isinstance(value, self.model_on_other_db):
             value = value.pk
         return super(SpanningForeignKey, self).get_prep_value(value)
-
-    def formfield(self, **kwargs):
-        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
-        return super().formfield(**{
-            'form_class': forms.CharField,
-            **kwargs,
-        })
 
     def get_cached_value(self, instance, default=NOT_PROVIDED):
         cache_name = self.get_cache_name()
@@ -149,3 +142,20 @@ class ProductionFlaskApp(BaseTimestampedModel):
             return self.app_prod_url.split('-')[0] + ".png"
         else:
             return False
+
+
+class Credentials(models.Model):
+    class Meta:
+        app_label = 'ensembl_production'
+        verbose_name = 'Credential'
+        verbose_name_plural = 'Credentials'
+
+    cred_id = models.AutoField(primary_key=True)
+    cred_name = models.CharField("Name", unique=True, max_length=150)
+    cred_url = models.CharField("Access Url", max_length=255)
+    user = models.CharField("User Name", max_length=100)
+    credentials = EncryptedCharField("Password", max_length=255)
+
+    def __str__(self):
+        return self.cred_name
+

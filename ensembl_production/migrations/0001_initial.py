@@ -5,6 +5,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import ensembl_production.models
 
+
 def initial_flask_app(apps, schema_editor):
     from django.core.management import call_command
     Group = apps.get_model('auth', 'Group')
@@ -12,8 +13,8 @@ def initial_flask_app(apps, schema_editor):
         call_command('loaddata', 'ensembl_production/fixtures/groups.json')
     call_command('loaddata', 'ensembl_production/fixtures/init.json')
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
@@ -30,11 +31,24 @@ class Migration(migrations.Migration):
                 ('app_id', models.AutoField(primary_key=True, serialize=False)),
                 ('app_name', models.CharField(max_length=255, verbose_name='App display name')),
                 ('app_url', models.URLField(max_length=255, verbose_name='App flask url')),
-                ('app_theme', models.CharField(choices=[('336', 'Ensembl'), ('707080', 'Bacteria'), ('714486', 'Protists'), ('407253', 'Plants'), ('725A40', 'Fungi'), ('015365', 'Metazoa'), ('800066', 'Datachecks')], default='FFFFFF', max_length=6)),
+                ('app_theme', models.CharField(
+                    choices=[('336', 'Ensembl'), ('707080', 'Bacteria'), ('714486', 'Protists'), ('407253', 'Plants'),
+                             ('725A40', 'Fungi'), ('015365', 'Metazoa'), ('800066', 'Datachecks')], default='FFFFFF',
+                    max_length=6)),
                 ('app_prod_url', models.CharField(max_length=200, unique=True, verbose_name='App Url')),
                 ('app_groups', models.ManyToManyField(blank=True, to='auth.Group', db_constraint=False)),
-                ('created_by', ensembl_production.models.SpanningForeignKey(blank=True, db_column='created_by', db_constraint=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='productionflaskapp_created_by', related_query_name='productionflaskapp_creates', to=settings.AUTH_USER_MODEL)),
-                ('modified_by', ensembl_production.models.SpanningForeignKey(blank=True, db_column='modified_by', db_constraint=False, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='productionflaskapp_modified_by', related_query_name='productionflaskapp_updates', to=settings.AUTH_USER_MODEL)),
+                ('created_by',
+                 ensembl_production.models.SpanningForeignKey(blank=True, db_column='created_by', db_constraint=False,
+                                                              null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                                              related_name='productionflaskapp_created_by',
+                                                              related_query_name='productionflaskapp_creates',
+                                                              to=settings.AUTH_USER_MODEL)),
+                ('modified_by',
+                 ensembl_production.models.SpanningForeignKey(blank=True, db_column='modified_by', db_constraint=False,
+                                                              null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                                              related_name='productionflaskapp_modified_by',
+                                                              related_query_name='productionflaskapp_updates',
+                                                              to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Flask App',

@@ -14,9 +14,28 @@
 """
 import os
 import sys
+import configparser
+
+
+def read_env():
+    """
+    Reads a INI file named .env in the same directory manage.py is invoked and
+    loads it as environment variables.
+    Note: At least one section must be present. If the environment variable
+    DJANGO_ENV is not set then the [DEFAULT] section will be loaded.
+    More info: https://docs.python.org/3/library/configparser.html
+    """
+    config = configparser.ConfigParser()
+    config.optionxform = str
+    config.read('./.env')
+    section = os.environ.get("DJANGO_ENV", "DEFAULT")
+
+    for var, value in config[section].items():
+        os.environ.setdefault(var, value)
+
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "production_services.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "production_services.settings_local")
     try:
         from django.core.management import execute_from_command_line
     except ImportError:
@@ -32,4 +51,5 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
+    read_env()
     execute_from_command_line(sys.argv)
