@@ -7,6 +7,8 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 import uuid
+from ensembl_production.models import NullTextField
+
 
 NAME_CHOICES_GROUP = (('Vertebrates', 'Vertebrates'),
                            ('Microbes', 'Microbes'),
@@ -16,24 +18,6 @@ NAME_CHOICES_GROUP = (('Vertebrates', 'Vertebrates'),
                            ('WormBase', 'WormBase'),
                            ('Compara', 'Compara'),
                            ('Production', 'Production'))
-
-class NullTextField(models.TextField):
-    empty_strings_allowed = False
-    description = "Set Textfield to NULL instead of empty string"
-
-    def __init__(self, *args, **kwargs):
-        kwargs['null'] = True
-        kwargs['blank'] = True
-        super(NullTextField, self).__init__(*args, **kwargs)
-
-    def to_python(self, value):
-        if value == '':
-            return None
-        else:
-            return value
-
-    def get_internal_type(self):
-        return "TextField"
 
 
 class Dbs2Exclude(models.Model):

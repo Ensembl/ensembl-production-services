@@ -13,7 +13,7 @@ from django.template.defaultfilters import truncatechars
 from django_mysql.models import EnumField
 from multiselectfield import MultiSelectField
 
-from ensembl_production.models import BaseTimestampedModel
+from ensembl_production.models import BaseTimestampedModel, NullTextField
 
 DB_TYPE_CHOICES_BIOTYPE = (('cdna', 'cdna'),
                            ('core', 'core'),
@@ -38,25 +38,6 @@ DB_TYPE_CHOICES_METAKEY = (('cdna', 'cdna'),
                            ('vega', 'vega'),
                            ('presite', 'presite'),
                            ('sangervega', 'sangervega'))
-
-
-class NullTextField(models.TextField):
-    empty_strings_allowed = False
-    description = "Set Textfield to NULL instead of empty string"
-
-    def __init__(self, *args, **kwargs):
-        kwargs['null'] = True
-        kwargs['blank'] = True
-        super(NullTextField, self).__init__(*args, **kwargs)
-
-    def to_python(self, value):
-        if value == '':
-            return None
-        else:
-            return value
-
-    def get_internal_type(self):
-        return "TextField"
 
 
 class HasCurrent(models.Model):
