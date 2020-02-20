@@ -20,7 +20,6 @@ from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.views import LoginView
 
 import ensembl_production.views as views
-import ensembl_dbcopy.views as CopyViews
 
 
 urlpatterns = [
@@ -28,10 +27,8 @@ urlpatterns = [
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
     url(r'^admin/', admin.site.urls),
     url(r'^', include('ensembl_bugs.urls')),
+    url(r'^', include('ensembl_dbcopy.urls')),
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
-    path('dbcopy/submit/', CopyViews.SubmitView.as_view()),
-    path('dbcopy/<uuid:job_id>/', CopyViews.JobView.as_view(), name='detail'),
-    path('dbcopy/list/', CopyViews.JobListView.as_view(), name='list'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', RedirectView.as_view(url='/app/admin/login', permanent=True), name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),

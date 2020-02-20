@@ -25,7 +25,7 @@
             <tbody>
             {% for job in object_list %}
             <tr>
-              <td><a href="{% url 'detail' job_id=job.job_id %}">{{job.job_id}}</a></td>
+              <td><a href="{% url 'ensembl_dbcopy:detail' job_id=job.job_id %}">{{job.job_id}}</a></td>
               <td>{{job.src_host}}</td>
               <td>{{job.src_incl_db}}</td>
               <td>{{job.src_skip_db}}</td>

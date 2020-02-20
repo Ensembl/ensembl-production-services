@@ -12,7 +12,7 @@ class SubmitView(CreateView):
     form_class = SubmitForm
 
     def get_success_url(self):
-        return reverse('detail', kwargs={'job_id': self.object.job_id})
+        return reverse('ensembl_dbcopy:detail', kwargs={'job_id': self.object.job_id})
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
