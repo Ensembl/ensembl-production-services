@@ -13,19 +13,24 @@
    limitations under the License.
 """
 
+import json
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-import json
 
+PRODUCTION_DB = settings.DATABASES['production']
 User = get_user_model()
+
 
 class RequestJobTest(APITestCase):
     """ Test module for RequestJob model """
     multi_db = True
     using_db = 'dbcopy'
     fixtures = ['ensembl_dbcopy']
+
     # Test requestjob endpoint
     def testRequestJob(self):
         # Check get all
@@ -33,46 +38,59 @@ class RequestJobTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Test post
         response = self.client.post(reverse('requestjob-list'),
-                                    {'src_host': 'mysql-ens-sta-1', 'src_incl_db': 'homo_sapiens_core_99_38', 'tgt_host': 'mysql-ens-general-dev-1', 'user' : 'testuser'})
+                                    {'src_host': 'mysql-ens-sta-1', 'src_incl_db': 'homo_sapiens_core_99_38',
+                                     'tgt_host': 'mysql-ens-general-dev-1', 'user': 'testuser'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         # Test user email
         response_dict = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_dict['email_list'], 'testuser@ebi.ac.uk')
         # Test bad post
         response = self.client.post(reverse('requestjob-list'),
-                                    {'src_host': '', 'src_incl_db': 'homo_sapiens_core_99_38', 'tgt_host': 'mysql-ens-general-dev-1'})
+                                    {'src_host': '', 'src_incl_db': 'homo_sapiens_core_99_38',
+                                     'tgt_host': 'mysql-ens-general-dev-1'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # Test get
-        response = self.client.get(reverse('requestjob-detail', kwargs={'job_id': '8f084180-07ae-11ea-ace0-9801a79243a5'}))
+        response = self.client.get(
+            reverse('requestjob-detail', kwargs={'job_id': '8f084180-07ae-11ea-ace0-9801a79243a5'}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Test bad get
-        response = self.client.get(reverse('requestjob-detail', kwargs={'job_id': 'd662656c-0a18-11ea-ab6c-9801a79243a5'}))
+        response = self.client.get(
+            reverse('requestjob-detail', kwargs={'job_id': 'd662656c-0a18-11ea-ab6c-9801a79243a5'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test Transfer log
-        response = self.client.get(reverse('requestjob-detail', kwargs={'job_id': 'ddbdc15a-07af-11ea-bdcd-9801a79243a5'}))
+        response = self.client.get(
+            reverse('requestjob-detail', kwargs={'job_id': 'ddbdc15a-07af-11ea-bdcd-9801a79243a5'}))
         response_dict = json.loads(response.content.decode('utf-8'))
         self.assertEqual(len(response_dict['transfer_log']), 2)
         # Test put
-        response = self.client.put(reverse('requestjob-detail', kwargs={'job_id': '8f084180-07ae-11ea-ace0-9801a79243a5'}),
-                                    {'src_host': 'mysql-ens-sta-1', 'src_incl_db': 'homo_sapiens_core_99_38', 'tgt_host': 'mysql-ens-general-dev-2'})
+        response = self.client.put(
+            reverse('requestjob-detail', kwargs={'job_id': '8f084180-07ae-11ea-ace0-9801a79243a5'}),
+            {'src_host': 'mysql-ens-sta-1', 'src_incl_db': 'homo_sapiens_core_99_38',
+             'tgt_host': 'mysql-ens-general-dev-2'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Test bad put
-        response = self.client.put(reverse('requestjob-detail', kwargs={'job_id':'d662656c-0a18-11ea-ab6c-9801a79243a5'}),
-                                    {'src_host': 'mysql-ens-sta-1', 'src_incl_db': 'homo_sapiens_core_99_38', 'tgt_host': 'mysql-ens-general-dev-2'})
+        response = self.client.put(
+            reverse('requestjob-detail', kwargs={'job_id': 'd662656c-0a18-11ea-ab6c-9801a79243a5'}),
+            {'src_host': 'mysql-ens-sta-1', 'src_incl_db': 'homo_sapiens_core_99_38',
+             'tgt_host': 'mysql-ens-general-dev-2'})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test patch
-        response = self.client.patch(reverse('requestjob-detail', kwargs={'job_id': '8f084180-07ae-11ea-ace0-9801a79243a5'}),
-                                      {'src_incl_db': 'homo_sapiens_funcgen_99_38'})
+        response = self.client.patch(
+            reverse('requestjob-detail', kwargs={'job_id': '8f084180-07ae-11ea-ace0-9801a79243a5'}),
+            {'src_incl_db': 'homo_sapiens_funcgen_99_38'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Test bad patch
-        response = self.client.patch(reverse('requestjob-detail', kwargs={'job_id': 'd662656c-0a18-11ea-ab6c-9801a79243a5'}),
-                                      {'src_incl_db': 'homo_sapiens_funcgen_99_38'})
+        response = self.client.patch(
+            reverse('requestjob-detail', kwargs={'job_id': 'd662656c-0a18-11ea-ab6c-9801a79243a5'}),
+            {'src_incl_db': 'homo_sapiens_funcgen_99_38'})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test delete
-        response = self.client.delete(reverse('requestjob-detail', kwargs={'job_id': '8f084180-07ae-11ea-ace0-9801a79243a5'}))
+        response = self.client.delete(
+            reverse('requestjob-detail', kwargs={'job_id': '8f084180-07ae-11ea-ace0-9801a79243a5'}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         # Test bad delete
-        response = self.client.delete(reverse('requestjob-detail', kwargs={'job_id': '673f3b10-09e6-11ea-9206-9801a79243a5'}))
+        response = self.client.delete(
+            reverse('requestjob-detail', kwargs={'job_id': '673f3b10-09e6-11ea-9206-9801a79243a5'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     # Test Source host endpoint
@@ -102,13 +120,13 @@ class RequestJobTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # Test getting 2 mysql-ens-sta servers with allowed user
         User.objects.get(username='testuser')
-        self.client.login(username='testuser',password='testgroup123')
+        self.client.login(username='testuser', password='testgroup123')
         response = self.client.get(reverse('tgt_host-list'), {'name': 'mysql-ens-sta'})
         response_dict = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_dict['count'], 2)
         # Test getting 2 mysql-ens-sta servers with non-allowed user
         User.objects.get(username='testuser2')
-        self.client.login(username='testuser2',password='testgroup1234')
+        self.client.login(username='testuser2', password='testgroup1234')
         response = self.client.get(reverse('tgt_host-list'), {'name': 'mysql-ens-sta'})
         response_dict = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response_dict['count'], 1)
@@ -120,13 +138,23 @@ class RequestJobTest(APITestCase):
     # Test DatabaseList endpoint
     def testDatabaseList(self):
         # Test getting test Production dbs
-        response = self.client.get(reverse('databaselist'), {'host': '127.0.0.1','port': '3306','user':'ensembl','database': 'test_ensembl_production'})
+
+        response = self.client.get(reverse('databaselist'),
+                                   {'host': PRODUCTION_DB.get('HOST', 'localhost'),
+                                    'port': PRODUCTION_DB.get('PORT', 3306),
+                                    'user': PRODUCTION_DB.get('USER', 'ensembl'),
+                                    'database': PRODUCTION_DB.get('NAME', 'test_ensembl_production')})
         response_list = json.loads(response.content.decode('utf-8'))
         self.assertEqual(len(response_list), 2)
 
     # Test TableList endpoint
     def testTableList(self):
         # Test getting meta_key table for Production dbs
-        response = self.client.get(reverse('tablelist'), {'host': '127.0.0.1','port': '3306','user':'ensembl','database': 'test_ensembl_production','table':'meta'})
+        response = self.client.get(reverse('tablelist'),
+                                   {'host': PRODUCTION_DB.get('HOST', 'localhost'),
+                                    'port': PRODUCTION_DB.get('PORT', 3306),
+                                    'user': PRODUCTION_DB.get('USER', 'ensembl'),
+                                    'database': PRODUCTION_DB.get('NAME', 'test_ensembl_production'),
+                                    'table': 'meta'})
         response_list = json.loads(response.content.decode('utf-8'))
         self.assertEqual(len(response_list), 1)

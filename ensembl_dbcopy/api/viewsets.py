@@ -12,12 +12,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from rest_framework import status
 from rest_framework import viewsets
-from rest_framework.response import Response
 
-from ensembl_dbcopy.api.serializers import RequestJobDetailSerializer,RequestJobListSerializer,HostSerializer
-from ensembl_dbcopy.models import RequestJob,Host,Group
+from ensembl_dbcopy.api.serializers import RequestJobDetailSerializer, RequestJobListSerializer, HostSerializer
+from ensembl_dbcopy.models import RequestJob, Host, Group
 
 
 class RequestJobViewSet(viewsets.ModelViewSet):
@@ -26,12 +24,12 @@ class RequestJobViewSet(viewsets.ModelViewSet):
     pagination_class = None
     lookup_field = 'job_id'
 
-
     def get_serializer_class(self):
         if self.action == 'list':
             return RequestJobListSerializer
         else:
             return RequestJobDetailSerializer
+
 
 class SourceHostViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = HostSerializer
@@ -46,6 +44,7 @@ class SourceHostViewSet(viewsets.ReadOnlyModelViewSet):
         if host_name is not None:
             queryset = queryset.filter(name__contains=host_name)
         return queryset
+
 
 class TargetHostViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = HostSerializer
@@ -72,5 +71,5 @@ class TargetHostViewSet(viewsets.ReadOnlyModelViewSet):
                     user_groups = self.request.user.groups.values_list('name', flat=True)
                     common_groups = set(host_groups).intersection(set(user_groups))
                     if not common_groups:
-                        host_queryset_final=host_queryset.exclude(name=host.name)
+                        host_queryset_final = host_queryset.exclude(name=host.name)
         return host_queryset_final

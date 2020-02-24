@@ -14,12 +14,11 @@
 """
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseBadRequest
 from rest_framework import serializers
 from rest_framework import status
-
 from rest_framework.exceptions import APIException
-from ensembl_dbcopy.models import TransferLog,RequestJob,Host
+
+from ensembl_dbcopy.models import TransferLog, RequestJob, Host
 
 User = get_user_model()
 
@@ -86,6 +85,7 @@ class RequestJobDetailSerializer(BaseUserTimestampSerializer):
         fields = '__all__'
 
     transfer_log = TransferLogSerializer(many=True, source='transfer_logs', read_only=True)
+
 
 class HostSerializer(serializers.ModelSerializer):
     class Meta:

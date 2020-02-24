@@ -144,10 +144,10 @@ DATABASES = {
 }
 
 DATABASE_ROUTERS = [
-    'ensembl_production.router.AuthRouter',
     'ensembl_production_db.router.ProductionRouter',
     'ensembl_website.router.WebsiteRouter',
-    'ensembl_dbcopy.router.DbCopyRouter'
+    'ensembl_dbcopy.router.DbCopyRouter',
+    'ensembl_production.router.ProductionServicesRouter',
 ]
 
 # Password validation

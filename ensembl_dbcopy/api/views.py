@@ -12,27 +12,35 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from mysql.connector import (connection)
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+def mysql_connection(query_params={}):
+    host = query_params.get('host', None)
+    port = query_params.get('port', None)
+    user = query_params.get('user', None)
+    password = query_params.get('user', None)
+    return connection.MySQLConnection(user=user,
+                                      host=host,
+                                      port=port,
+                                      password=password,
+                                      database='information_schema')
+
 
 class ListDatabases(APIView):
     """
     View to list all databases from a given server
     """
+
     def get(self, request, format=None):
         """
         Return a list of all users.
         """
-        host = self.request.query_params.get('host', None)
-        port = self.request.query_params.get('port', None)
-        user = self.request.query_params.get('user', None)
-        cnx = connection.MySQLConnection(user=user,
-                                 host=host,
-                                 port=port,
-                                 database='information_schema')
+        cnx = mysql_connection(request.query_params)
         cursor = cnx.cursor()
-        query = ("SELECT SCHEMA_NAME FROM SCHEMATA WHERE SCHEMA_NAME LIKE %s ORDER BY SCHEMA_NAME;")
+        query = "SELECT SCHEMA_NAME FROM SCHEMATA WHERE SCHEMA_NAME LIKE %s ORDER BY SCHEMA_NAME;"
 
         database = self.request.query_params.get('database', None)
         database_list = []
@@ -43,25 +51,21 @@ class ListDatabases(APIView):
         cnx.close()
         return Response(database_list)
 
+
 class ListTables(APIView):
     """
     View to list all databases from a given server
     """
+
     def get(self, request, format=None):
         """
         Return a list of all users.
         """
-        host = self.request.query_params.get('host', None)
-        port = self.request.query_params.get('port', None)
-        user = self.request.query_params.get('user', None)
-        database = self.request.query_params.get('database', None)
-        cnx = connection.MySQLConnection(user=user,
-                                 host=host,
-                                 port=port,
-                                 database='information_schema')
+        cnx = mysql_connection(request.query_params)
         cursor = cnx.cursor()
-        query = ("SELECT TABLE_NAME FROM TABLES WHERE TABLE_SCHEMA=%s AND TABLE_NAME LIKE %s ORDER BY TABLE_NAME;")
+        query = "SELECT TABLE_NAME FROM TABLES WHERE TABLE_SCHEMA=%s AND TABLE_NAME LIKE %s ORDER BY TABLE_NAME;"
 
+        database = self.request.query_params.get('database', None)
         table = self.request.query_params.get('table', None)
         table_list = []
         cursor.execute(query, (database, "%" + table + "%",))

@@ -48,13 +48,13 @@ class HasCurrent(models.Model):
     is_current = models.BooleanField(default=True)
 
 
-class HasDecription:
+class HasDescription:
     @property
     def short_description(self):
         return truncatechars(self.description, 150)
 
 
-class WebData(BaseTimestampedModel, HasDecription):
+class WebData(BaseTimestampedModel, HasDescription):
     web_data_id = models.AutoField(primary_key=True)
     data = jsonfield.JSONField(null=True)
     comment = NullTextField(blank=True, null=True)
@@ -77,7 +77,7 @@ class WebData(BaseTimestampedModel, HasDecription):
         return '{} - {}...-'.format(self.pk, self.data)
 
 
-class AnalysisDescription(HasCurrent, BaseTimestampedModel, HasDecription):
+class AnalysisDescription(HasCurrent, BaseTimestampedModel, HasDescription):
     analysis_description_id = models.AutoField(primary_key=True)
     logic_name = models.CharField(unique=True, max_length=128)
     description = NullTextField(blank=True, null=True)
@@ -95,7 +95,7 @@ class AnalysisDescription(HasCurrent, BaseTimestampedModel, HasDecription):
         return 'Analysis: {} ({})'.format(self.display_label, self.logic_name)
 
 
-class MasterAttribType(HasCurrent, BaseTimestampedModel, HasDecription):
+class MasterAttribType(HasCurrent, BaseTimestampedModel, HasDescription):
     attrib_type_id = models.AutoField(primary_key=True)
     code = models.CharField(unique=True, max_length=20)
     name = models.CharField(max_length=255)
@@ -141,7 +141,7 @@ class MasterAttribSet(HasCurrent, BaseTimestampedModel):
         unique_together = [('attrib_set_id', 'attrib')]
 
 
-class MasterBiotype(HasCurrent, BaseTimestampedModel, HasDecription):
+class MasterBiotype(HasCurrent, BaseTimestampedModel, HasDescription):
     biotype_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64)
     is_dumped = models.BooleanField(default=True)
@@ -163,7 +163,7 @@ class MasterBiotype(HasCurrent, BaseTimestampedModel, HasDecription):
         verbose_name = 'Biotype'
 
 
-class MasterExternalDb(HasCurrent, BaseTimestampedModel, HasDecription):
+class MasterExternalDb(HasCurrent, BaseTimestampedModel, HasDescription):
     external_db_id = models.AutoField(primary_key=True)
     db_name = models.CharField(max_length=100)
     db_release = models.CharField(max_length=255, blank=True, null=True)
@@ -183,7 +183,7 @@ class MasterExternalDb(HasCurrent, BaseTimestampedModel, HasDecription):
         verbose_name = 'External DB'
 
 
-class MasterMiscSet(HasCurrent, BaseTimestampedModel, HasDecription):
+class MasterMiscSet(HasCurrent, BaseTimestampedModel, HasDescription):
     misc_set_id = models.PositiveSmallIntegerField(primary_key=True)
     code = models.CharField(unique=True, max_length=25)
     name = models.CharField(max_length=255)
@@ -209,7 +209,7 @@ class MasterUnmappedReason(HasCurrent, BaseTimestampedModel):
         return truncatechars(self.summary_description, 35)
 
 
-class MetaKey(HasCurrent, BaseTimestampedModel, HasDecription):
+class MetaKey(HasCurrent, BaseTimestampedModel, HasDescription):
     meta_key_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64, unique=True)
     is_optional = models.BooleanField(default=False)
