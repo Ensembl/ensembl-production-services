@@ -18,6 +18,6 @@ from .views import KnownBugsView, known_bugs_export
 app_name = 'ensembl_bugs'
 
 urlpatterns = [
-    path("known_bugs", KnownBugsView.as_view(), name='index'),
-    path("known_bugs_export.txt", known_bugs_export, name='export'),
+    path("", KnownBugsView.as_view(), name='index'),
+    path("export.txt", known_bugs_export, name='export'),
 ]

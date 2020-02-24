@@ -18,7 +18,7 @@ from .views import SubmitView, JobView, JobListView
 app_name = 'ensembl_dbcopy'
 
 urlpatterns = [
-    path('dbcopy/submit/', SubmitView.as_view()),
-    path('dbcopy/<uuid:job_id>/', JobView.as_view(), name='detail'),
-    path('dbcopy/list/', JobListView.as_view(), name='list')
+    path('submit', SubmitView.as_view()),
+    path('<uuid:job_id>/', JobView.as_view(), name='detail'),
+    path('list/', JobListView.as_view(), name='list')
 ]
