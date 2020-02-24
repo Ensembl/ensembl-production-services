@@ -107,8 +107,10 @@
         <!-- /.container -->
     {% endblock %}
 </div>
-{% include "inc/footer.inc.html" %}
-{% include "inc/javascripts.inc.html" %}
+{% block javascripts %}
+    {% include "inc/footer.inc.html" %}
+    {% include "inc/javascripts.inc.html" %}
+{% endblock javascripts %}
 {% block extra_script %}{% endblock %}
 </body>
 </html>

@@ -48,11 +48,7 @@ class FlaskAppView(DetailView):
         if self.object and self.object.app_is_framed:
             return ["app/iframe.html"]
         else:
-            return ["app/index.html"]
-
-
-class AngularView(FlaskAppView):
-    template_name = "app/index.html"
+            return ["app/angular.html"]
 
 
 class AngularConfigView(FlaskAppView):

@@ -2,15 +2,11 @@
 {% load static %}
 
 {% block extrastyle %}
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-    <meta http-equiv="Pragma" content="no-cache"/>
-    <meta http-equiv="Expires" content="0"/>
-    <link rel="stylesheet" href="/web-app/bower_components/ng-tags-input/ng-tags-input.css"/>
-    <link rel="stylesheet" href="/web-app/bower_components/components-font-awesome/css/font-awesome.css"/>
-    <link rel="stylesheet" href="{% static "/css/app_main.css" %}"/>
-
+    <link rel="stylesheet" href="{% static "/webapp/styles/vendor.53b2c8a1.css" %}" />
+    <link rel="stylesheet" href="{% static "/webapp/app_main.css" %}" />
 {% endblock %}
 {% block content %}
+
         <div class="row" id="body-row" ng-app="ProdSrvApp" ng-controller="mainController">
         <div id="sidebar-container" class="sidebar-expanded d-none d-md-block"
              style="background-color: #{{ flask_app.app_theme|default:'343A40' }}">
@@ -80,7 +76,7 @@
                        class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">List handover jobs</span>
                     </a>
-                    <a data-match-route="{[{app_path}]}/database_handover_result.*" href="/app/{{ flask_app.app_prod_url }}/#!database_handover_result"
+                    <a data-match-route="/database_handover_result.*" href="/app/{{ flask_app.app_prod_url }}/#!database_handover_result"
                        class="list-group-item list-group-item-action bg-dark text-white">
                         <span class="menu-collapsed">View handover jobs</span>
                     </a>
@@ -94,13 +90,6 @@
                         <span class="menu-collapsed">Help</span>
                     </div>
                 </a>
-                <a href="#top" data-toggle="sidebar-colapse"
-                   class="bg-dark list-group-item list-group-item-action d-flex align-items-center">
-                    <div class="d-flex w-100 justify-content-start align-items-center">
-                        <span id="collapse-icon" class="fa fa-2x mr-3"></span>
-                        <span id="collapse-text" class="menu-collapsed">Collapse</span>
-                    </div>
-                </a>
             </ul><!-- List Group END-->
         </div><!-- sidebar-container END -->
         <div ng-view class="col p-4"></div>
@@ -108,32 +97,9 @@
 {% endblock %}
 
 {% block extra_script %}
-    <script src="/web-app/bower_components/angular/angular.js"></script>
-    <script src="/web-app/bower_components/angular-animate/angular-animate.js"></script>
-    <script src="/web-app/bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="/web-app/bower_components/angular-resource/angular-resource.js"></script>
-    <script src="/web-app/bower_components/angular-route/angular-route.js"></script>
-    <script src="/web-app/bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="/web-app/bower_components/angular-touch/angular-touch.js"></script>
-    <script src="/web-app/bower_components/ng-tags-input/ng-tags-input.js"></script>
-    <script src="/web-app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="/web-app/bower_components/angular-strap/dist/angular-strap.js"></script>
-    <script src="/web-app/bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
-    <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="/app/{{ flask_app.app_prod_url }}/scripts/config.js?{{ url_cache }}"></script>
-    <script src="/web-app/scripts/app.js"></script>
-    <script src="/web-app/scripts/controllers/hc_list.js"></script>
-    <script src="/web-app/scripts/controllers/hc_result.js"></script>
-    <script src="/web-app/scripts/controllers/hc_submit.js"></script>
-    <script src="/web-app/scripts/controllers/database_server_status.js"></script>
-    <script src="/web-app/scripts/controllers/database_server_size.js"></script>
-    <script src="/web-app/scripts/controllers/copy_submit.js"></script>
-    <script src="/web-app/scripts/controllers/copy_result.js"></script>
-    <script src="/web-app/scripts/controllers/copy_list.js"></script>
-    <script src="/web-app/scripts/controllers/database_handover_submit.js"></script>
-    <script src="/web-app/scripts/controllers/database_handover_result.js"></script>
-    <script src="/web-app/scripts/controllers/database_handover_list.js"></script>
-    <script src="/web-app/scripts/controllers/homepage.js"></script>
+    <script src="{% static "/webapp/scripts/vendor.05238a37.js" %}"></script>
+    <script src="{% static "/webapp/scripts/scripts.1c916907.js" %}"></script>
+    <script src="/app/{{ flask_app.app_prod_url }}/scripts/config.js"></script>
     <!-- endbuild -->
     <script>
         $("#menu-toggle").click(function (e) {
