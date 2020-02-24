@@ -1,0 +1,122 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+  <div class="container">
+    <div class="p-3 my-3 border">
+      <a href="{% url 'ensembl_dbcopy:list' %}" class="btn btn-dark" role="button">Copy list</a>
+      <a href="{% url 'ensembl_dbcopy:submit' %}" class="btn btn-dark" role="button">Submit Copy</a>
+    </div>
+    <div class="p-3 my-3 border">
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="tablekey">Job ID:</div>
+        </div>
+        <div class="col-sm-10 tablevalue">{{ object.job_id }}</div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="tablekey">Source Host:</div>
+        </div>
+        <div class="col-sm-10 tablevalue">{{ object.src_host }}</div>
+      </div>
+      {% if object.src_incl_db %}
+        <div class="row">
+          <div class="col-sm-2">
+            <div class="tablekey">Source DBs:</div>
+          </div>
+          <div class="col-sm-10 tablevalue">{{ object.src_incl_db }}</div>
+        </div>
+      {% else %}
+        <div class="row">
+          <div class="col-sm-2">
+            <div class="tablekey">Source DBs:</div>
+          </div>
+          <div class="col-sm-10 tablevalue">All the databases</div>
+        </div>
+      {% endif %}
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="tablekey">Target Host:</div>
+        </div>
+        <div class="col-sm-10 tablevalue">{{ object.tgt_host }}</div>
+      </div>
+      {% if object.tgt_db_name %}
+        <div class="row">
+          <div class="col-sm-2">
+            <div class="tablekey">Target DB:</div>
+          </div>
+          <div class="col-sm-10 tablevalue">{{ object.tgt_db_name }}</div>
+        </div>
+      {% endif %}
+      {% if object.detailed_status.status_msg == 'running' %}
+        <div class="row">
+            <div class="col-sm-2">
+              <div class="tablekey">Status:</div>
+            </div>
+            <div class="col-sm-10 tablevalue {{ object.detailed_status.status_msg }}">{{ object.detailed_status.status_msg }}: Copying table {{object.transfer_logs.last.table_name}} for {{object.transfer_logs.last.renamed_table_schema}} in progress...</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+              <div class="tablekey">Progress:</div>
+            </div>
+            <div class="col-sm-10 tablevalue progress">
+              <div class="progress-bar tablevalue" style="width:{{object.detailed_status.progress}}%">
+                <span class="job-completed">{{object.detailed_status.table_copied}}/{{object.detailed_status.total_tables}} tasks done</span>
+              </div>
+            </div>
+        </div>
+      {% else %}
+        <div class="row">
+            <div class="col-sm-2">
+              <div class="tablekey">Status:</div>
+            </div>
+            <div class="col-sm-10 tablevalue {{ object.detailed_status.status_msg }}">{{ object.detailed_status.status_msg }}</div>
+        </div>
+      {% endif %}
+    </div>
+    {% if transfer_logs %}
+      <div class="p-3 my-3 border">
+        <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Database name</th>
+                <th>Table name</th>
+                <th>Copy start</th>
+                <th>Copy end</th>
+                <th>Table size</th>
+                <th>status</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for log in transfer_logs %}
+            <tr>
+              <td>{{log.renamed_table_schema}}</td>
+              <td>{{log.table_name}}</td>
+              <td>{{log.start_date}}</td>
+              <td>{{log.end_date}}</td>
+              <td>{{log.size}}</td>
+              <td class="{{log.table_status}}">{{log.table_status}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        <span class="pagination">
+            {% if transfer_logs.has_previous %}
+                <a class="page-link" href="?page=1">&laquo; first</a>
+                <a class="page-link" href="?page={{ transfer_logs.previous_page_number }}">previous</a>
+            {% endif %}
+            <span class="page-link">
+                Page {{ transfer_logs.number }} of {{ transfer_logs.paginator.num_pages }}.
+            </span>
+            {% if transfer_logs.has_next %}
+                <a class="page-link" href="?page={{ transfer_logs.next_page_number }}">next</a>
+                <a class="page-link" href="?page={{ transfer_logs.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+      </div>
+    {% endif %}
+  </div>
+{% endblock content %}
+{% block extra_script %}
+<link href="{% static "css/db_copy.css" %}" rel="stylesheet"/>
+{% endblock %}

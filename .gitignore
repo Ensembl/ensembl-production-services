@@ -145,4 +145,8 @@ venv.bak/
 /bin/gunicorn.conf.py
 /bin/*.pid
 /staticfiles
+
+# MacOSX
+.DS_Store
+# Local settings
 /production_services/settings_local.py

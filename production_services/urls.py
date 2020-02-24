@@ -23,17 +23,18 @@ import ensembl_production.views as views
 
 
 urlpatterns = [
-    # Production Admin
-    url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
-    url(r'^admin/', admin.site.urls),
-    url(r'^', include('ensembl_bugs.urls')),
-    url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
+    path('admin/', admin.site.urls),
+    path('bugs/', include('ensembl_bugs.urls')),
+    path('dbcopy/', include('ensembl_dbcopy.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', RedirectView.as_view(url='/app/admin/login', permanent=True), name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
     # Production DB API
-    url(r'^api/production_db/', include('ensembl_production_db.api.urls')),
-    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view()),
+    path('api/production_db/', include('ensembl_production_db.api.urls')),
+    path('api/dbcopy/', include('ensembl_dbcopy.api.urls')),
+    re_path(r'^app/<uuid:job_id>(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view()),
 ]
 
 handler404 = 'ensembl_production.views.handler404'

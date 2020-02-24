@@ -271,7 +271,7 @@ class AnalysisTest(APITestCase):
         response = self.client.delete(reverse('analysisdescription-detail', kwargs={'logic_name': 'cantdeleteit'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_AnalysisDescriptionUserName(self):
+    def testAnalysisDescriptionUserName(self):
         valid_payload = {'logic_name': 'testwebtestdata4',
                          'description': 'testwebdata4 analysis',
                          'display_label': 'testwebdata4',
@@ -474,7 +474,7 @@ class AnalysisTest(APITestCase):
         response = self.client.delete(reverse('attribtypes-detail', kwargs={'code': 'cantdeleteit'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_AttribTypeUserName(self):
+    def testAttribTypeUserName(self):
         # create user known
         response = self.client.post(reverse('attribtypes-list'),
                                     {'code': 'test', 'name': 'test attribtypes', 'description': 'test',
@@ -502,7 +502,7 @@ class AnalysisTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     # Test biotype endpoint
-    def test_Biotype(self):
+    def testBiotype(self):
         # Test post object type 1
         response = self.client.post(reverse('type-list', kwargs={'biotype_name': 'test'}),
                                     {'name': 'test', 'description': 'test biotype gene', 'object_type': 'gene',
@@ -557,7 +557,7 @@ class AnalysisTest(APITestCase):
         response = self.client.delete(reverse('type-detail', kwargs={'biotype_name': 'cantdeleteit', 'type': 'gene'}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_BiotypeUserName(self):
+    def testBiotypeUserName(self):
         # Test post object type 1
         response = self.client.post(reverse('type-list', kwargs={'biotype_name': 'test'}),
                                     {'name': 'test', 'description': 'test biotype gene', 'object_type': 'gene',
@@ -583,7 +583,7 @@ class AnalysisTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     # Test attrib endpoint
-    def test_Attrib(self):
+    def testAttrib(self):
         # Check get all
         response = self.client.get(reverse('attrib-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -609,7 +609,7 @@ class AnalysisTest(APITestCase):
                                     content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_attribUserName(self):
+    def testAttribUserName(self):
         valid_payload = {'value': 'test', 'is_current': '1', 'user': 'testuser',
                          'attrib_type': {'code': 'test', 'name': 'test', 'description': 'test'}}
         response = self.client.post(reverse('attrib-list'), data=json.dumps(valid_payload),
