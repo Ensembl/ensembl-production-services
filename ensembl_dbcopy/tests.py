@@ -21,7 +21,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-PRODUCTION_DB = settings.DATABASES['production']
+PRODUCTION_DB = settings.DATABASES.get('production', settings.DATABASES['default'])
 User = get_user_model()
 
 
@@ -143,7 +143,7 @@ class RequestJobTest(APITestCase):
                                    {'host': PRODUCTION_DB.get('HOST', 'localhost'),
                                     'port': PRODUCTION_DB.get('PORT', 3306),
                                     'user': PRODUCTION_DB.get('USER', 'ensembl'),
-                                    'database': PRODUCTION_DB.get('NAME', 'test_ensembl_production')})
+                                    'database': 'db_copy'})
         response_list = json.loads(response.content.decode('utf-8'))
         self.assertEqual(len(response_list), 2)
 
