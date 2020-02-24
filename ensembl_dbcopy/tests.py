@@ -143,6 +143,7 @@ class RequestJobTest(APITestCase):
                                    {'host': PRODUCTION_DB.get('HOST', 'localhost'),
                                     'port': PRODUCTION_DB.get('PORT', 3306),
                                     'user': PRODUCTION_DB.get('USER', 'ensembl'),
+                                    'password': PRODUCTION_DB.get('PASSWORD', 'ensembl'),
                                     'database': 'db_copy'})
         response_list = json.loads(response.content.decode('utf-8'))
         self.assertEqual(len(response_list), 2)
@@ -154,6 +155,7 @@ class RequestJobTest(APITestCase):
                                    {'host': PRODUCTION_DB.get('HOST', 'localhost'),
                                     'port': PRODUCTION_DB.get('PORT', 3306),
                                     'user': PRODUCTION_DB.get('USER', 'ensembl'),
+                                    'password': PRODUCTION_DB.get('PASSWORD', 'ensembl'),
                                     'database': PRODUCTION_DB.get('NAME', 'test_ensembl_production'),
                                     'table': 'meta'})
         response_list = json.loads(response.content.decode('utf-8'))
