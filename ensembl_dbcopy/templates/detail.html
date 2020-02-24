@@ -3,8 +3,8 @@
 {% block content %}
   <div class="container">
     <div class="p-3 my-3 border">
-      <a href="/dbcopy/list/" class="btn btn-dark" role="button">Copy list</a>
-      <a href="/dbcopy/submit/" class="btn btn-dark" role="button">Submit Copy</a>
+      <a href="{% url 'ensembl_dbcopy:list' %}" class="btn btn-dark" role="button">Copy list</a>
+      <a href="{% url 'ensembl_dbcopy:submit' %}" class="btn btn-dark" role="button">Submit Copy</a>
     </div>
     <div class="p-3 my-3 border">
       <div class="row">

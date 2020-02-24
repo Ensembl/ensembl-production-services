@@ -50,8 +50,8 @@ router.register(prefix=r'tgt_host',
 
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^databaselist$', ListDatabases.as_view(),name='databaselist'),
-    url(r'^tablelist$', ListTables.as_view(),name='tablelist'),
+    url(r'^databases', ListDatabases.as_view(),name='databaselist'),
+    url(r'^tables$', ListTables.as_view(),name='tablelist'),
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    url(r'^docs/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    url(r'^docs$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

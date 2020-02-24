@@ -78,7 +78,7 @@ $( function() {
   $( "#id_src_incl_db" ).autocomplete({
     source :function( request, response ) {
       $.ajax({
-         url: "/api/dbcopy/databaselist",
+         url: "/api/dbcopy/databases",
          dataType: "json",
          data: {
           host : SrcHostDetails.name,
@@ -111,7 +111,7 @@ $( function() {
   $( "#id_src_skip_db" ).autocomplete({
     source :function( request, response ) {
       $.ajax({
-         url: "/api/dbcopy/databaselist",
+         url: "/api/dbcopy/databases",
          dataType: "json",
          data: {
           host : SrcHostDetails.name,
@@ -144,7 +144,7 @@ $( function() {
   $( "#id_src_incl_tables" ).autocomplete({
     source :function( request, response ) {
       $.ajax({
-         url: "/api/dbcopy/tablelist",
+         url: "/api/dbcopy/tables",
          dataType: "json",
          data: {
           host : SrcHostDetails.name,
@@ -179,7 +179,7 @@ $( function() {
   $( "#id_src_skip_tables" ).autocomplete({
     source :function( request, response ) {
       $.ajax({
-         url: "/api/dbcopy/tablelist",
+         url: "/api/dbcopy/tables",
          dataType: "json",
          data: {
           host : SrcHostDetails.name,
