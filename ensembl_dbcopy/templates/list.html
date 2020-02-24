@@ -1,0 +1,63 @@
+
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="p-3 my-3 border">
+      <a href="{% url 'ensembl_dbcopy:submit' %}" class="btn btn-dark" role="button">Submit Copy</a>
+    </div>
+    <div class="p-4 my-4 border">
+        <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Job ID</th>
+                <th>Source host</th>
+                <th>Database list</th>
+                <th>Excluded databases</th>
+                <th>Target host</th>
+                <th>Target database name</th>
+                <th>Email list</th>
+                <th>Copy start date</th>
+                <th>Copy end date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for job in object_list %}
+            <tr>
+              <td><a href="{% url 'ensembl_dbcopy:detail' job_id=job.job_id %}">{{job.job_id}}</a></td>
+              <td>{{job.src_host}}</td>
+              <td>{{job.src_incl_db}}</td>
+              <td>{{job.src_skip_db}}</td>
+              <td>{{job.tgt_host}}</td>
+              <td>{{job.tgt_db_name}}</td>
+              <td>{{job.email_list}}</td>
+              <td>{{job.start_date}}</td>
+              <td>{{job.end_date}}</td>
+              <td class ="{{job.overall_status}}">{{job.overall_status}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        <span class="pagination">
+            {% if page_obj.has_previous %}
+                <a class="page-link" href="?page=1">&laquo; first</a>
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="page-link">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+      </div>
+    </div>
+  <div>
+{% endblock content %}
+{% block extra_script %}
+<link href="{% static "css/db_copy.css" %}" rel="stylesheet"/>
+{% endblock %}

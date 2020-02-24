@@ -14,43 +14,44 @@
 """
 
 
-class ProductionServicesRouter:
+class DbCopyRouter:
     """
     A router to control all database operations on models in the
-    auth application.
+    ensembl db copy application.
     """
-    app_list = ('auth', 'admin', 'contenttypes', 'jet', 'sessions', 'ensembl_production', 'sitetree')
 
     def db_for_read(self, model, **hints):
         """
-        Attempts to read auth models go to auth_db.
+        Attempts to read dbcopy models go to dbcopy.
         """
-        if model._meta.app_label in self.app_list:
-            return 'default'
+        if model._meta.app_label == 'ensembl_dbcopy':
+            return 'dbcopy'
         return None
 
     def db_for_write(self, model, **hints):
         """
-        Attempts to write auth models go to auth_db.
+        Attempts to write dbcopy models go to dbcopy.
         """
-        if model._meta.app_label in self.app_list:
-            return 'default'
+        if model._meta.app_label == 'ensembl_dbcopy':
+            return 'dbcopy'
         return None
 
     def allow_relation(self, obj1, obj2, **hints):
         """
-        Allow relations if a model in the auth is involved.
+        Allow relations if a model in the dbcopy dbcopy_services is involved.
         """
-        if obj1._meta.app_label in self.app_list or \
-                obj2._meta.app_label in self.app_list:
+        if obj1._meta.app_label == 'ensembl_dbcopy' or \
+                obj2._meta.app_label == 'ensembl_dbcopy':
             return True
         return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         """
-        Make sure the auth only appears in the 'auth_db'
+        Make sure the dbcopy dbcopy_services only appears in the 'dbcopy'
         database.
         """
-        if app_label in self.app_list:
-            return db == 'default'
+        if app_label == 'ensembl_dbcopy':
+            return db == 'dbcopy'
+        if 'target_db' in hints:
+            return hints['target_db'] == "dbcopy"
         return None

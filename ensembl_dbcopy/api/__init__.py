@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 .. See the NOTICE file distributed with this work for additional information
    regarding copyright ownership.
@@ -12,12 +11,3 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django.urls import path
-from .views import KnownBugsView, known_bugs_export
-
-app_name = 'ensembl_bugs'
-
-urlpatterns = [
-    path("", KnownBugsView.as_view(), name='index'),
-    path("export.txt", known_bugs_export, name='export'),
-]

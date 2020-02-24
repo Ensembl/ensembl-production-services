@@ -1,17 +1,17 @@
 body {
     padding-top: 65px;
+    padding-bottom: 30px;
 }
 
-footer {
-    position: fixed;
+.footer {
+    position:fixed;
     bottom: 0;
+    left: 0;
+    right: 0;
     width: 100%;
     height: 30px;
     line-height: 30px;
     z-index: 1000;
-}
-
-.page-content {
 }
 
 .frame-row {

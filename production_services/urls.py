@@ -26,17 +26,20 @@ import ensembl_production.views as views
 from django.views.decorators.cache import never_cache
 
 urlpatterns = [
-    # Production Admin
-    url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
-    url(r'^admin/', admin.site.urls),
-    url(r'^', include('ensembl_bugs.urls')),
-    url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
+    path('admin/', admin.site.urls),
+    path('bugs/', include('ensembl_bugs.urls')),
+    path('dbcopy/', include('ensembl_dbcopy.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
     path('api/production_db/', include('ensembl_production_db.api.urls')),
     re_path(r'^app/(?P<app_prod_url>[a-z]+)/scripts/config.js', never_cache(views.AngularConfigView.as_view())),
     re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view(), name='production_app_view'),
+    # API entries
+    path('api/production_db/', include('ensembl_production_db.api.urls')),
+    path('api/dbcopy/', include('ensembl_dbcopy.api.urls')),
 ]
 
 if settings.DEBUG:
