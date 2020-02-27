@@ -1,23 +1,30 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
-from django.db import models
+"""
+.. See the NOTICE file distributed with this work for additional information
+   regarding copyright ownership.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+"""
 import uuid
+
+from django.db import models
+
 from ensembl_production.models import NullTextField
 
-
 NAME_CHOICES_GROUP = (('Vertebrates', 'Vertebrates'),
-                           ('Microbes', 'Microbes'),
-                           ('Metazoa', 'Metazoa'),
-                           ('VectorBase', 'VectorBase'),
-                           ('Plants', 'Plants'),
-                           ('WormBase', 'WormBase'),
-                           ('Compara', 'Compara'),
-                           ('Production', 'Production'))
+                      ('Microbes', 'Microbes'),
+                      ('Metazoa', 'Metazoa'),
+                      ('VectorBase', 'VectorBase'),
+                      ('Plants', 'Plants'),
+                      ('WormBase', 'WormBase'),
+                      ('Compara', 'Compara'),
+                      ('Production', 'Production'))
 
 
 class Dbs2Exclude(models.Model):
@@ -76,24 +83,27 @@ class RequestJob(models.Model):
 
     @property
     def detailed_status(self):
-        total_tables=self.transfer_logs.count()
-        table_copied=self.table_copied
-        progress=0
+        total_tables = self.transfer_logs.count()
+        table_copied = self.table_copied
+        progress = 0
         if table_copied and total_tables:
-            progress=(table_copied/total_tables)*100
+            progress = (table_copied / total_tables) * 100
         if progress == 100.0:
-            return {'status_msg':'complete','table_copied':table_copied,'total_tables':total_tables,'progress':progress}
+            return {'status_msg': 'complete', 'table_copied': table_copied, 'total_tables': total_tables,
+                    'progress': progress}
         elif total_tables > 0:
-            return {'status_msg':'running','table_copied':table_copied,'total_tables':total_tables,'progress':progress}
+            return {'status_msg': 'running', 'table_copied': table_copied, 'total_tables': total_tables,
+                    'progress': progress}
         else:
-            return {'status_msg':'submitted','table_copied':table_copied,'total_tables':total_tables,'progress':progress}
+            return {'status_msg': 'submitted', 'table_copied': table_copied, 'total_tables': total_tables,
+                    'progress': progress}
 
     @property
     def table_copied(self):
-        nbr_tables=sum(map(lambda log: self.count_copied(log),self.transfer_logs.all()))
+        nbr_tables = sum(map(lambda log: self.count_copied(log), self.transfer_logs.all()))
         return nbr_tables
 
-    def count_copied(self,log):
+    def count_copied(self, log):
         if log.end_date:
             return 1
         else:
@@ -104,7 +114,8 @@ class TransferLog(models.Model):
     auto_id = models.BigAutoField(primary_key=True)
     job_id = models.ForeignKey(RequestJob, db_column='job_id', on_delete=models.CASCADE, related_name='transfer_logs')
     tgt_host = models.CharField(max_length=512, editable=False)
-    table_schema = models.CharField(db_column='TABLE_SCHEMA', max_length=64, editable=False)  # Field name made lowercase.
+    table_schema = models.CharField(db_column='TABLE_SCHEMA', max_length=64,
+                                    editable=False)  # Field name made lowercase.
     table_name = models.CharField(db_column='TABLE_NAME', max_length=64, editable=False)  # Field name made lowercase.
     renamed_table_schema = models.CharField(max_length=64, editable=False)
     target_directory = models.TextField(max_length=2048, blank=True, null=True, editable=False)
@@ -127,12 +138,13 @@ class TransferLog(models.Model):
         else:
             return 'running'
 
+
 class Host(models.Model):
     auto_id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=64)
     port = models.IntegerField()
     mysql_user = models.CharField(max_length=64)
-    virtual_machine = models.CharField(max_length=255,blank=True, null=True)
+    virtual_machine = models.CharField(max_length=255, blank=True, null=True)
     mysqld_file_owner = models.CharField(max_length=128)
 
     class Meta:
@@ -144,10 +156,11 @@ class Host(models.Model):
     def __str__(self):
         return '{}:{}'.format(self.name, self.port)
 
+
 class Group(models.Model):
     group_id = models.BigAutoField(primary_key=True)
     host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE)
-    group_name = models.CharField(choices=NAME_CHOICES_GROUP,max_length=80, default='Vertebrates')
+    group_name = models.CharField(choices=NAME_CHOICES_GROUP, max_length=80, default='Vertebrates')
 
     class Meta:
         db_table = 'group'
