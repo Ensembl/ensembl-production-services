@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 .. See the NOTICE file distributed with this work for additional information
    regarding copyright ownership.
@@ -13,6 +12,7 @@
    limitations under the License.
 """
 from django.urls import path
+
 from .views import KnownBugsView, known_bugs_export
 
 app_name = 'ensembl_bugs'
