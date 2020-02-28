@@ -72,7 +72,7 @@ class SpanningForeignKey(models.ForeignKey):
 
     def __init__(self, model_on_other_db=None, **kwargs):
         self.model_on_other_db = model_on_other_db or kwargs.pop('to')
-        kwargs['on_delete'] = models.SET_NULL
+        kwargs['on_delete'] = models.DO_NOTHING
         kwargs['db_constraint'] = False
         super(SpanningForeignKey, self).__init__(self.model_on_other_db, **kwargs)
 
