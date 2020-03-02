@@ -8,13 +8,13 @@
             <div class="col-md-4"><span class="text-center">
                 {% if not user.is_authenticated %}<a href="{% url 'password_reset' %}">Forgot password?</a>
                     {% else %}
-                    Logged in as {{  user.email }}
+                    Logged in as {{ user.email }}
                 {% endif %}</span>
             </div>
             <div class="col-md-4"><span class="float-right">
                 <img src="{% static "img/logo.png" %}" alt="Ensembl Production" class="img-fluid"
                      style="max-width: 60px;">
-                Ensembl Production 2020</span>
+                Ensembl Production {{ current_date.year }}</span>
             </div>
         </div>
     </div>
