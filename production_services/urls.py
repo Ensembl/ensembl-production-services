@@ -12,6 +12,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from datetime import datetime
 from django.conf.urls import url, include
 from django.urls import path, re_path
 from django.contrib import admin
@@ -25,7 +26,7 @@ urlpatterns = [
     # Production Admin
     url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
     url(r'^admin/', admin.site.urls),
-    url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
+    url(r'^$', TemplateView.as_view(template_name='home.html', extra_context={'current_date': datetime.now()}), name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', RedirectView.as_view(url='/app/admin/login', permanent=True), name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
