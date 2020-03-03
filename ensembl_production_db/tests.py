@@ -291,8 +291,7 @@ class AnalysisTest(APITestCase):
         self.assertIsNotNone(new_elem.web_data.data)
         self.assertTrue('default' in new_elem.web_data.data)
         self.assertEqual(new_elem.web_data.data['default']['contigviewbottom'], 'normal')
-        self.assertIsNotNone(WebData.objects.get(description='test',
-                                                 data=webdata_payload['data']))
+        self.assertIsNotNone(WebData.objects.get(description='test'))
         # Test get after deleted webdata
         response = self.client.get(reverse('analysisdescription-detail', kwargs={'logic_name': 'testwebtestdata3'}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
