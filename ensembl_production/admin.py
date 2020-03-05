@@ -12,9 +12,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-
+import jsonfield
 from django import forms
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 from fernet_fields import EncryptedCharField
 
 from .models import ProductionFlaskApp, Credentials
@@ -57,7 +59,34 @@ class SuperUserAdmin:
 
 @admin.register(ProductionFlaskApp)
 class FlaskAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
-    list_display = ('app_name', 'app_url', 'app_theme', 'app_prod_url')
+    list_display = ('app_name', 'app_url', 'app_url_link', 'app_is_framed', 'img_url', 'app_theme_color')
+    readonly_fields = ('img_url',
+                       'app_theme_color', 'app_url_link', 'created_by', 'created_at', 'modified_at',
+                       'modified_by')
+    fields = ('app_name', 'app_prod_url', 'app_url_link',
+              'app_is_framed', 'app_url',
+              'app_config_params',
+              'app_theme',
+              ('created_by', 'created_at'),
+              ('modified_by', 'modified_at'))
+
+    formfield_overrides = {
+        jsonfield.JSONField: {'widget': jsonfield.widgets.JSONWidget(attrs={'rows': 20, 'cols': 70,
+                                                                            'class': 'vLargeTextField'})},
+    }
+
+    def app_theme_color(self, obj):
+        return mark_safe(u"<div class='admin_app_theme_color' style='background:#" + obj.app_theme + "'/>")
+
+    def app_url_link(self, obj):
+        url_view = reverse('production_app_view', kwargs={'app_prod_url': obj.app_prod_url})
+        return mark_safe(u"<a href='" + url_view + "' target='_blank'>" + obj.app_prod_url + "</a>")
+
+    def img_url(self, obj):
+        return obj.img_admin_tag
+
+    img_url.short_description = 'App Logo'
+    img_url.allow_tags = True
 
 
 @admin.register(Credentials)

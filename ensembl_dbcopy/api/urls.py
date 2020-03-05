@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 .. See the NOTICE file distributed with this work for additional information
    regarding copyright ownership.
@@ -38,15 +37,15 @@ router = routers.DefaultRouter(trailing_slash=False)
 
 router.register(prefix=r'requestjob',
                 viewset=viewsets.RequestJobViewSet,
-                base_name='requestjob')
+                basename='requestjob')
 
 router.register(prefix=r'src_host',
                 viewset=viewsets.SourceHostViewSet,
-                base_name='src_host')
+                basename='src_host')
 
 router.register(prefix=r'tgt_host',
                 viewset=viewsets.TargetHostViewSet,
-                base_name='tgt_host')
+                basename='tgt_host')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

@@ -18,9 +18,12 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.views import LoginView
+from django.views import static
+from django.conf import settings
 
 import ensembl_production.views as views
 
+from django.views.decorators.cache import never_cache
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
@@ -29,13 +32,22 @@ urlpatterns = [
     path('bugs/', include('ensembl_bugs.urls')),
     path('dbcopy/', include('ensembl_dbcopy.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('login/', RedirectView.as_view(url='/app/admin/login', permanent=True), name='login'),
+    path('login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
-    # Production DB API
+    path('api/production_db/', include('ensembl_production_db.api.urls')),
+    re_path(r'^app/(?P<app_prod_url>[a-z]+)/scripts/config.js', never_cache(views.AngularConfigView.as_view())),
+    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view(), name='production_app_view'),
+    # API entries
     path('api/production_db/', include('ensembl_production_db.api.urls')),
     path('api/dbcopy/', include('ensembl_dbcopy.api.urls')),
-    re_path(r'^app/<uuid:job_id>(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view()),
 ]
+
+if settings.DEBUG:
+    urlpatterns.extend([
+        url(r'^web-app/scripts/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/web-app/app/scripts/"}),
+        url(r'^views/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/web-app/app/views/"}),
+        url(r'^web-app/bower_components/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/web-app/bower_components/"}),
+    ])
 
 handler404 = 'ensembl_production.views.handler404'
 handler500 = 'ensembl_production.views.handler500'

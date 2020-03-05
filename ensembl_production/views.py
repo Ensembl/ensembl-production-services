@@ -12,8 +12,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django.core.exceptions import PermissionDenied
 import random
+
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render_to_response
 from django.views.generic import DetailView
 
@@ -21,27 +22,41 @@ from .models import ProductionFlaskApp
 
 
 class FlaskAppView(DetailView):
-    template_name = "app.html"
+    template_name = "app/iframe.html"
     model = ProductionFlaskApp
     context_object_name = 'flask_app'
     queryset = ProductionFlaskApp.objects.all()
     slug_field = 'app_prod_url'
     slug_url_kwarg = "app_prod_url"
+    object = None
 
-    def render_to_response(self, context, **response_kwargs):
-        return super().render_to_response(context, **response_kwargs)
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'url_cache': random.random()
+        })
+        return super().get_context_data(**kwargs)
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if "Production" in self.object.app_groups.values_list('name', flat=True) and not (
-                request.user.is_authenticated and request.user.is_superuser):
+                self.request.user.is_authenticated and self.request.user.is_superuser):
             raise PermissionDenied()
-
-        context = self.get_context_data(object=self.object, url_cache=random.random(), flask_img=self.object.img)
+        context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    def get_template_names(self):
+        if self.object and self.object.app_is_framed:
+            return ["app/iframe.html"]
+        else:
+            return ["app/angular.html"]
+
+
+class AngularConfigView(FlaskAppView):
+    template_name = "app/config.js.tpl"
+    content_type = 'application/javascript'
+
+    def get_template_names(self):
+        return [self.template_name]
 
 
 def handler404(request, *args, **argv):

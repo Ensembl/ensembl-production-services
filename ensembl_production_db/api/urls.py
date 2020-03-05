@@ -21,6 +21,7 @@ from ensembl_production_db.router import CustomRouter
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+
 schema_view = get_schema_view(
    openapi.Info(
       title="Production DB API snippets",
@@ -40,21 +41,21 @@ router_attrib = CustomRouter()
 
 router.register(prefix=r'analysisdescription',
                 viewset=viewsets.AnalysisDescriptionViewSet,
-                base_name='analysisdescription')
+                basename='analysisdescription')
 
 router.register(prefix=r'attribtypes',
                 viewset=viewsets.AttribTypeViewSet,
-                base_name='attribtypes')
+                basename='attribtypes')
 
 router_attrib.register(prefix=r'attrib',
                        viewset=viewsets.AttribViewSet,
-                       base_name='attrib')
+                       basename='attrib')
 
 biotype_name_router = routers.SimpleRouter()
 biotype_name_router.register(r'biotypes', viewsets.BiotypeNameViewSet)
 
 biotype_object_type_router = routers.NestedSimpleRouter(biotype_name_router, r'biotypes', lookup='biotype')
-biotype_object_type_router.register(r'types', viewsets.BiotypeObjectTypeViewSet, base_name='type')
+biotype_object_type_router.register(r'types', viewsets.BiotypeObjectTypeViewSet, basename='type')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

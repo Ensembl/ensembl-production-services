@@ -21,6 +21,18 @@ ul.messagelist li.sucess{
     max-width: 400px;
 }
 
-.field-is_current img {
+.field-is_current img, .field-app_is_framed img {
     display: block;
 }
+
+.admin_app_logo {
+    max-width: 30px;
+}
+.admin_app_theme_color {
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+

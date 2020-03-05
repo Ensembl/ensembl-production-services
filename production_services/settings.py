@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 .. See the NOTICE file distributed with this work for additional information
    regarding copyright ownership.
@@ -14,7 +13,6 @@
 """
 import os
 import sys
-from os.path import dirname, realpath
 
 from django.contrib.messages import constants as messages
 
@@ -66,7 +64,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# AUTHENTICATION_BACKENDS = ("django_python3_ldap.auth.LDAPBackend",)
 APPEND_SLASH = True
 
 ROOT_URLCONF = 'production_services.urls'
@@ -75,6 +72,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'ensembl_production/templates')],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -187,6 +185,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# ANGULAR_APP_DIR = os.path.join(BASE_DIR, 'web-app/')
+# STATICFILES_DIRS = [
+#    ('app', os.path.join(ANGULAR_APP_DIR)),
+# ]
+
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -221,8 +224,6 @@ JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
-LOGOUT_REDIRECT_URL="/"
+LOGOUT_REDIRECT_URL = "/"
 
 USE_X_FORWARDED_HOST = True
-
-
