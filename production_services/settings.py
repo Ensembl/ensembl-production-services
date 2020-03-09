@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'jet',
-    'ensembl_production.apps.EnsemblProductionConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,10 +42,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    # Ensembl production stack
+    'ensembl_production.apps.EnsemblProductionConfig',
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
     'ensembl_dbcopy.apps.EnsemblDbcopyConfig',
     'ensembl_bugs.apps.KnownBugsConfig',
+    # utils
     'multiselectfield',
     'ckeditor',
     'crispy_forms',
