@@ -19,7 +19,6 @@ from django import forms
 from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin import SimpleListFilter
-from django.utils.safestring import mark_safe
 
 from ensembl_production.admin import ProductionUserAdminMixin
 from ensembl_production.forms import JetCheckboxSelectMultiple
@@ -167,6 +166,7 @@ class HasCurrentAdmin(ProductionModelAdmin):
 
 
 # Register your models here.
+@admin.register(MasterAttribType)
 class AttribTypeAdmin(HasCurrentAdmin):
     list_display = ('code', 'name', 'description', 'is_current')
     fields = ('code', 'name', 'description',
@@ -176,6 +176,7 @@ class AttribTypeAdmin(HasCurrentAdmin):
     inlines = (AttribInline,)
 
 
+@admin.register(MasterAttrib)
 class AttribAdmin(HasCurrentAdmin):
     list_display = ('attrib_id', 'value', 'attrib_type', 'is_current')
     fields = ('value', 'attrib_type',
@@ -185,6 +186,7 @@ class AttribAdmin(HasCurrentAdmin):
     search_fields = ('attrib_id', 'value', 'attrib_type__name')
 
 
+@admin.register(MasterAttribSet)
 class AttribSetAdmin(HasCurrentAdmin):
     fields = ('attrib_set_id', 'attrib', 'is_current',
               ('created_by', 'created_at'),
@@ -195,6 +197,7 @@ class AttribSetAdmin(HasCurrentAdmin):
     ordering = ('-modified_at',)
 
 
+@admin.register(MasterBiotype)
 class BioTypeAdmin(HasCurrentAdmin):
     # TODO DBTYPE to add display inline+flex class
     fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type',
@@ -226,11 +229,13 @@ class AnalysisDescriptionForm(forms.ModelForm):
             self.fields['web_data_label'].widget.attrs.update({'style': 'display:None'})
 
 
+@admin.register(AnalysisDescription)
 class AnalysisDescriptionAdmin(HasCurrentAdmin):
     class Media:
         css = {
             'all': ('css/production_admin.css',)
         }
+
     form = AnalysisDescriptionForm
     fields = ('logic_name', 'description', 'display_label', 'web_data',
               'web_data_label',
@@ -256,6 +261,7 @@ class MetaKeyForm(forms.BaseModelForm):
         super().__init__(**kwargs)
 
 
+@admin.register(MetaKey)
 class MetakeyAdmin(HasCurrentAdmin):
     # form = MetaKeyForm
     list_display = ('name', 'is_optional', 'db_type', 'description', 'is_current')
@@ -290,10 +296,16 @@ class WebDataForm(forms.ModelForm):
             return super().get_initial_for_field(field, field_name)
 
 
+@admin.register(WebData)
 class WebDataAdmin(ProductionModelAdmin):
+    class Media:
+        css = {
+            'all': ('admin/production_db/css/prod_db.css',)
+        }
+
     form = WebDataForm
-    # TODO add pretty json display / conversion to Perl upon save
-    list_display = ('pk', 'data_label', 'comment')
+    list_display = ('pk', 'data', 'comment', 'modified_by')
+    list_editable = ('comment', 'data')
     search_fields = ('pk', 'data', 'comment')
     fields = ('data', 'comment',
               ('created_by', 'created_at'),
@@ -307,30 +319,18 @@ class WebDataAdmin(ProductionModelAdmin):
 
         return super().change_view(request, object_id, form_url, extra_context)
 
-    def data_label(self, obj):
-        return mark_safe('<pre>' + json.dumps(obj.data, indent=4) + '</pre>') if obj.data else 'None'
 
-    data_label.short_description = "Web Data"
-
-
+@admin.register(MasterExternalDb)
 class MasterExternalDbAdmin(HasCurrentAdmin):
     list_display = ('db_name', 'db_release', 'status', 'db_display_name', 'priority', 'type', 'secondary_db_name',
                     'secondary_db_table', 'is_current')
-    fields = ('db_name', 'status', 'db_display_name', 'priority', 'type', 'db_release', 'secondary_db_name',
+    fields = ('db_name', 'status', 'db_display_name',
+              'db_release', 'secondary_db_name',
               'secondary_db_table', 'description',
+              'is_current',
+              ('priority', 'type'),
               ('created_by', 'created_at'),
-              ('modified_by', 'modified_at')
-              )
+              ('modified_by', 'modified_at'))
     search_fields = (
         'db_name', 'db_release', 'status', 'db_display_name', 'priority', 'type', 'secondary_db_name',
         'secondary_db_table')
-
-
-admin.site.register(AnalysisDescription, AnalysisDescriptionAdmin)
-admin.site.register(MasterAttribType, AttribTypeAdmin)
-admin.site.register(MasterAttrib, AttribAdmin)
-admin.site.register(MasterAttribSet, AttribSetAdmin)
-admin.site.register(MasterBiotype, BioTypeAdmin)
-admin.site.register(MetaKey, MetakeyAdmin)
-admin.site.register(WebData, WebDataAdmin)
-admin.site.register(MasterExternalDb, MasterExternalDbAdmin)

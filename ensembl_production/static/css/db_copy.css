@@ -1,0 +1,46 @@
+.tablekey { 
+  background-color: lightgray;
+  text-align : right;
+  font-weight: bold;
+  padding: 5px 5px 5px 5px;
+}
+.tablevalue { 
+  text-align : left;
+  padding: 5px 5px 5px 5px;
+  border-radius: 4px;
+}
+.complete {
+  background-color: lightgreen;
+}
+.incomplete {
+  background-color: lightblue;
+}
+.submitted {
+  background-color: lightblue;
+}
+.running {
+  background-color: gold;
+}
+.failed{
+  background-color: lightpink;
+}
+.progress {
+  background-color: #bdd3fb;
+  border-radius: 0;
+  box-shadow: none;
+  height: 29px;
+  margin-bottom: 0;
+  overflow: hidden;
+  padding: 0 !important;
+  margin-top: 1px;
+}
+.progress-bar > .job-completed {
+  font-size:1.0rem;
+  left:8px;
+  position:absolute;
+  top:3px;
+  white-space: nowrap;
+}
+.btn {
+  margin-bottom: 15px;
+}

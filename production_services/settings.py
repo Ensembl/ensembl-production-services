@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'jet',
-    'ensembl_production.apps.EnsemblProductionConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,8 +42,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    # Ensembl production stack
+    'ensembl_production.apps.EnsemblProductionConfig',
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
+    'ensembl_dbcopy.apps.EnsemblDbcopyConfig',
+    'ensembl_bugs.apps.KnownBugsConfig',
+    # utils
     'multiselectfield',
     'ckeditor',
     'crispy_forms',
@@ -70,8 +74,8 @@ ROOT_URLCONF = 'production_services.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'ensembl_production/templates')],
         'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'ensembl_production/templates')],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -84,7 +88,7 @@ TEMPLATES = [
                 'filter_tags': 'ensembl_production.templatetags.filter',
             }
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = 'production_services.wsgi.application'
@@ -99,9 +103,7 @@ DATABASES = {
         'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
-        'OPTIONS': {
-            # "init_command": "SET default_storage_engine=MYISAM",
-        }
+        'OPTIONS': {}
     },
     'production': {
         'ENGINE': 'django.db.backends.mysql',
@@ -128,13 +130,25 @@ DATABASES = {
             'charset': os.getenv('WEBSITE_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
         }
+    },
+    'dbcopy': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_COPY_DATABASE', 'ensembl_dbcopy'),
+        'USER': os.getenv('DB_COPY_USER', 'ensembl'),
+        'PASSWORD': os.getenv('DB_COPY_PASSWORD', ''),
+        'HOST': os.getenv('DB_COPY_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DB_COPY_PORT', '3306'),
+        'OPTIONS': {
+            "init_command": "SET default_storage_engine=InnoDB",
     }
+    },
 }
 
 DATABASE_ROUTERS = [
-    'ensembl_production.router.AuthRouter',
     'ensembl_production_db.router.ProductionRouter',
-    'ensembl_website.router.WebsiteRouter'
+    'ensembl_website.router.WebsiteRouter',
+    'ensembl_dbcopy.router.DbCopyRouter',
+    'ensembl_production.router.ProductionServicesRouter',
 ]
 
 # Password validation
@@ -208,7 +222,7 @@ JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
-LOGOUT_REDIRECT_URL="/"
+LOGOUT_REDIRECT_URL = "/"
 
 ## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
 # USE_X_FORWARDED_HOST = True
