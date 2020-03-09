@@ -12,20 +12,40 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-import json
-
+import jsonfield
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.staticfiles import finders
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core import exceptions
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
+from django.utils.safestring import mark_safe
+from fernet_fields import EncryptedCharField
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
 NOT_PROVIDED = object()
 
+class NullTextField(models.TextField):
+    empty_strings_allowed = False
+    description = "Set Textfield to NULL instead of empty string"
+
+    def __init__(self, *args, **kwargs):
+        kwargs['null'] = True
+        kwargs['blank'] = True
+        super(NullTextField, self).__init__(*args, **kwargs)
+
+    def to_python(self, value):
+        if value == '':
+            return None
+        else:
+            return value
+
+    def get_internal_type(self):
+        return "TextField"
 
 class SpanningForeignKey(models.ForeignKey):
 
@@ -54,7 +74,7 @@ class SpanningForeignKey(models.ForeignKey):
 
     def __init__(self, model_on_other_db=None, **kwargs):
         self.model_on_other_db = model_on_other_db or kwargs.pop('to')
-        kwargs['on_delete'] = models.SET_NULL
+        kwargs['on_delete'] = models.DO_NOTHING
         kwargs['db_constraint'] = False
         super(SpanningForeignKey, self).__init__(self.model_on_other_db, **kwargs)
 
@@ -71,14 +91,6 @@ class SpanningForeignKey(models.ForeignKey):
         if isinstance(value, self.model_on_other_db):
             value = value.pk
         return super(SpanningForeignKey, self).get_prep_value(value)
-
-    #    def formfield(self, **kwargs):
-    #        kwargs.update({'widget': forms.TextInput(attrs={'class': 'user_field', 'readonly': 'true'})})
-    #        print(kwargs)
-    #        return super().formfield(**{
-    #            'form_class': forms.CharField,
-    #            **kwargs,
-    #        })
 
     def get_cached_value(self, instance, default=NOT_PROVIDED):
         cache_name = self.get_cache_name()
@@ -119,8 +131,8 @@ class ProductionFlaskApp(BaseTimestampedModel):
     class Meta:
         db_table = 'flask_app'
         app_label = 'ensembl_production'
-        verbose_name = 'Flask App'
-        verbose_name_plural = 'Flask Apps'
+        verbose_name = 'Production App'
+        verbose_name_plural = 'Production Apps'
 
     def __str__(self):
         return self.app_name
@@ -138,25 +150,41 @@ class ProductionFlaskApp(BaseTimestampedModel):
     # TODO add menu organisation
     app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
-    app_url = models.URLField("App flask url", max_length=255)
+    app_is_framed = models.BooleanField('Display app in iframe', default=True, null=True, help_text='Need an url then')
+    app_url = models.URLField("App flask url", max_length=255, null=True, blank=True)
     app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)
     app_groups = models.ManyToManyField(Group, blank=True)
     app_prod_url = models.CharField('App Url', max_length=200, null=False, unique=True)
+    app_config_params = jsonfield.JSONField('Configuration parameters', null=True, blank=True)
 
     @property
     def img(self):
-        if finders.find('img' + self.app_prod_url.split('-')[0] + ".png"):
-            return self.app_prod_url.split('-')[0] + ".png"
+        if finders.find('img/' + self.app_prod_url.split('-')[0] + ".png"):
+            return u'img/' + self.app_prod_url.split('-')[0] + ".png"
         else:
-            return False
+            return u'img/logo_industry.png'
+
+    @property
+    def img_admin_tag(self):
+        return mark_safe(u"<img class='admin_app_logo' src='" + static(self.img) + "'/>")
+
+    def clean(self):
+        super().clean()
+        if self.app_is_framed and not self.app_url:
+            raise ValidationError('You must set url if app is iframed')
 
 
-class JSONField(models.TextField):
+class Credentials(models.Model):
+    class Meta:
+        app_label = 'ensembl_production'
+        verbose_name = 'Credential'
+        verbose_name_plural = 'Credentials'
 
-    def to_python(self, value):
-        return json.dumps(json.loads(value))
+    cred_id = models.AutoField(primary_key=True)
+    cred_name = models.CharField("Name", unique=True, max_length=150)
+    cred_url = models.CharField("Access Url", max_length=255)
+    user = models.CharField("User Name", max_length=100)
+    credentials = EncryptedCharField("Password", max_length=255)
 
-    def from_db_value(self, value, expression, connection):
-        if value is None:
-            return value
-        return json.dumps(json.loads(value), sort_keys=True, indent=4)
+    def __str__(self):
+        return self.cred_name
