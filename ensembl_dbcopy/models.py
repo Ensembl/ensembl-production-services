@@ -74,12 +74,15 @@ class RequestJob(models.Model):
 
     @property
     def overall_status(self):
-        if self.end_date and self.status == 'Transfer Ended':
-            return 'complete'
+        if self.end_date and self.status:
+            if self.transfer_logs.filter(end_date__isnull=True).count() > 0:
+                return 'Failed'
+            else:
+                return 'Complete'
         elif self.transfer_logs.count() > 0:
-            return 'running'
+            return 'Running'
         else:
-            return 'submitted'
+            return 'Submitted'
 
     @property
     def detailed_status(self):
@@ -89,13 +92,17 @@ class RequestJob(models.Model):
         if table_copied and total_tables:
             progress = (table_copied / total_tables) * 100
         if progress == 100.0:
-            return {'status_msg': 'complete', 'table_copied': table_copied, 'total_tables': total_tables,
+            return {'status_msg': 'Complete', 'table_copied': table_copied, 'total_tables': total_tables,
                     'progress': progress}
         elif total_tables > 0:
-            return {'status_msg': 'running', 'table_copied': table_copied, 'total_tables': total_tables,
-                    'progress': progress}
+            if self.end_date and self.status:
+                return {'status_msg': 'Failed', 'table_copied': table_copied, 'total_tables': total_tables,
+                        'progress': progress}
+            else:
+                return {'status_msg': 'Running', 'table_copied': table_copied, 'total_tables': total_tables,
+                        'progress': progress}
         else:
-            return {'status_msg': 'submitted', 'table_copied': table_copied, 'total_tables': total_tables,
+            return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
                     'progress': progress}
 
     @property
@@ -133,10 +140,13 @@ class TransferLog(models.Model):
 
     @property
     def table_status(self):
+        print(self.job_id.end_date)
         if self.end_date:
-            return 'complete'
+            return 'Complete'
+        elif self.job_id.end_date and self.job_id.status:
+            return 'Failed'
         else:
-            return 'running'
+            return 'Running'
 
 
 class Host(models.Model):

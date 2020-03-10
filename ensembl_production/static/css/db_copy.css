@@ -9,19 +9,19 @@
   padding: 5px 5px 5px 5px;
   border-radius: 4px;
 }
-.complete {
+.Complete {
   background-color: lightgreen;
 }
-.incomplete {
+.Incomplete {
   background-color: lightblue;
 }
-.submitted {
+.Submitted {
   background-color: lightblue;
 }
-.running {
+.Running {
   background-color: gold;
 }
-.failed{
+.Failed{
   background-color: lightpink;
 }
 .progress {
