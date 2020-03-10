@@ -250,12 +250,8 @@ class AnalysisDescriptionAdmin(HasCurrentAdmin):
     web_data_label.short_description = "Web Data Content"
 
 
-
-
-
 @admin.register(MetaKey)
 class MetakeyAdmin(HasCurrentAdmin):
-    form = MetaKeyForm
     list_display = ('name', 'db_type', 'description', 'is_current', 'is_optional')
     fields = ('name', 'description', 'db_type',
               ('is_optional', 'is_current', 'is_multi_value'),
