@@ -26,6 +26,13 @@
           </div>
           <div class="col-sm-10 tablevalue">{{ object.src_incl_db }}</div>
         </div>
+      {% elif object.src_skip_db %}
+        <div class="row">
+          <div class="col-sm-2">
+            <div class="tablekey">Source DBs:</div>
+          </div>
+          <div class="col-sm-10 tablevalue">All the databases excluding {{ object.src_skip_db }}</div>
+        </div>
       {% else %}
         <div class="row">
           <div class="col-sm-2">
