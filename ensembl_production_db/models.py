@@ -8,6 +8,7 @@
 import json
 
 import jsonfield
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.template.defaultfilters import truncatechars
 from django_mysql.models import EnumField
@@ -211,7 +212,7 @@ class MasterUnmappedReason(HasCurrent, BaseTimestampedModel):
 
 class MetaKey(HasCurrent, BaseTimestampedModel, HasDescription):
     meta_key_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64)
     is_optional = models.BooleanField(default=False)
     db_type = MultiSelectField(choices=DB_TYPE_CHOICES_METAKEY)
     description = NullTextField(blank=True, null=True)
@@ -220,3 +221,12 @@ class MetaKey(HasCurrent, BaseTimestampedModel, HasDescription):
     class Meta:
         db_table = 'meta_key'
         app_label = 'ensembl_production_db'
+        unique_together = ('name', 'is_optional', 'is_current')
+
+    def clean(self):
+        if MetaKey.objects.filter(name=self.name, is_optional=self.is_optional, is_current=self.is_current).exclude(
+                pk=self.pk).exists():
+            raise ValidationError(
+                'Duplicated entry for %s (uniqueness check against is_optional, is_current, name FAILED)' % self.name)
+
+        return super().clean()
