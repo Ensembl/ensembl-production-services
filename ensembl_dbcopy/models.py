@@ -140,7 +140,6 @@ class TransferLog(models.Model):
 
     @property
     def table_status(self):
-        print(self.job_id.end_date)
         if self.end_date:
             return 'Complete'
         elif self.job_id.end_date and self.job_id.status:

@@ -64,9 +64,7 @@ class SubmitForm(forms.ModelForm):
     def clean_src_host(self):
         src_host_pattern = re.compile("^.+:[0-9]{4}")
         data = self.cleaned_data['src_host']
-        print(data)
         if not src_host_pattern.fullmatch(data):
-            print(src_host_pattern.fullmatch(data))
             raise forms.ValidationError("Source Host should be formatted like this host:port")
         return data
     def clean_tgt_host(self):
