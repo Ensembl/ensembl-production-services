@@ -1,10 +1,20 @@
 {% extends 'home.html' %}
 {% load static %}
 {% block content %}
+  {% block messages %}
+    {% for message in messages %}
+        <div class="messages alert alert-{{ message.tags }} alert-dismissible in">  <!-- singular -->
+            <a class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></a>
+            {{ message|safe }}
+        </div>
+    {% endfor %}
+  {% endblock %}
   <div class="container">
     <div class="p-3 my-3 border">
       <a href="{% url 'ensembl_dbcopy:list' %}" class="btn btn-dark" role="button">Copy list</a>
       <a href="{% url 'ensembl_dbcopy:submit' %}" class="btn btn-dark" role="button">Submit Copy</a>
+      <a href="{% url 'ensembl_dbcopy:reset_failed_jobs' object.job_id %}" class="btn btn-dark">Reset failed jobs</a>
     </div>
     <div class="p-3 my-3 border">
       <div class="row">

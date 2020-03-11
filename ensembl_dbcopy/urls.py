@@ -13,7 +13,7 @@
 """
 from django.urls import path
 
-from .views import SubmitView, JobView, JobListView
+from .views import SubmitView, JobView, JobListView, reset_failed_jobs
 
 app_name = 'ensembl_dbcopy'
 
@@ -21,4 +21,5 @@ urlpatterns = [
     path('', JobListView.as_view(), name='list'),
     path('submit', SubmitView.as_view(), name="submit"),
     path('<uuid:job_id>', JobView.as_view(), name='detail'),
+    path('reset_failed_jobs/<uuid:job_id>', reset_failed_jobs, name='reset_failed_jobs'),
 ]

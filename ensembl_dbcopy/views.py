@@ -18,6 +18,8 @@ from ensembl_dbcopy.models import RequestJob
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.db.models import F
+from django.shortcuts import redirect
+from django.contrib import messages
 
 
 class SubmitView(CreateView):
@@ -47,6 +49,13 @@ class JobView(DetailView):
         context['transfer_logs'] = page
         return context
 
+def reset_failed_jobs(request, *args, **kwargs):
+    job_id = kwargs['job_id']
+    request_job = RequestJob.objects.filter(job_id=job_id)
+    request_job.update(end_date=None)
+    request_job.update(status=None)
+    messages.success(request, "All the failed jobs for %s have been successfully reset" % job_id)
+    return redirect(reverse('ensembl_dbcopy:detail', kwargs={'job_id': job_id}))
 
 class JobListView(ListView):
     model = RequestJob
