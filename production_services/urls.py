@@ -12,21 +12,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from datetime import datetime
+
+from django.conf import settings
 from django.conf.urls import url, include
-from django.urls import path, re_path
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.views.generic import TemplateView, RedirectView
-from django.contrib.auth.views import LoginView
+from django.urls import path, re_path
 from django.views import static
-from django.conf import settings
+from django.views.decorators.cache import never_cache
+from django.views.generic import TemplateView, RedirectView
 
 import ensembl_production.views as views
 
-from django.views.decorators.cache import never_cache
-
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('',
+         TemplateView.as_view(template_name='home.html', extra_context={'current_date': datetime.now()}),
+         name='home'),
     path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     path('admin/', admin.site.urls),
     path('bugs/', include('ensembl_bugs.urls')),
@@ -44,9 +46,11 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns.extend([
-        url(r'^web-app/scripts/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/web-app/app/scripts/"}),
+        url(r'^web-app/scripts/(?P<path>.*)$', static.serve,
+            {'document_root': settings.BASE_DIR + "/web-app/app/scripts/"}),
         url(r'^views/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/web-app/app/views/"}),
-        url(r'^web-app/bower_components/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/web-app/bower_components/"}),
+        url(r'^web-app/bower_components/(?P<path>.*)$', static.serve,
+            {'document_root': settings.BASE_DIR + "/web-app/bower_components/"}),
     ])
 
 handler404 = 'ensembl_production.views.handler404'
