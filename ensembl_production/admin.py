@@ -15,6 +15,9 @@
 import jsonfield
 from django import forms
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+# Unregister the provided model admin
+from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from fernet_fields import EncryptedCharField
@@ -96,10 +99,18 @@ class CredentialsAdmin(admin.ModelAdmin, SuperUserAdmin):
     }
 
 
-def desactivate_users(self, request, queryset):
-    cnt = queryset.filter(is_active=True).update(is_active=False)
-    self.message_user(request, 'Deactivated {} users.'.format(cnt))
+admin.site.unregister(User)
 
 
-admin.site.add_action(desactivate_users, 'Deactivate Users')
-admin.site.disable_action('delete_selected')
+@admin.register(User)
+class CustomUserAdmin(UserAdmin, SuperUserAdmin):
+    actions = ['deactivate_users', ]
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def deactivate_users(self, request, queryset):
+        cnt = queryset.filter(is_active=True).update(is_active=False)
+        self.message_user(request, 'Deactivated {} users.'.format(cnt))
+
+    deactivate_users.short_description = 'Deactivate Users'
