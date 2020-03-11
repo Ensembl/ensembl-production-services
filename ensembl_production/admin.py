@@ -95,8 +95,11 @@ class CredentialsAdmin(admin.ModelAdmin, SuperUserAdmin):
         EncryptedCharField: {'widget': forms.widgets.PasswordInput},
     }
 
+
 def desactivate_users(self, request, queryset):
-        cnt = queryset.filter(is_active=True).update(is_active=False)
-        self.message_user(request, 'Deactivated {} users.'.format(cnt))
-admin.site.add_action(desactivate_users,'Deactivate Users')
+    cnt = queryset.filter(is_active=True).update(is_active=False)
+    self.message_user(request, 'Deactivated {} users.'.format(cnt))
+
+
+admin.site.add_action(desactivate_users, 'Deactivate Users')
 admin.site.disable_action('delete_selected')
