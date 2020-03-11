@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 .. See the NOTICE file distributed with this work for additional information
    regarding copyright ownership.
@@ -13,7 +14,6 @@
 """
 import os
 import sys
-
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'jet',
-    'ensembl_production.apps.EnsemblProductionConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,10 +42,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    # Ensembl production stack
+    'ensembl_production.apps.EnsemblProductionConfig',
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
     'ensembl_dbcopy.apps.EnsemblDbcopyConfig',
     'ensembl_bugs.apps.KnownBugsConfig',
+    # utils
     'multiselectfield',
     'ckeditor',
     'crispy_forms',
@@ -64,6 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# AUTHENTICATION_BACKENDS = ("django_python3_ldap.auth.LDAPBackend",)
 APPEND_SLASH = True
 
 ROOT_URLCONF = 'production_services.urls'
@@ -137,7 +140,7 @@ DATABASES = {
         'PORT': os.getenv('DB_COPY_PORT', '3306'),
         'OPTIONS': {
             "init_command": "SET default_storage_engine=InnoDB",
-        }
+    }
     },
 }
 
@@ -185,11 +188,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# ANGULAR_APP_DIR = os.path.join(BASE_DIR, 'web-app/')
-# STATICFILES_DIRS = [
-#    ('app', os.path.join(ANGULAR_APP_DIR)),
-# ]
-
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -226,4 +224,6 @@ DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
 LOGOUT_REDIRECT_URL = "/"
 
-USE_X_FORWARDED_HOST = True
+## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
+# USE_X_FORWARDED_HOST = True
+
