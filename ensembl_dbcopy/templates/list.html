@@ -25,16 +25,16 @@
             <tbody>
             {% for job in object_list %}
             <tr>
-              <td><a href="{% url 'ensembl_dbcopy:detail' job_id=job.job_id %}">{{job.job_id}}</a></td>
-              <td>{{job.src_host}}</td>
-              <td>{{job.src_incl_db}}</td>
-              <td>{{job.src_skip_db}}</td>
-              <td>{{job.tgt_host}}</td>
-              <td>{{job.tgt_db_name}}</td>
-              <td>{{job.email_list}}</td>
-              <td>{{job.start_date}}</td>
-              <td>{{job.end_date}}</td>
-              <td class ="{{job.overall_status}}">{{job.overall_status}}</td>
+              <td class="table-break-all"><a href="{% url 'ensembl_dbcopy:detail' job_id=job.job_id %}">{{job.job_id}}</a></td>
+              <td class="table-break-all">{{job.src_host}}</td>
+              <td class="table-break-all">{{job.src_incl_db}}</td>
+              <td class="table-break-all">{{job.src_skip_db}}</td>
+              <td class="table-break-all">{{job.tgt_host}}</td>
+              <td class="table-break-all">{{job.tgt_db_name}}</td>
+              <td class="table-break-all">{{job.email_list}}</td>
+              <td class="table-break-all">{{job.start_date}}</td>
+              <td class="table-break-all">{{job.end_date}}</td>
+              <td class ="table-break-all {{job.overall_status}}">{{job.overall_status}}</td>
             </tr>
             {% endfor %}
             </tbody>

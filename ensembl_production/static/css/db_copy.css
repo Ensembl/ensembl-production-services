@@ -44,3 +44,10 @@
 .btn {
   margin-bottom: 15px;
 }
+.table{
+  table-layout:fixed;
+}
+.table-break-all
+{
+  word-break: break-all;
+}
