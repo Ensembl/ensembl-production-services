@@ -68,6 +68,8 @@ class RequestJob(models.Model):
     class Meta:
         db_table = 'request_job'
         app_label = 'ensembl_dbcopy'
+        verbose_name = "Copy job"
+        verbose_name_plural = "Copy jobs"
 
     def __str__(self):
         return str(self.job_id)

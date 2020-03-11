@@ -1,47 +1,38 @@
-{% extends 'home.html' %}
+{% extends 'admin/change_form.html' %}
 {% load static %}
 {% block content %}
-  {% block messages %}
-    {% for message in messages %}
-        <div class="messages alert alert-{{ message.tags }} alert-dismissible in">  <!-- singular -->
-            <a class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span></a>
-            {{ message|safe }}
-        </div>
-    {% endfor %}
-  {% endblock %}
-  <div class="container">
+  <div class="container-fluid">
     <div class="p-3 my-3 border">
-      <a href="{% url 'ensembl_dbcopy:list' %}" class="btn btn-dark" role="button">Copy list</a>
-      <a href="{% url 'ensembl_dbcopy:submit' %}" class="btn btn-dark" role="button">Submit Copy</a>
-      <a href="{% url 'ensembl_dbcopy:reset_failed_jobs' object.job_id %}" class="btn btn-dark">Reset failed jobs</a>
+      <a href="{% url 'admin:ensembl_dbcopy_requestjob_changelist' %}" class="btn btn-secondary" role="button">Back to list</a>
+      <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}" class="btn btn-secondary" role="button">Submit New Copy</a>
+      <a href="{% url 'ensembl_dbcopy:reset_failed_jobs' original.job_id %}" class="btn btn-secondary" role="button">Reset failed jobs</a>
     </div>
     <div class="p-3 my-3 border">
       <div class="row">
         <div class="col-sm-2">
           <div class="tablekey">Job ID:</div>
         </div>
-        <div class="col-sm-10 tablevalue">{{ object.job_id }}</div>
+        <div class="col-sm-10 tablevalue">{{ original.job_id }}</div>
       </div>
       <div class="row">
         <div class="col-sm-2">
           <div class="tablekey">Source Host:</div>
         </div>
-        <div class="col-sm-10 tablevalue">{{ object.src_host }}</div>
+        <div class="col-sm-10 tablevalue">{{ original.src_host }}</div>
       </div>
-      {% if object.src_incl_db %}
+      {% if original.src_incl_db %}
         <div class="row">
           <div class="col-sm-2">
             <div class="tablekey">Source DBs:</div>
           </div>
-          <div class="col-sm-10 tablevalue">{{ object.src_incl_db }}</div>
+          <div class="col-sm-10 tablevalue">{{ original.src_incl_db }}</div>
         </div>
-      {% elif object.src_skip_db %}
+      {% elif original.src_skip_db %}
         <div class="row">
           <div class="col-sm-2">
             <div class="tablekey">Source DBs:</div>
           </div>
-          <div class="col-sm-10 tablevalue">All the databases excluding {{ object.src_skip_db }}</div>
+          <div class="col-sm-10 tablevalue">All the databases excluding {{ original.src_skip_db }}</div>
         </div>
       {% else %}
         <div class="row">
@@ -55,30 +46,30 @@
         <div class="col-sm-2">
           <div class="tablekey">Target Host:</div>
         </div>
-        <div class="col-sm-10 tablevalue">{{ object.tgt_host }}</div>
+        <div class="col-sm-10 tablevalue">{{ original.tgt_host }}</div>
       </div>
-      {% if object.tgt_db_name %}
+      {% if original.tgt_db_name %}
         <div class="row">
           <div class="col-sm-2">
             <div class="tablekey">Target DB:</div>
           </div>
-          <div class="col-sm-10 tablevalue">{{ object.tgt_db_name }}</div>
+          <div class="col-sm-10 tablevalue">{{ original.tgt_db_name }}</div>
         </div>
       {% endif %}
-      {% if object.detailed_status.status_msg == 'Running' %}
+      {% if original.detailed_status.status_msg == 'Running' %}
         <div class="row">
             <div class="col-sm-2">
               <div class="tablekey">Status:</div>
             </div>
-            <div class="col-sm-10 tablevalue {{ object.detailed_status.status_msg }}">{{ object.detailed_status.status_msg }}: Copying table {{object.transfer_logs.last.table_name}} for {{object.transfer_logs.last.renamed_table_schema}} in progress...</div>
+            <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}: Copying table {{original.transfer_logs.last.table_name}} for {{original.transfer_logs.last.renamed_table_schema}} in progress...</div>
         </div>
         <div class="row">
             <div class="col-sm-2">
               <div class="tablekey">Progress:</div>
             </div>
             <div class="col-sm-10 tablevalue progress">
-              <div class="progress-bar tablevalue" style="width:{{object.detailed_status.progress}}%">
-                <span class="job-completed">{{object.detailed_status.table_copied}}/{{object.detailed_status.total_tables}} tasks done</span>
+              <div class="progress-bar tablevalue" style="width:{{original.detailed_status.progress}}%">
+                <span class="job-completed">{{original.detailed_status.table_copied}}/{{original.detailed_status.total_tables}} tasks done</span>
               </div>
             </div>
         </div>
@@ -87,7 +78,7 @@
             <div class="col-sm-2">
               <div class="tablekey">Status:</div>
             </div>
-            <div class="col-sm-10 tablevalue {{ object.detailed_status.status_msg }}">{{ object.detailed_status.status_msg }}</div>
+            <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}</div>
         </div>
       {% endif %}
     </div>

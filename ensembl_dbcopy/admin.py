@@ -13,8 +13,11 @@
 """
 from django import forms
 from django.contrib import admin
+from django.core.paginator import Paginator
+from django.db.models import F
 
-from ensembl_dbcopy.models import Host, Group
+from ensembl_dbcopy.forms import SubmitForm
+from ensembl_dbcopy.models import Host, Group, RequestJob
 from ensembl_production.admin import SuperUserAdmin
 
 
@@ -30,7 +33,6 @@ class GroupRecordForm(forms.ModelForm):
 
 @admin.register(Host)
 class HostItemAdmin(admin.ModelAdmin, SuperUserAdmin):
-
     form = HostRecordForm
     list_display = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
     fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
@@ -39,7 +41,65 @@ class HostItemAdmin(admin.ModelAdmin, SuperUserAdmin):
 
 @admin.register(Group)
 class GroupItemAdmin(admin.ModelAdmin, SuperUserAdmin):
+
     form = GroupRecordForm
     list_display = ('host_id', 'group_name')
     fields = ('host_id', 'group_name')
     search_fields = ('host_id', 'group_name')
+
+
+@admin.register(RequestJob)
+class RequestJobAdmin(admin.ModelAdmin):
+    form = SubmitForm
+    add_form_template = "admin/dbcopy/submit.html"
+    change_form_template = "admin/dbcopy/detail.html"
+    # TODO might need some light updates
+    list_display = ('job_id', 'src_host', 'tgt_host', 'user', 'status')
+    list_filter = ('tgt_host', 'user', 'status')
+    ordering = ('start_date', )
+    # TODO add filters as needed
+    # TODO add specific filters: group ? owner ? all ? see IsDisplayableFilter if needed
+    # def get_queryset(self, request):
+    #    queryset = super().get_queryset(request)
+    #    return queryset.filter(user=request.user.username)
+
+    def has_add_permission(self, request):
+        return request.user.is_staff
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_staff
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_staff
+
+    def has_module_permission(self, request):
+        return request.user.is_staff
+
+    class Media:
+        js = ('js/multiselect.js', )
+        css = {
+            'all': ('css/db_copy.css',)
+        }
+
+    def has_delete_permission(self, request, obj=None):
+        # Allow delete only for superusers
+        return request.user.is_superuser
+
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        form = super().get_form(request, obj, change, **kwargs)
+        form.user = request.user
+        return form
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        context = extra_context or {}
+        transfers_logs = self.get_object(request, object_id).transfer_logs
+        paginator = Paginator(transfers_logs.order_by(F('end_date').desc(nulls_first=True)), 30)
+        page_number = request.GET.get('page', 1)
+        page = paginator.page(page_number)
+        context['transfer_logs'] = page
+        return super().change_view(request, object_id, form_url, context)
+
+
+
+
+
