@@ -15,10 +15,12 @@ from django import forms
 from django.contrib import admin
 from django.core.paginator import Paginator
 from django.db.models import F
-
 from ensembl_dbcopy.forms import SubmitForm
 from ensembl_dbcopy.models import Host, Group, RequestJob
 from ensembl_production.admin import SuperUserAdmin
+from django.utils.html import format_html
+from django.contrib.admin import SimpleListFilter
+from django.db.models import Count
 
 
 class HostRecordForm(forms.ModelForm):
@@ -38,6 +40,29 @@ class HostItemAdmin(admin.ModelAdmin, SuperUserAdmin):
     fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
     search_fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
 
+class OverallStatusFilter(SimpleListFilter):
+    title = 'status' # or use _('country') for translated title
+    parameter_name = 'status'
+
+    def lookups(self, request, model_admin):
+        status = set([s.overall_status for s in model_admin.model.objects.all()])
+        return [(s, s) for s in status]
+
+    def queryset(self, request, queryset):
+        if self.value() == 'Failed':
+            qs = queryset.filter(end_date__isnull=False,status__isnull=False)
+            return qs.filter(transfer_logs__end_date__isnull=True).annotate(count_transfer=Count('transfer_logs')).filter(count_transfer__gt=0)
+        elif self.value() == 'Complete':
+            qs = queryset.filter(end_date__isnull=False,status__isnull=False)
+            print(qs.filter(transfer_logs__end_date__isnull=False).annotate(count_transfer=Count('transfer_logs')))
+            return qs.exclude(transfer_logs__end_date__isnull=True)
+        elif self.value() == 'Running':
+            qs = queryset.filter(end_date__isnull=True,status__isnull=True)
+            return qs.annotate(count_transfer=Count('transfer_logs')).filter(count_transfer__gt=0)
+        elif self.value() == 'Submitted':
+            qs = queryset.filter(end_date__isnull=True,status__isnull=True)
+            return qs.annotate(count_transfer=Count('transfer_logs')).filter(count_transfer=0)
+
 
 @admin.register(Group)
 class GroupItemAdmin(admin.ModelAdmin, SuperUserAdmin):
@@ -53,9 +78,8 @@ class RequestJobAdmin(admin.ModelAdmin):
     form = SubmitForm
     add_form_template = "admin/dbcopy/submit.html"
     change_form_template = "admin/dbcopy/detail.html"
-    # TODO might need some light updates
-    list_display = ('job_id', 'src_host', 'tgt_host', 'user', 'status')
-    list_filter = ('tgt_host', 'user', 'status')
+    list_display = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user', 'start_date', 'end_date', 'overall_status')
+    list_filter = ('src_host','tgt_host', 'user', OverallStatusFilter)
     ordering = ('start_date', )
     # TODO add filters as needed
     # TODO add specific filters: group ? owner ? all ? see IsDisplayableFilter if needed
@@ -99,7 +123,10 @@ class RequestJobAdmin(admin.ModelAdmin):
         context['transfer_logs'] = page
         return super().change_view(request, object_id, form_url, context)
 
-
-
-
+    def overall_status(self, obj):
+        return format_html(
+            '<b class="field-overall_status {}">{}</b>',
+            obj.overall_status,
+            obj.overall_status,
+        )
 
