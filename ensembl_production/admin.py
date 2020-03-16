@@ -71,7 +71,7 @@ class FlaskAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
               ('modified_by', 'modified_at'))
 
     formfield_overrides = {
-        jsonfield.JSONField: {'widget': jsonfield.widgets.JSONWidget(attrs={'rows': 20, 'cols': 70,
+        jsonfield.JSONField: {'widget': jsonfield.fields.JSONWidget(attrs={'rows': 20, 'cols': 70,
                                                                             'class': 'vLargeTextField'})},
     }
 
@@ -79,8 +79,11 @@ class FlaskAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
         return mark_safe(u"<div class='admin_app_theme_color' style='background:#" + obj.app_theme + "'/>")
 
     def app_url_link(self, obj):
-        url_view = reverse('production_app_view', kwargs={'app_prod_url': obj.app_prod_url})
-        return mark_safe(u"<a href='" + url_view + "' target='_blank'>" + obj.app_prod_url + "</a>")
+        if obj.app_prod_url:
+            url_view = reverse('production_app_view', kwargs={'app_prod_url': obj.app_prod_url})
+            return mark_safe(u"<a href='" + url_view + "' target='_blank'>" + obj.app_prod_url + "</a>")
+        else:
+            return "N/A"
 
     def img_url(self, obj):
         return obj.img_admin_tag
