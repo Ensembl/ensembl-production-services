@@ -13,14 +13,15 @@
 """
 from django import forms
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.core.paginator import Paginator
+from django.db.models import Count
 from django.db.models import F
+from django.utils.html import format_html
+
 from ensembl_dbcopy.forms import SubmitForm
 from ensembl_dbcopy.models import Host, Group, RequestJob
 from ensembl_production.admin import SuperUserAdmin
-from django.utils.html import format_html
-from django.contrib.admin import SimpleListFilter
-from django.db.models import Count
 
 
 class HostRecordForm(forms.ModelForm):
@@ -40,8 +41,9 @@ class HostItemAdmin(admin.ModelAdmin, SuperUserAdmin):
     fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
     search_fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
 
+
 class OverallStatusFilter(SimpleListFilter):
-    title = 'status' # or use _('country') for translated title
+    title = 'status'  # or use _('country') for translated title
     parameter_name = 'status'
 
     def lookups(self, request, model_admin):
@@ -50,23 +52,67 @@ class OverallStatusFilter(SimpleListFilter):
 
     def queryset(self, request, queryset):
         if self.value() == 'Failed':
-            qs = queryset.filter(end_date__isnull=False,status__isnull=False)
-            return qs.filter(transfer_logs__end_date__isnull=True).annotate(count_transfer=Count('transfer_logs')).filter(count_transfer__gt=0)
+            qs = queryset.filter(end_date__isnull=False, status__isnull=False)
+            return qs.filter(transfer_logs__end_date__isnull=True).annotate(
+                count_transfer=Count('transfer_logs')).filter(count_transfer__gt=0)
         elif self.value() == 'Complete':
-            qs = queryset.filter(end_date__isnull=False,status__isnull=False)
+            qs = queryset.filter(end_date__isnull=False, status__isnull=False)
             print(qs.filter(transfer_logs__end_date__isnull=False).annotate(count_transfer=Count('transfer_logs')))
             return qs.exclude(transfer_logs__end_date__isnull=True)
         elif self.value() == 'Running':
-            qs = queryset.filter(end_date__isnull=True,status__isnull=True)
+            qs = queryset.filter(end_date__isnull=True, status__isnull=True)
             return qs.annotate(count_transfer=Count('transfer_logs')).filter(count_transfer__gt=0)
         elif self.value() == 'Submitted':
-            qs = queryset.filter(end_date__isnull=True,status__isnull=True)
+            qs = queryset.filter(end_date__isnull=True, status__isnull=True)
             return qs.annotate(count_transfer=Count('transfer_logs')).filter(count_transfer=0)
+
+
+class UserFilter(SimpleListFilter):
+    """
+    This filter will always return a subset of the instances in a Model, either filtering by the
+    user choice or by a default value.
+    """
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = 'user'
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'user'
+    default_value = None
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        list_of_users = []
+        queryset = model_admin.model.objects.all()
+        for q in queryset:
+            if q.user:
+                list_of_users.append(
+                    (str(q.user), q.user)
+                )
+        return sorted(list(set(list_of_users+[("all", "all"), ])), key=lambda tp: tp[1])
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        # Compare the requested value to decide how to filter the queryset.
+        if self.value():
+            if self.value() != "all":
+                return queryset.filter(user=self.value())
+            else:
+                return queryset.all()
+        return queryset.filter(user=request.user)
 
 
 @admin.register(Group)
 class GroupItemAdmin(admin.ModelAdmin, SuperUserAdmin):
-
     form = GroupRecordForm
     list_display = ('host_id', 'group_name')
     fields = ('host_id', 'group_name')
@@ -75,17 +121,19 @@ class GroupItemAdmin(admin.ModelAdmin, SuperUserAdmin):
 
 @admin.register(RequestJob)
 class RequestJobAdmin(admin.ModelAdmin):
+    class Media:
+        js = ('js/multiselect.js',)
+        css = {
+            'all': ('css/db_copy.css',)
+        }
+
     form = SubmitForm
     add_form_template = "admin/dbcopy/submit.html"
     change_form_template = "admin/dbcopy/detail.html"
-    list_display = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user', 'start_date', 'end_date', 'overall_status')
-    list_filter = ('src_host','tgt_host', 'user', OverallStatusFilter)
-    ordering = ('start_date', )
-    # TODO add filters as needed
-    # TODO add specific filters: group ? owner ? all ? see IsDisplayableFilter if needed
-    # def get_queryset(self, request):
-    #    queryset = super().get_queryset(request)
-    #    return queryset.filter(user=request.user.username)
+    list_display = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
+                    'start_date', 'end_date', 'overall_status')
+    list_filter = ('src_host', 'tgt_host', UserFilter, OverallStatusFilter)
+    ordering = ('start_date',)
 
     def has_add_permission(self, request):
         return request.user.is_staff
@@ -93,17 +141,8 @@ class RequestJobAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return request.user.is_staff
 
-    def has_delete_permission(self, request, obj=None):
-        return request.user.is_staff
-
     def has_module_permission(self, request):
         return request.user.is_staff
-
-    class Media:
-        js = ('js/multiselect.js', )
-        css = {
-            'all': ('css/db_copy.css',)
-        }
 
     def has_delete_permission(self, request, obj=None):
         # Allow delete only for superusers
@@ -125,8 +164,7 @@ class RequestJobAdmin(admin.ModelAdmin):
 
     def overall_status(self, obj):
         return format_html(
-            '<b class="field-overall_status {}">{}</b>',
+            '<div class="overall_status {}">{}</div>',
             obj.overall_status,
             obj.overall_status,
         )
-

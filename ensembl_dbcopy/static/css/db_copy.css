@@ -9,6 +9,11 @@
   padding: 5px 5px 5px 5px;
   border-radius: 4px;
 }
+.overall_status {
+  font-weight: bold;
+  padding: 0.75em;
+}
+
 .Complete {
   background-color: lightgreen;
 }
