@@ -11,46 +11,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from django.views.generic.edit import CreateView
-from django.views.generic import DetailView, ListView
-from ensembl_dbcopy.forms import SubmitForm
-from ensembl_dbcopy.models import RequestJob
+from django.contrib import messages
+from django.shortcuts import redirect
 from django.urls import reverse
-from django.core.paginator import Paginator
-from django.db.models import F
+
+from ensembl_dbcopy.models import RequestJob
 
 
-class SubmitView(CreateView):
-    template_name = "submit.html"
-    form_class = SubmitForm
-
-    def get_success_url(self):
-        return reverse('ensembl_dbcopy:detail', kwargs={'job_id': self.object.job_id})
-
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
-        kwargs['user'] = self.request.user
-        return kwargs
-
-
-class JobView(DetailView):
-    model = RequestJob
-    template_name = 'detail.html'
-    pk_url_kwarg = 'job_id'
-    queryset = RequestJob.objects.all().prefetch_related('transfer_logs')
-
-    def get_context_data(self, **kwargs):
-        context = super(JobView, self).get_context_data(**kwargs)
-        paginator = Paginator(context['requestjob'].transfer_logs.order_by(F('end_date').desc(nulls_first=True)), 30)
-        page_number = self.request.GET.get('page', 1)
-        page = paginator.page(page_number)
-        context['transfer_logs'] = page
-        return context
-
-
-class JobListView(ListView):
-    model = RequestJob
-    paginate_by = 10
-    template_name = 'list.html'
-    def get_queryset(self):
-        return RequestJob.objects.order_by(F('start_date').desc(nulls_first=True))
+def reset_failed_jobs(request, *args, **kwargs):
+    job_id = kwargs['job_id']
+    request_job = RequestJob.objects.filter(job_id=job_id)
+    request_job.update(end_date=None)
+    request_job.update(status=None)
+    obj = request_job[0]
+    url = reverse('admin:%s_%s_change' % (obj._meta.app_label, obj._meta.model_name),
+                  args=[obj.job_id])
+    messages.success(request, "All the failed jobs for %s have been successfully reset" % job_id)
+    return redirect(url)
