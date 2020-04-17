@@ -21,7 +21,7 @@ ul.messagelist li.sucess{
     max-width: 400px;
 }
 
-.field-is_current img, .field-app_is_framed img {
+.field-is_optional img, .field-is_current img, .field-app_is_framed img, .field-displayable img {
     display: block;
 }
 

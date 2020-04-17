@@ -29,6 +29,7 @@ connections = ConnectionHandler()
 router = ConnectionRouter()
 NOT_PROVIDED = object()
 
+
 class NullTextField(models.TextField):
     empty_strings_allowed = False
     description = "Set Textfield to NULL instead of empty string"
@@ -46,6 +47,7 @@ class NullTextField(models.TextField):
 
     def get_internal_type(self):
         return "TextField"
+
 
 class SpanningForeignKey(models.ForeignKey):
 

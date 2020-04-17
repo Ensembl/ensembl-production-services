@@ -12,7 +12,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-
+# TODO add uncheck all is_current when checking is_current
 import collections
 
 from django import forms
@@ -21,7 +21,6 @@ from django.contrib import messages
 from django.contrib.admin import SimpleListFilter
 
 from ensembl_production.admin import ProductionUserAdminMixin
-from ensembl_production.forms import JetCheckboxSelectMultiple
 from .models import *
 
 
@@ -251,20 +250,9 @@ class AnalysisDescriptionAdmin(HasCurrentAdmin):
     web_data_label.short_description = "Web Data Content"
 
 
-class MetaKeyForm(forms.BaseModelForm):
-    class Meta:
-        model = MetaKey
-        fields = ('__all__',)
-
-    def __init__(self, **kwargs):
-        self.fields['db_type'].widget = JetCheckboxSelectMultiple()
-        super().__init__(**kwargs)
-
-
 @admin.register(MetaKey)
 class MetakeyAdmin(HasCurrentAdmin):
-    # form = MetaKeyForm
-    list_display = ('name', 'is_optional', 'db_type', 'description', 'is_current')
+    list_display = ('name', 'db_type', 'description', 'is_current', 'is_optional')
     fields = ('name', 'description', 'db_type',
               ('is_optional', 'is_current', 'is_multi_value'),
               ('created_by', 'created_at'),

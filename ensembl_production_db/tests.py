@@ -15,6 +15,7 @@
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.db.utils import IntegrityError
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -648,3 +649,16 @@ class AnalysisTest(APITestCase):
         user = User.objects.get(username='testuser')
         self.assertEqual(new_elem.created_by.username, user.username)
         self.assertEqual(new_elem.attrib_type.created_by.username, user.username)
+
+    def testDuplicateMetaKey(self):
+        meta_key_values = {
+            'name': 'duplicate',
+            'is_optional': True,
+            'db_type': ['core'],
+            'description': 'duplicated test meta_key',
+            'is_current': True
+        }
+        meta_key_one = MetaKey.objects.create(**meta_key_values)
+        with self.assertRaises(IntegrityError):
+            MetaKey.objects.create(**meta_key_values)
+
