@@ -66,13 +66,31 @@ class TransferLogSerializer(serializers.ModelSerializer):
             'end_date',
             'size',
             'retries',
-            'message')
+            'message',
+            'table_status')
 
 
 class RequestJobListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RequestJob
-        fields = '__all__'
+        fields = (
+            'url',
+            'src_host',
+            'src_incl_db',
+            'src_skip_db',
+            'src_incl_tables',
+            'src_skip_tables',
+            'tgt_host',
+            'tgt_db_name',
+            'tgt_directory',
+            'skip_optimize',
+            'wipe_target',
+            'convert_innodb',
+            'email_list',
+            'start_date',
+            'end_date',
+            'user',
+            'overall_status')
         extra_kwargs = {
             'url': {'view_name': 'requestjob-detail', 'lookup_field': 'job_id'},
         }
@@ -81,7 +99,25 @@ class RequestJobListSerializer(serializers.HyperlinkedModelSerializer):
 class RequestJobDetailSerializer(BaseUserTimestampSerializer):
     class Meta:
         model = RequestJob
-        fields = '__all__'
+        fields = (
+            'transfer_log',
+            'src_host',
+            'src_incl_db',
+            'src_skip_db',
+            'src_incl_tables',
+            'src_skip_tables',
+            'tgt_host',
+            'tgt_db_name',
+            'tgt_directory',
+            'skip_optimize',
+            'wipe_target',
+            'convert_innodb',
+            'email_list',
+            'start_date',
+            'end_date',
+            'user',
+            'overall_status',
+            'detailed_status')
 
     transfer_log = TransferLogSerializer(many=True, source='transfer_logs', read_only=True)
 
