@@ -100,6 +100,7 @@ class RequestJobDetailSerializer(BaseUserTimestampSerializer):
     class Meta:
         model = RequestJob
         fields = (
+            'job_id',
             'transfer_log',
             'src_host',
             'src_incl_db',
