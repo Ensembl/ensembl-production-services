@@ -156,7 +156,7 @@ class Host(models.Model):
     port = models.IntegerField()
     mysql_user = models.CharField(max_length=64)
     virtual_machine = models.CharField(max_length=255, blank=True, null=True)
-    mysqld_file_owner = models.CharField(max_length=128)
+    mysqld_file_owner = models.CharField(max_length=128, null=True, blank=True)
 
     class Meta:
         db_table = 'host'
