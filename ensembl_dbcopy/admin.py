@@ -117,7 +117,8 @@ class GroupItemAdmin(admin.ModelAdmin, SuperUserAdmin):
     add_form_template = "admin/dbcopy/multiselect.html" 
     list_display = ('host_id', 'group_name')
     fields = ('host_id', 'group_name')
-    search_fields = ('host_id', 'group_name')
+    search_fields = ('group_name', 'host_id__auto_id')
+ 
 
 
 @admin.register(RequestJob)
