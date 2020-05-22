@@ -6,6 +6,7 @@
       <a href="{% url 'admin:ensembl_dbcopy_requestjob_changelist' %}" class="btn btn-secondary" role="button">Back to list</a>
       <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}" class="btn btn-secondary" role="button">Submit New Copy</a>
       <a href="{% url 'ensembl_dbcopy:reset_failed_jobs' original.job_id %}" class="btn btn-secondary" role="button">Reset failed jobs</a>
+      <a href="{% url 'admin:ensembl_dbcopy_requestjob_change' original.job_id %}" class="btn btn-secondary" role="button">Refresh</a>
     </div>
     <div class="p-3 my-3 border">
       <div class="row">

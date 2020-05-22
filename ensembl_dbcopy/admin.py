@@ -19,7 +19,7 @@ from django.db.models import Count
 from django.db.models import F
 from django.utils.html import format_html
 
-from ensembl_dbcopy.forms import SubmitForm
+from ensembl_dbcopy.forms import SubmitForm, GroupForm
 from ensembl_dbcopy.models import Host, Group, RequestJob
 from ensembl_production.admin import SuperUserAdmin
 
@@ -113,7 +113,8 @@ class UserFilter(SimpleListFilter):
 
 @admin.register(Group)
 class GroupItemAdmin(admin.ModelAdmin, SuperUserAdmin):
-    form = GroupRecordForm
+    form = GroupForm #GroupRecordForm
+    add_form_template = "admin/dbcopy/multiselect.html" 
     list_display = ('host_id', 'group_name')
     fields = ('host_id', 'group_name')
     search_fields = ('host_id', 'group_name')
