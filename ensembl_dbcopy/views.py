@@ -15,7 +15,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from ensembl_dbcopy.models import RequestJob
+from ensembl_dbcopy.models import RequestJob, Group, Host
 
 
 def reset_failed_jobs(request, *args, **kwargs):
@@ -28,3 +28,20 @@ def reset_failed_jobs(request, *args, **kwargs):
                   args=[obj.job_id])
     messages.success(request, "All the failed jobs for %s have been successfully reset" % job_id)
     return redirect(url)
+
+def group_choice(request, *args, **kwargs):
+
+    host_id = request.POST.get("host_id")
+    host_id = Host.objects.get(auto_id=host_id)
+    for each_group in request.POST.getlist('group_name'):
+        grp = Group.objects.filter(group_name=[str(each_group)], host_id=request.POST.get("host_id"))
+        if len(grp) > 0 :
+            continue
+        new_group = Group()
+        new_group.group_name = each_group
+        new_group.host_id = host_id #Host.objects.get(auto_id=host_id)
+        new_group.save()
+
+    url = reverse('admin:ensembl_dbcopy_group_changelist')
+    return redirect(url)
+
