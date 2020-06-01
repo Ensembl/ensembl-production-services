@@ -72,7 +72,7 @@ class WebData(BaseTimestampedModel, HasDescription):
 
     @staticmethod
     def autocomplete_search_fields():
-        return 'data', 'description'
+        return 'web_data_id', 'data', 'description'
 
     def __str__(self):
         return '{} - {}...-'.format(self.pk, self.data)
