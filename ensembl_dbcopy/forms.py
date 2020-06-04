@@ -50,7 +50,7 @@ class SubmitForm(forms.ModelForm):
         max_length=2048,
         required=False)
     tgt_db_name = forms.CharField(
-        label="Name of database on Target Hosts",
+        label="Name of databases on Target Hosts (e.g: db1,db2)",
         max_length=2048,
         required=False)
     email_list = forms.CharField(
@@ -109,6 +109,15 @@ class SubmitForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Email list should be formatted like this joe.bloggs@ebi.ac.uk or joe.bloggs@ebi.ac.uk,toto@ebi.ac.uk")
         return data
+
+    def clean_tgt_db_name(self):
+        tgt_db_name = self.cleaned_data['tgt_db_name']
+        src_incl_db = self.cleaned_data['src_incl_db']
+        if tgt_db_name.count(',') != src_incl_db.count(','):
+            raise forms.ValidationError(
+                "The number of databases to copy should match the number of databases renamed on target hosts")
+        return tgt_db_name
+
 
     def __init__(self, *args, **kwargs):
         super(SubmitForm, self).__init__(*args, **kwargs)
