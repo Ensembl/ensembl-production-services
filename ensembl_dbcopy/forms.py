@@ -113,9 +113,13 @@ class SubmitForm(forms.ModelForm):
     def clean_tgt_db_name(self):
         tgt_db_name = self.cleaned_data['tgt_db_name']
         src_incl_db = self.cleaned_data['src_incl_db']
-        if tgt_db_name.count(',') != src_incl_db.count(','):
-            raise forms.ValidationError(
-                "The number of databases to copy should match the number of databases renamed on target hosts")
+        if tgt_db_name:
+            if tgt_db_name.count(',') != src_incl_db.count(','):
+                raise forms.ValidationError(
+                    "The number of databases to copy should match the number of databases renamed on target hosts")
+            if '%' in src_incl_db:
+                raise forms.ValidationError(
+                    "You can't rename a pattern")
         return tgt_db_name
 
 
