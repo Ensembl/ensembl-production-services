@@ -71,7 +71,7 @@
         "end_date": null,
         "user": "testuser",
         "status": null,
-        "request_date" : "2020-06-01 10:00:06"
+        "request_date" : "2020-06-01T10:00:06Z"
     }
   },
   {
@@ -94,7 +94,7 @@
         "end_date": null,
         "user": "testuser",
         "status": null,
-        "request_date": "2020-06-05 10:55:06"
+        "request_date": "2020-06-05T10:55:06Z"
     }
   },
   {
@@ -117,7 +117,7 @@
         "end_date": null,
         "user": "testuser",
         "status": null,
-        "request_date": "2020-06-08 09:55:06"
+        "request_date": "2020-06-08T09:55:06Z"
     }
   },
   {
