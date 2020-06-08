@@ -64,6 +64,7 @@ class RequestJob(models.Model):
     end_date = models.DateTimeField(blank=True, null=True, editable=False)
     user = models.CharField(max_length=64, blank=True, null=True)
     status = models.CharField(max_length=20, blank=True, null=True, editable=False)
+    request_date = models.DateTimeField(editable=False,auto_now_add=True)
 
     class Meta:
         db_table = 'request_job'

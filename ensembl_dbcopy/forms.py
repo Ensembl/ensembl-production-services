@@ -124,6 +124,8 @@ class SubmitForm(forms.ModelForm):
 
 
     def __init__(self, *args, **kwargs):
+        if 'initial' in kwargs and 'from_request_job' in kwargs['initial']:
+            kwargs['instance'] = RequestJob.objects.get(pk=kwargs['initial']['from_request_job'])
         super(SubmitForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.fields["email_list"].initial = self.user.email

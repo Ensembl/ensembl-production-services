@@ -126,16 +126,31 @@ class RequestJobAdmin(admin.ModelAdmin):
         css = {
             'all': ('css/db_copy.css',)
         }
+    actions = ['resubmit_jobs', ]
+
+
+    def resubmit_jobs(self, request, queryset):
+        for query in queryset:
+            newJob = RequestJob.objects.get(pk=query.pk)
+            newJob.pk=None
+            newJob.request_date=None
+            newJob.start_date=None
+            newJob.end_date=None
+            newJob.status=None
+            newJob.save()
+            self.message_user(request, 'Resumitted job with job_id {}'.format(newJob.pk))
+
+    resubmit_jobs.short_description = 'Resubmit Jobs'
 
     form = SubmitForm
     add_form_template = "admin/dbcopy/submit.html"
     change_form_template = "admin/dbcopy/detail.html"
     list_display = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
-                    'start_date', 'end_date', 'overall_status')
+                    'start_date', 'end_date', 'request_date', 'overall_status')
     search_fields = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
-                    'start_date', 'end_date')
+                    'start_date', 'end_date', 'request_date')
     list_filter = ('src_host', 'tgt_host', UserFilter, OverallStatusFilter)
-    ordering = ('start_date',)
+    ordering = ('-request_date',)
 
     def has_add_permission(self, request):
         return request.user.is_staff
