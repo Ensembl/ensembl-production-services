@@ -95,6 +95,13 @@
               </div>
             </div>
         </div>
+       {% elif original.detailed_status.status_msg == 'Failed' and original.failed_msg %}
+        <div class="row">
+            <div class="col-sm-2">
+              <div class="tablekey">Status:</div>
+            </div>
+            <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}: {{ original.failed_msg }}</div>
+        </div>
       {% else %}
         <div class="row">
             <div class="col-sm-2">
@@ -120,6 +127,15 @@
             </thead>
             <tbody>
             {% for log in transfer_logs %}
+            {% if log.message %}
+             <div class="p-3 my-3 border">
+              <div class="row">
+               <div class="col-sm-2">
+                <div class="tablekey">Failure detail:</div>
+               </div>
+              <div class="col-sm-10 tablevalue {{log.table_status}}"> {{ log.table_schema }}.{{ log.table_name }}: {{ log.message }}</div>
+             </div>
+            {% endif %}
             <tr>
               <td class="table-break-all">{{log.tgt_host}}</td>
               <td class="table-break-all">{{log.renamed_table_schema}}</td>
