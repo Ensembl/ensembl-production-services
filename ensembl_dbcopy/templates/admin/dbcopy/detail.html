@@ -9,6 +9,12 @@
       <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}?from_request_job={{ original.pk }}" class="btn btn-secondary" role="button">Resubmit job</a>
     </div>
     <div class="p-3 my-3 border">
+      <form type="get" action=".">
+        <input  id="search_box" class="btn btn-secondary" type="text" name="search_box"  placeholder="Search..." >
+        <button id="search_submit" class="btn btn-secondary" type="submit" >Submit</button>
+      </form>
+    </div>
+    <div class="p-3 my-3 border">
       <div class="row">
         <div class="col-sm-2">
           <div class="tablekey">Job ID:</div>
@@ -128,15 +134,25 @@
           </table>
         <span class="pagination">
             {% if transfer_logs.has_previous %}
+              {% if 'search_box' in request.get_full_path %}
+                <a class="page-link" href="{{ request.get_full_path }}&page=1">&laquo; first</a>
+                <a class="page-link" href="{{ request.get_full_path }}&page={{ transfer_logs.previous_page_number }}">previous</a>
+              {% else %}
                 <a class="page-link" href="?page=1">&laquo; first</a>
                 <a class="page-link" href="?page={{ transfer_logs.previous_page_number }}">previous</a>
+              {% endif %}
             {% endif %}
             <span class="page-link">
                 Page {{ transfer_logs.number }} of {{ transfer_logs.paginator.num_pages }}.
             </span>
             {% if transfer_logs.has_next %}
+              {% if 'search_box' in request.get_full_path %}
+                <a class="page-link" href="{{ request.get_full_path }}&page={{ transfer_logs.next_page_number }}">next</a>
+                <a class="page-link" href="{{ request.get_full_path }}&page={{ transfer_logs.paginator.num_pages }}">last &raquo;</a>
+              {% else %}
                 <a class="page-link" href="?page={{ transfer_logs.next_page_number }}">next</a>
                 <a class="page-link" href="?page={{ transfer_logs.paginator.num_pages }}">last &raquo;</a>
+              {% endif %}
             {% endif %}
         </span>
       </div>

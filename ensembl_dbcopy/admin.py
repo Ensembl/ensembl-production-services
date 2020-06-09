@@ -16,7 +16,7 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.core.paginator import Paginator
 from django.db.models import Count
-from django.db.models import F
+from django.db.models import F,Q
 from django.utils.html import format_html
 
 from ensembl_dbcopy.forms import SubmitForm
@@ -172,7 +172,11 @@ class RequestJobAdmin(admin.ModelAdmin):
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         context = extra_context or {}
-        transfers_logs = self.get_object(request, object_id).transfer_logs
+        search_query = request.GET.get('search_box')
+        if search_query:
+            transfers_logs = self.get_object(request, object_id).transfer_logs.filter(Q(table_name__contains=search_query) | Q(table_schema__contains=search_query) | Q(tgt_host__contains=search_query) | Q(renamed_table_schema__contains=search_query))
+        else:
+            transfers_logs = self.get_object(request, object_id).transfer_logs
         paginator = Paginator(transfers_logs.order_by(F('end_date').desc(nulls_first=True)), 30)
         page_number = request.GET.get('page', 1)
         page = paginator.page(page_number)
