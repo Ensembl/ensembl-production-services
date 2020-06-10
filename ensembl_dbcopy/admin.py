@@ -177,10 +177,12 @@ class RequestJobAdmin(admin.ModelAdmin):
             transfers_logs = self.get_object(request, object_id).transfer_logs.filter(Q(table_name__contains=search_query) | Q(table_schema__contains=search_query) | Q(tgt_host__contains=search_query) | Q(renamed_table_schema__contains=search_query))
         else:
             transfers_logs = self.get_object(request, object_id).transfer_logs
-        paginator = Paginator(transfers_logs.order_by(F('end_date').desc(nulls_first=True)), 30)
+        paginator = Paginator(transfers_logs.order_by(F('end_date').asc(nulls_first=True),F('auto_id')), 30)
         page_number = request.GET.get('page', 1)
         page = paginator.page(page_number)
         context['transfer_logs'] = page
+        if transfers_logs.filter(end_date__isnull=True):
+            context["running_copy"] = transfers_logs.filter(end_date__isnull=True).order_by(F('end_date').desc(nulls_first=True)).earliest('auto_id')
         return super().change_view(request, object_id, form_url, context)
 
     def overall_status(self, obj):

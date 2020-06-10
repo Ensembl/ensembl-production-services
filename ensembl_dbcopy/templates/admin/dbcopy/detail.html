@@ -83,7 +83,7 @@
             <div class="col-sm-2">
               <div class="tablekey">Status:</div>
             </div>
-            <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}: Copying table {{original.transfer_logs.last.table_name}} for {{original.transfer_logs.last.renamed_table_schema}} in progress...</div>
+            <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}: Copying table {{running_copy.table_name}} for {{running_copy.renamed_table_schema}} to {{running_copy.tgt_host}} in progress...</div>
         </div>
         <div class="row">
             <div class="col-sm-2">
