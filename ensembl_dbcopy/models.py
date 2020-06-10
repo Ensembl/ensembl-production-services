@@ -99,11 +99,15 @@ class RequestJob(models.Model):
             return {'status_msg': 'Complete', 'table_copied': table_copied, 'total_tables': total_tables,
                     'progress': progress}
         elif total_tables > 0:
-            if (self.end_date and self.status=='Transfer Ended') or ('Try:' in self.status):
-                return {'status_msg': 'Failed', 'table_copied': table_copied, 'total_tables': total_tables,
-                        'progress': progress}
-            if self.status=='Processing Requests':
-                return {'status_msg': 'Running', 'table_copied': table_copied, 'total_tables': total_tables,
+            if self.status:
+                if (self.end_date and self.status=='Transfer Ended') or ('Try:' in self.status):
+                    return {'status_msg': 'Failed', 'table_copied': table_copied, 'total_tables': total_tables,
+                            'progress': progress}
+                if self.status=='Processing Requests':
+                    return {'status_msg': 'Running', 'table_copied': table_copied, 'total_tables': total_tables,
+                            'progress': progress}
+            else:
+                return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
                         'progress': progress}
         else:
             return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
@@ -146,10 +150,13 @@ class TransferLog(models.Model):
     def table_status(self):
         if self.end_date:
             return 'Complete'
-        elif (self.job_id.end_date and self.job_id.status=='Transfer Ended') or ('Try:' in self.job_id.status):
-            return 'Failed'
+        elif self.job_id.status:
+            if (self.job_id.end_date and self.job_id.status=='Transfer Ended') or ('Try:' in self.job_id.status):
+                return 'Failed'
+            else:
+                return 'Running'
         else:
-            return 'Running'
+            return 'Submitted'
 
 
 class Host(models.Model):
