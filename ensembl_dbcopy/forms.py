@@ -42,35 +42,35 @@ class SubmitForm(forms.ModelForm):
 
     src_host = forms.CharField(
         label="Source Host (e.g: host:port)",
-        max_length=80,
+        max_length=2048,
         required=True)
     tgt_host = forms.CharField(
         label="Target Hosts (e.g: Host1:port1,Host2:port2)",
-        max_length=80,
+        max_length=2048,
         required=True)
     src_incl_db = forms.CharField(
         label="Databases to copy (e.g: db1,db2,.. or %variation_99% )",
-        max_length=80,
+        max_length=2048,
         required=False)
     src_skip_db = forms.CharField(
         label="Databases to exclude (e.g db1,db2 or %mart%)",
-        max_length=80,
+        max_length=2048,
         required=False)
     src_incl_tables = forms.CharField(
         label="Only Copy these tables (e.g: table1,table2,..):",
-        max_length=80,
+        max_length=2048,
         required=False)
     src_skip_tables = forms.CharField(
         label="Skip these tables (e.g: table1,table2)",
-        max_length=80,
+        max_length=2048,
         required=False)
     tgt_db_name = forms.CharField(
-        label="Name of database on Target Hosts",
-        max_length=80,
+        label="Name of databases on Target Hosts (e.g: db1,db2)",
+        max_length=2048,
         required=False)
     email_list = forms.CharField(
         label="Email list",
-        max_length=80,
+        max_length=2048,
         required=True)
     user = forms.CharField(
         widget=forms.HiddenInput())
@@ -125,7 +125,22 @@ class SubmitForm(forms.ModelForm):
                 "Email list should be formatted like this joe.bloggs@ebi.ac.uk or joe.bloggs@ebi.ac.uk,toto@ebi.ac.uk")
         return data
 
+    def clean_tgt_db_name(self):
+        tgt_db_name = self.cleaned_data.get('tgt_db_name', '')
+        src_incl_db = self.cleaned_data.get('src_incl_db', '')
+        if tgt_db_name:
+            if tgt_db_name.count(',') != src_incl_db.count(','):
+                raise forms.ValidationError(
+                    "The number of databases to copy should match the number of databases renamed on target hosts")
+            if '%' in src_incl_db:
+                raise forms.ValidationError(
+                    "You can't rename a pattern")
+        return tgt_db_name
+
+
     def __init__(self, *args, **kwargs):
+        if 'initial' in kwargs and 'from_request_job' in kwargs['initial']:
+            kwargs['instance'] = RequestJob.objects.get(pk=kwargs['initial']['from_request_job'])
         super(SubmitForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.fields["email_list"].initial = self.user.email
