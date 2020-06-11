@@ -16,7 +16,7 @@ from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from django.core.paginator import Paginator
 from django.db.models import Count
-from django.db.models import F
+from django.db.models import F,Q
 from django.utils.html import format_html
 
 from ensembl_dbcopy.forms import SubmitForm
@@ -126,14 +126,31 @@ class RequestJobAdmin(admin.ModelAdmin):
         css = {
             'all': ('css/db_copy.css',)
         }
+    actions = ['resubmit_jobs', ]
+
+
+    def resubmit_jobs(self, request, queryset):
+        for query in queryset:
+            newJob = RequestJob.objects.get(pk=query.pk)
+            newJob.pk=None
+            newJob.request_date=None
+            newJob.start_date=None
+            newJob.end_date=None
+            newJob.status=None
+            newJob.save()
+            self.message_user(request, 'Job {} resubmitted [new job_id {}]'.format(query.pk, newJob.pk))
+
+    resubmit_jobs.short_description = 'Resubmit Jobs'
 
     form = SubmitForm
     add_form_template = "admin/dbcopy/submit.html"
     change_form_template = "admin/dbcopy/detail.html"
     list_display = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
-                    'start_date', 'end_date', 'overall_status')
+                    'start_date', 'end_date', 'request_date', 'overall_status')
+    search_fields = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
+                    'start_date', 'end_date', 'request_date')
     list_filter = ('src_host', 'tgt_host', UserFilter, OverallStatusFilter)
-    ordering = ('start_date',)
+    ordering = ('-request_date',)
 
     def has_add_permission(self, request):
         return request.user.is_staff
@@ -155,11 +172,17 @@ class RequestJobAdmin(admin.ModelAdmin):
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         context = extra_context or {}
-        transfers_logs = self.get_object(request, object_id).transfer_logs
-        paginator = Paginator(transfers_logs.order_by(F('end_date').desc(nulls_first=True)), 30)
+        search_query = request.GET.get('search_box')
+        if search_query:
+            transfers_logs = self.get_object(request, object_id).transfer_logs.filter(Q(table_name__contains=search_query) | Q(table_schema__contains=search_query) | Q(tgt_host__contains=search_query) | Q(renamed_table_schema__contains=search_query))
+        else:
+            transfers_logs = self.get_object(request, object_id).transfer_logs
+        paginator = Paginator(transfers_logs.order_by(F('end_date').asc(nulls_first=True),F('auto_id')), 30)
         page_number = request.GET.get('page', 1)
         page = paginator.page(page_number)
         context['transfer_logs'] = page
+        if transfers_logs.filter(end_date__isnull=True):
+            context["running_copy"] = transfers_logs.filter(end_date__isnull=True).order_by(F('end_date').desc(nulls_first=True)).earliest('auto_id')
         return super().change_view(request, object_id, form_url, context)
 
     def overall_status(self, obj):

@@ -1,5 +1,5 @@
 cryptography==2.8
-Django==2.2.10
+Django==2.2.13
 mysqlclient==1.4.6
 djangorestframework==3.11.0
 django-rest-swagger==2.2.0
