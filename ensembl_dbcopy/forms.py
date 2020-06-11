@@ -111,8 +111,8 @@ class SubmitForm(forms.ModelForm):
         return data
 
     def clean_tgt_db_name(self):
-        tgt_db_name = self.cleaned_data['tgt_db_name']
-        src_incl_db = self.cleaned_data['src_incl_db']
+        tgt_db_name = self.cleaned_data.get('tgt_db_name', '')
+        src_incl_db = self.cleaned_data.get('src_incl_db', '')
         if tgt_db_name:
             if tgt_db_name.count(',') != src_incl_db.count(','):
                 raise forms.ValidationError(
