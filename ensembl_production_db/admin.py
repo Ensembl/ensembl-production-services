@@ -200,13 +200,13 @@ class AttribSetAdmin(HasCurrentAdmin):
 class BioTypeAdmin(HasCurrentAdmin):
     # TODO DBTYPE to add display inline+flex class
     fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type',
-              'description',
+              'description', 'so_acc', 'so_term',
               ('is_dumped', 'is_current'),
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at')
               )
-    list_display = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type', 'description', 'is_current')
-    search_fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type__name', 'description')
+    list_display = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type', 'description', 'is_current','so_acc', 'so_term')
+    search_fields = ('name', 'object_type', 'db_type', 'biotype_group', 'attrib_type__name', 'description','so_acc', 'so_term')
 
 
 class AnalysisDescriptionForm(forms.ModelForm):

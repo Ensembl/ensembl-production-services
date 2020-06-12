@@ -64,6 +64,7 @@ class RequestJob(models.Model):
     end_date = models.DateTimeField(blank=True, null=True, editable=False)
     user = models.CharField(max_length=64, blank=True, null=True)
     status = models.CharField(max_length=20, blank=True, null=True, editable=False)
+    request_date = models.DateTimeField(editable=False,auto_now_add=True)
 
     class Meta:
         db_table = 'request_job'
@@ -76,13 +77,14 @@ class RequestJob(models.Model):
 
     @property
     def overall_status(self):
-        if self.end_date and self.status:
-            if self.transfer_logs.filter(end_date__isnull=True).count() > 0:
-                return 'Failed'
-            else:
-                return 'Complete'
-        elif self.transfer_logs.count() > 0:
-            return 'Running'
+        if self.status:
+            if (self.end_date and self.status=='Transfer Ended') or 'Try:' in self.status:
+                if self.transfer_logs.filter(end_date__isnull=True).count() > 0:
+                    return 'Failed'
+                else:
+                    return 'Complete'
+            elif self.transfer_logs.count() > 0 and self.status=='Processing Requests':
+                return 'Running'
         else:
             return 'Submitted'
 
@@ -97,11 +99,15 @@ class RequestJob(models.Model):
             return {'status_msg': 'Complete', 'table_copied': table_copied, 'total_tables': total_tables,
                     'progress': progress}
         elif total_tables > 0:
-            if self.end_date and self.status:
-                return {'status_msg': 'Failed', 'table_copied': table_copied, 'total_tables': total_tables,
-                        'progress': progress}
+            if self.status:
+                if (self.end_date and self.status=='Transfer Ended') or ('Try:' in self.status):
+                    return {'status_msg': 'Failed', 'table_copied': table_copied, 'total_tables': total_tables,
+                            'progress': progress}
+                if self.status=='Processing Requests':
+                    return {'status_msg': 'Running', 'table_copied': table_copied, 'total_tables': total_tables,
+                            'progress': progress}
             else:
-                return {'status_msg': 'Running', 'table_copied': table_copied, 'total_tables': total_tables,
+                return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
                         'progress': progress}
         else:
             return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
@@ -144,10 +150,13 @@ class TransferLog(models.Model):
     def table_status(self):
         if self.end_date:
             return 'Complete'
-        elif self.job_id.end_date and self.job_id.status:
-            return 'Failed'
+        elif self.job_id.status:
+            if (self.job_id.end_date and self.job_id.status=='Transfer Ended') or ('Try:' in self.job_id.status):
+                return 'Failed'
+            else:
+                return 'Running'
         else:
-            return 'Running'
+            return 'Submitted'
 
 
 class Host(models.Model):

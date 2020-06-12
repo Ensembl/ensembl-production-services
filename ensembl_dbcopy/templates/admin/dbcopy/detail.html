@@ -7,6 +7,13 @@
       <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}" class="btn btn-secondary" role="button">Submit New Copy</a>
       <a href="{% url 'ensembl_dbcopy:reset_failed_jobs' original.job_id %}" class="btn btn-secondary" role="button">Reset failed jobs</a>
       <a href="{% url 'admin:ensembl_dbcopy_requestjob_change' original.job_id %}" class="btn btn-secondary" role="button">Refresh</a>
+      <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}?from_request_job={{ original.pk }}" class="btn btn-secondary" role="button">Resubmit job</a>
+    </div>
+    <div class="p-3 my-3 border">
+      <form type="get" action=".">
+        <input  id="search_box" class="btn btn-secondary" type="text" name="search_box"  placeholder="Search..." >
+        <button id="search_submit" class="btn btn-secondary" type="submit" >Submit</button>
+      </form>
     </div>
     <div class="p-3 my-3 border">
       <div class="row">
@@ -43,9 +50,24 @@
           <div class="col-sm-10 tablevalue">All the databases</div>
         </div>
       {% endif %}
+      {% if original.src_incl_tables %}
+        <div class="row">
+          <div class="col-sm-2">
+            <div class="tablekey">Source Tables:</div>
+          </div>
+          <div class="col-sm-10 tablevalue">{{ original.src_incl_tables }}</div>
+        </div>
+      {% elif original.src_skip_tables %}
+        <div class="row">
+          <div class="col-sm-2">
+            <div class="tablekey">Source Tables:</div>
+          </div>
+          <div class="col-sm-10 tablevalue">All the tables excluding {{ original.src_skip_tables }}</div>
+        </div>
+      {% endif %}
       <div class="row">
         <div class="col-sm-2">
-          <div class="tablekey">Target Host:</div>
+          <div class="tablekey">Target Hosts:</div>
         </div>
         <div class="col-sm-10 tablevalue">{{ original.tgt_host }}</div>
       </div>
@@ -57,12 +79,26 @@
           <div class="col-sm-10 tablevalue">{{ original.tgt_db_name }}</div>
         </div>
       {% endif %}
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="tablekey">Copy start:</div>
+        </div>
+        <div class="col-sm-10 tablevalue">{{ original.start_date }}</div>
+      </div>
+      {% if original.overall_status == 'Complete' %}
+       <div class="row">
+        <div class="col-sm-2">
+          <div class="tablekey">Copy end:</div>
+        </div>
+        <div class="col-sm-10 tablevalue">{{ original.start_date }}</div>
+        </div>
+      {% endif %}
       {% if original.detailed_status.status_msg == 'Running' %}
         <div class="row">
             <div class="col-sm-2">
               <div class="tablekey">Status:</div>
             </div>
-            <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}: Copying table {{original.transfer_logs.last.table_name}} for {{original.transfer_logs.last.renamed_table_schema}} in progress...</div>
+            <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}: Copying table {{running_copy.table_name}} for {{running_copy.renamed_table_schema}} to {{running_copy.tgt_host}} in progress...</div>
         </div>
         <div class="row">
             <div class="col-sm-2">
@@ -73,6 +109,13 @@
                 <span class="job-completed">{{original.detailed_status.table_copied}}/{{original.detailed_status.total_tables}} tasks done</span>
               </div>
             </div>
+        </div>
+       {% elif original.detailed_status.status_msg == 'Failed' and original.failed_msg %}
+        <div class="row">
+            <div class="col-sm-2">
+              <div class="tablekey">Status:</div>
+            </div>
+            <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}: {{ original.failed_msg }}</div>
         </div>
       {% else %}
         <div class="row">
@@ -88,6 +131,7 @@
         <table class="table table-bordered">
             <thead>
               <tr>
+                <th>Target Host</th>
                 <th>Database name</th>
                 <th>Table name</th>
                 <th>Copy start</th>
@@ -98,7 +142,19 @@
             </thead>
             <tbody>
             {% for log in transfer_logs %}
+             {% if log.message %}
+               {% if log.table_status != 'Complete' %}
+                <div class="p-3 my-3 border">
+                 <div class="row">
+                  <div class="col-sm-2">
+                   <div class="tablekey">Failure detail:</div>
+                  </div>
+                 <div class="col-sm-10 tablevalue Failed"> {{ log.table_schema }}.{{ log.table_name }}: {{ log.message }}</div>
+                </div>
+               {% endif %}
+              {% endif %}
             <tr>
+              <td class="table-break-all">{{log.tgt_host}}</td>
               <td class="table-break-all">{{log.renamed_table_schema}}</td>
               <td class="table-break-all">{{log.table_name}}</td>
               <td class="table-break-all">{{log.start_date}}</td>
@@ -111,15 +167,25 @@
           </table>
         <span class="pagination">
             {% if transfer_logs.has_previous %}
+              {% if 'search_box' in request.get_full_path %}
+                <a class="page-link" href="{{ request.get_full_path }}&page=1">&laquo; first</a>
+                <a class="page-link" href="{{ request.get_full_path }}&page={{ transfer_logs.previous_page_number }}">previous</a>
+              {% else %}
                 <a class="page-link" href="?page=1">&laquo; first</a>
                 <a class="page-link" href="?page={{ transfer_logs.previous_page_number }}">previous</a>
+              {% endif %}
             {% endif %}
             <span class="page-link">
                 Page {{ transfer_logs.number }} of {{ transfer_logs.paginator.num_pages }}.
             </span>
             {% if transfer_logs.has_next %}
+              {% if 'search_box' in request.get_full_path %}
+                <a class="page-link" href="{{ request.get_full_path }}&page={{ transfer_logs.next_page_number }}">next</a>
+                <a class="page-link" href="{{ request.get_full_path }}&page={{ transfer_logs.paginator.num_pages }}">last &raquo;</a>
+              {% else %}
                 <a class="page-link" href="?page={{ transfer_logs.next_page_number }}">next</a>
                 <a class="page-link" href="?page={{ transfer_logs.paginator.num_pages }}">last &raquo;</a>
+              {% endif %}
             {% endif %}
         </span>
       </div>

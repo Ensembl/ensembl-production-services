@@ -70,7 +70,8 @@
         "start_date": null,
         "end_date": null,
         "user": "testuser",
-        "status": null
+        "status": null,
+        "request_date" : "2020-06-01T10:00:06Z"
     }
   },
   {
@@ -92,7 +93,8 @@
         "start_date": null,
         "end_date": null,
         "user": "testuser",
-        "status": null
+        "status": null,
+        "request_date": "2020-06-05T10:55:06Z"
     }
   },
   {
@@ -114,7 +116,8 @@
         "start_date": null,
         "end_date": null,
         "user": "testuser",
-        "status": null
+        "status": null,
+        "request_date": "2020-06-08T09:55:06Z"
     }
   },
   {
