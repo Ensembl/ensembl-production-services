@@ -145,8 +145,8 @@ class RequestJobAdmin(admin.ModelAdmin):
     form = SubmitForm
     add_form_template = "admin/dbcopy/submit.html"
     change_form_template = "admin/dbcopy/detail.html"
-    list_display = ('job_id', 'src_host', 'tgt_host', 'user', 'start_date', 'end_date', 'request_date',
-                    'overall_status')
+    list_display = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
+                    'start_date', 'end_date', 'request_date', 'overall_status')
     search_fields = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
                      'start_date', 'end_date', 'request_date')
     list_filter = ('tgt_host', 'src_host', UserFilter, OverallStatusFilter)

@@ -50,7 +50,7 @@
 .table{
   table-layout:fixed;
 }
-.table-break-all, .field-src_incl_db, .field-src_skip_db, .field-tgt_host, .field-tgt_db_name
+.table-break-all, .field-src_incl_db, .field-src_skip_db, .field-tgt_host,  .field-tgt_db_name
 {
   word-break: break-all;
 }
@@ -58,8 +58,13 @@
 .col-sm-2.tablekey {
   background-color: lightgray;
 }
-.field-src_incl_db, .field-src_skip_db, .field-tgt_host, .field-tgt_db_name {
-  min-width: 300px;
+.field-src_incl_db, .field-src_skip_db, .field-tgt_host, .field-tgt_db_name, .field-src_host
+{
+  max-width: available;
 }
-
-.tablekey
+.row1, .row2 {
+  vertical-align: top;
+}
+.action-checkbox {
+  vertical-align: auto;
+}
