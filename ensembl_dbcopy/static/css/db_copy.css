@@ -3,6 +3,7 @@
   text-align : right;
   font-weight: bold;
   padding: 5px 5px 5px 5px;
+  height: 100%;
 }
 .tablevalue { 
   text-align : left;
@@ -49,7 +50,16 @@
 .table{
   table-layout:fixed;
 }
-.table-break-all
+.table-break-all, .field-src_incl_db, .field-src_skip_db, .field-tgt_host, .field-tgt_db_name
 {
   word-break: break-all;
 }
+
+.col-sm-2.tablekey {
+  background-color: lightgray;
+}
+.field-src_incl_db, .field-src_skip_db, .field-tgt_host, .field-tgt_db_name {
+  min-width: 300px;
+}
+
+.tablekey
