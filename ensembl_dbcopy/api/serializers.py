@@ -91,6 +91,7 @@ class RequestJobListSerializer(serializers.HyperlinkedModelSerializer):
             'end_date',
             'user',
             'overall_status')
+        read_only_fields = ['job_id']
         extra_kwargs = {
             'url': {'view_name': 'requestjob-detail', 'lookup_field': 'job_id'},
         }
@@ -100,6 +101,7 @@ class RequestJobDetailSerializer(BaseUserTimestampSerializer):
     class Meta:
         model = RequestJob
         fields = (
+            'job_id',
             'transfer_log',
             'src_host',
             'src_incl_db',
@@ -118,6 +120,7 @@ class RequestJobDetailSerializer(BaseUserTimestampSerializer):
             'user',
             'overall_status',
             'detailed_status')
+        read_only_fields = ['job_id']
 
     transfer_log = TransferLogSerializer(many=True, source='transfer_logs', read_only=True)
 

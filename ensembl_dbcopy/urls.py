@@ -13,10 +13,10 @@
 """
 from django.urls import path
 
-from .views import reset_failed_jobs
+from .views import group_choice
 
 app_name = 'ensembl_dbcopy'
 
 urlpatterns = [
-    path('reset_failed_jobs/<uuid:job_id>', reset_failed_jobs, name='reset_failed_jobs'),
+    path('add', group_choice, name='group_choice'),
 ]

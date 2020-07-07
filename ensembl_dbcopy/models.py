@@ -85,6 +85,8 @@ class RequestJob(models.Model):
                     return 'Complete'
             elif self.transfer_logs.count() > 0 and self.status=='Processing Requests':
                 return 'Running'
+            elif self.transfer_logs.count() > 0 and self.status=='Creating Requests':
+                return 'Submitted'
         else:
             return 'Submitted'
 
@@ -105,6 +107,9 @@ class RequestJob(models.Model):
                             'progress': progress}
                 if self.status=='Processing Requests':
                     return {'status_msg': 'Running', 'table_copied': table_copied, 'total_tables': total_tables,
+                            'progress': progress}
+                if self.status=='Creating Requests':
+                    return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
                             'progress': progress}
             else:
                 return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
@@ -153,6 +158,8 @@ class TransferLog(models.Model):
         elif self.job_id.status:
             if (self.job_id.end_date and self.job_id.status=='Transfer Ended') or ('Try:' in self.job_id.status):
                 return 'Failed'
+            elif self.job_id.status == 'Creating Requests':
+                return 'Submitted'
             else:
                 return 'Running'
         else:
@@ -165,7 +172,7 @@ class Host(models.Model):
     port = models.IntegerField()
     mysql_user = models.CharField(max_length=64)
     virtual_machine = models.CharField(max_length=255, blank=True, null=True)
-    mysqld_file_owner = models.CharField(max_length=128)
+    mysqld_file_owner = models.CharField(max_length=128, null=True, blank=True)
 
     class Meta:
         db_table = 'host'
