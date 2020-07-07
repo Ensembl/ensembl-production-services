@@ -14,7 +14,7 @@
 """
 # Import base config.
 from production_services.settings import *
-USE_TZ = True
+
 # Database override
 DATABASES = {
     'default': {
