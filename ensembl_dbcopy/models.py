@@ -87,6 +87,8 @@ class RequestJob(models.Model):
                 return 'Running'
             elif self.transfer_logs.count() > 0 and self.status=='Creating Requests':
                 return 'Submitted'
+            else:
+                return 'Submitted'
         else:
             return 'Submitted'
 
@@ -111,6 +113,9 @@ class RequestJob(models.Model):
                 if self.status=='Creating Requests':
                     return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
                             'progress': progress}
+                else:
+                    return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
+                        'progress': progress}
             else:
                 return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
                         'progress': progress}
@@ -160,8 +165,10 @@ class TransferLog(models.Model):
                 return 'Failed'
             elif self.job_id.status == 'Creating Requests':
                 return 'Submitted'
-            else:
+            elif self.job_id.status == 'Processing Requests':
                 return 'Running'
+            else:
+                return 'Submitted'
         else:
             return 'Submitted'
 
