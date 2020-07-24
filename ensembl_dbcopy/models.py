@@ -85,12 +85,7 @@ class RequestJob(models.Model):
                     return 'Complete'
             elif self.transfer_logs.count() > 0 and self.status=='Processing Requests':
                 return 'Running'
-            elif self.transfer_logs.count() > 0 and self.status=='Creating Requests':
-                return 'Submitted'
-            else:
-                return 'Submitted'
-        else:
-            return 'Submitted'
+        return 'Submitted'
 
     @property
     def detailed_status(self):
@@ -110,17 +105,7 @@ class RequestJob(models.Model):
                 if self.status=='Processing Requests':
                     return {'status_msg': 'Running', 'table_copied': table_copied, 'total_tables': total_tables,
                             'progress': progress}
-                if self.status=='Creating Requests':
-                    return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
-                            'progress': progress}
-                else:
-                    return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
-                        'progress': progress}
-            else:
-                return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
-                        'progress': progress}
-        else:
-            return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
+        return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
                     'progress': progress}
 
     @property
@@ -163,14 +148,9 @@ class TransferLog(models.Model):
         elif self.job_id.status:
             if (self.job_id.end_date and self.job_id.status=='Transfer Ended') or ('Try:' in self.job_id.status):
                 return 'Failed'
-            elif self.job_id.status == 'Creating Requests':
-                return 'Submitted'
             elif self.job_id.status == 'Processing Requests':
                 return 'Running'
-            else:
-                return 'Submitted'
-        else:
-            return 'Submitted'
+        return 'Submitted'
 
 
 class Host(models.Model):
