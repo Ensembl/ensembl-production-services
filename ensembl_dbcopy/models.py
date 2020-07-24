@@ -92,20 +92,18 @@ class RequestJob(models.Model):
         total_tables = self.transfer_logs.count()
         table_copied = self.table_copied
         progress = 0
+        status_msg='Submitted'
         if table_copied and total_tables:
             progress = (table_copied / total_tables) * 100
         if progress == 100.0:
-            return {'status_msg': 'Complete', 'table_copied': table_copied, 'total_tables': total_tables,
-                    'progress': progress}
+            status_msg='Complete'
         elif total_tables > 0:
             if self.status:
                 if (self.end_date and self.status=='Transfer Ended') or ('Try:' in self.status):
-                    return {'status_msg': 'Failed', 'table_copied': table_copied, 'total_tables': total_tables,
-                            'progress': progress}
+                    status_msg='Failed'
                 if self.status=='Processing Requests':
-                    return {'status_msg': 'Running', 'table_copied': table_copied, 'total_tables': total_tables,
-                            'progress': progress}
-        return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
+                    status_msg='Running'
+        return {'status_msg': status_msg, 'table_copied': table_copied, 'total_tables': total_tables,
                     'progress': progress}
 
     @property
