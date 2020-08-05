@@ -92,11 +92,17 @@
                     <div class="col-sm-2">
                         <div class="tablekey">Current task:</div>
                     </div>
-                    <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}:
-                        Copying table {{ running_copy.table_name }}
-                        for {{ running_copy.renamed_table_schema }}
-                        to {{ running_copy.tgt_host }} in progress...
-                    </div>
+                    {% if running_copy.table_name %}
+                        <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}:
+                            Copying table {{ running_copy.table_name }}
+                            for {{ running_copy.renamed_table_schema }}
+                            to {{ running_copy.tgt_host }} in progress...
+                        </div>
+                    {% else %}
+                        <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}:
+                            Post-copy tasks in progress...
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="row">
                     <div class="col-sm-2">
