@@ -95,7 +95,7 @@ class RequestJob(models.Model):
         status_msg='Submitted'
         if table_copied and total_tables:
             progress = (table_copied / total_tables) * 100
-        if progress == 100.0:
+        if progress == 100.0 and self.status=='Transfer Ended':
             status_msg='Complete'
         elif total_tables > 0:
             if self.status:
