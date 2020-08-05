@@ -43,5 +43,7 @@ DATABASES = {
         'PORT': os.getenv('USER_DB_PORT', '3306'),
     },
 }
+# Fixtures are timestamped with this parameter.
+USE_TZ = True
 
 DATABASE_ROUTERS = []
