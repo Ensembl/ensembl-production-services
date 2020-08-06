@@ -29,7 +29,7 @@ class HelpLinkInline(admin.TabularInline):
 
 class WebSiteRecordForm(forms.ModelForm):
     class Meta:
-        exclude = ('type', 'data')
+        exclude = ('type', 'data', )
 
 
 class LookupItemForm(WebSiteRecordForm):
@@ -78,6 +78,8 @@ class FaqForm(WebSiteRecordForm):
     question = forms.CharField(label="Question", widget=CKEditorWidget())
     answer = forms.CharField(label="Answer", widget=CKEditorWidget())
     keyword = forms.CharField(widget=forms.Textarea({'rows': 3}))
+    division = forms.MultipleChoiceField(label='Division specific', required=False,
+        widget=forms.CheckboxSelectMultiple(), choices=DIVISION_CHOICES)
 
     def __init__(self, *args, **kwargs):
         # Populate the form with fields from the data object.
@@ -88,7 +90,7 @@ class FaqForm(WebSiteRecordForm):
                 data = json.loads(kwargs['instance'].data)
                 kwargs['initial'].update(
                     {'category': data.get('category',""), 'question': data.get('question',""),
-                     'answer': data.get('answer',"")})
+                     'answer': data.get('answer',""), 'division': data.get('division', "")})
         super(FaqForm, self).__init__(*args, **kwargs)
 
 
@@ -108,7 +110,8 @@ class ViewForm(WebSiteRecordForm):
                 help_link = HelpLink.objects.filter(help_record_id=kwargs['instance'].pk).first()
                 data = json.loads(kwargs['instance'].data)
                 kwargs['initial'].update(
-                    {'content': data.get('content', ""), 'ensembl_action' : data.get('ensembl_action', ""), 'ensembl_object': data.get('ensembl_object',""), 'help_link': help_link.page_url})
+                    {'content': data.get('content', ""), 'ensembl_action' : data.get('ensembl_action', ""),
+                     'ensembl_object': data.get('ensembl_object',""), 'help_link': help_link.page_url})
                 super(ViewForm, self).__init__(*args, **kwargs)
                 self.fields['help_link'].widget.attrs['readonly'] = True
             else:
@@ -138,7 +141,7 @@ class HelpLinkModelAdmin(admin.ModelAdmin):
 class HelpRecordModelAdmin(ProductionUserAdminMixin):
     list_per_page = 50
     readonly_fields = (
-        'help_record_id', 'created_by', 'created_at', 'modified_by', 'modified_at', 'helpful', 'not_helpful')
+        'help_record_id', 'created_by', 'created_at', 'modified_by', 'modified_at')
     ordering = ('-modified_at', '-created_at')
     list_filter = ['created_by', 'modified_by']
 
@@ -171,8 +174,7 @@ class MovieItemAdmin(HelpRecordModelAdmin):
     list_display = ('title', 'movie_id', 'youtube_id', 'youku_id', 'keyword', 'status')
     fields = ('title', 'help_record_id', 'youtube_id', 'youku_id', 'list_position', 'length', 'keyword', 'status',
               ('created_by', 'created_at'),
-              ('modified_by', 'modified_at'),
-              ('helpful', 'not_helpful'))
+              ('modified_by', 'modified_at'))
     search_fields = ('data', 'keyword', 'status', 'help_record_id')
 
     def get_queryset(self, request):
@@ -214,10 +216,9 @@ class MovieItemAdmin(HelpRecordModelAdmin):
 class FaqItemAdmin(HelpRecordModelAdmin):
     form = FaqForm
     list_display = ('question', 'category', 'keyword', 'status')
-    fields = ('category', 'question', 'answer', 'keyword', 'status',
+    fields = ('category', 'question', 'answer', 'keyword', 'status', 'division',
               ('created_by', 'created_at'),
-              ('modified_by', 'modified_at'),
-              ('helpful', 'not_helpful'))
+              ('modified_by', 'modified_at'))
     search_fields = ('data', 'keyword', 'status')
 
     def get_queryset(self, request):
@@ -241,6 +242,7 @@ class FaqItemAdmin(HelpRecordModelAdmin):
         extra_field = {field: form.cleaned_data[field].replace('\n', '').replace('\r', '').replace('\t', '') for field
                        in form.fields if
                        field in ('category', 'question', 'answer')}
+        extra_field.update({'division': form.cleaned_data['division']})
         obj.data = json.dumps(extra_field)
         super().save_model(request, obj, form, change)
 
@@ -252,8 +254,7 @@ class ViewItemAdmin(HelpRecordModelAdmin):
     fields = ('help_link', 'content', 'keyword', 'status',
               ('ensembl_action', 'ensembl_object'),
               ('created_by', 'created_at'),
-              ('modified_by', 'modified_at'),
-              ('helpful', 'not_helpful'))
+              ('modified_by', 'modified_at'))
     search_fields = ('data', 'keyword', 'status', 'helplink__page_url')
 
     def get_queryset(self, request):
@@ -298,8 +299,7 @@ class LookupItemAdmin(HelpRecordModelAdmin):
     list_display = ('word', 'meaning', 'keyword', 'status')
     fields = ('word', 'expanded', 'meaning', 'keyword', 'status',
               ('created_by', 'created_at'),
-              ('modified_by', 'modified_at'),
-              ('helpful', 'not_helpful'))
+              ('modified_by', 'modified_at'))
     search_fields = ('data', 'keyword', 'status')
 
     def get_queryset(self, request):
