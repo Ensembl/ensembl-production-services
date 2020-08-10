@@ -29,7 +29,7 @@ class HelpLinkInline(admin.TabularInline):
 
 class WebSiteRecordForm(forms.ModelForm):
     class Meta:
-        exclude = ('type', 'data', )
+        exclude = ('type', 'data')
 
 
 class LookupItemForm(WebSiteRecordForm):
