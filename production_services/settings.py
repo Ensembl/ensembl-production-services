@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
     'ensembl_dbcopy.apps.EnsemblDbcopyConfig',
-    'ensembl_bugs.apps.KnownBugsConfig',
+    'ensembl_intentions.apps.KnownBugsConfig',
     # utils
     'multiselectfield',
     'ckeditor',

@@ -31,7 +31,7 @@ urlpatterns = [
          name='home'),
     path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     path('admin/', admin.site.urls),
-    path('bugs/', include('ensembl_bugs.urls')),
+    path('bugs/', include('ensembl_intentions.urls')),
     path('dbcopy/', include('ensembl_dbcopy.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),

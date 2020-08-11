@@ -15,5 +15,5 @@ from django.apps import AppConfig
 
 
 class KnownBugsConfig(AppConfig):
-    name = 'ensembl_bugs'
+    name = 'ensembl_intentions'
     verbose_name = "Known Bugs"

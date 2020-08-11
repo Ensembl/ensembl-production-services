@@ -2,26 +2,26 @@
 
 {% block content %}
 <div class="container col-md-6 col-md-offset-3">
-  <form action="{% url 'ensembl_bugs:export' %}" method="post">
+  <form action="{% url 'ensembl_intentions:export' %}" method="post">
   <div class="row p-3">
       {% csrf_token %}
       <div class="col-md-10">
-        <input class="form-control" id="known_bugs_filter" name="known_bugs_filter" type="text" placeholder="Filter on Keyword or Ensembl Version..." />
+        <input class="form-control" id="intentions_filter" name="intentions_filter" type="text" placeholder="Filter on Keyword or Ensembl Version..." />
       </div>
       <div class="col-md-1 col-md-offset-1">
         <button class="btn btn-primary" type="submit">Export</button>
       </div>
   </div></form>
-  {% include 'known_bugs_table.html' with known_bugs=known_bugs jira_link=True %}
+  {% include 'intentions_table.html' with intentions=intentions jira_link=True %}
 </div>
 {% endblock %}
 
 {% block extra_script %}
 <script>
 $(document).ready(function(){
-  $("#known_bugs_filter").on("keyup", function() {
+  $("#intentions_filter").on("keyup", function() {
     var value = $(this).val().toLowerCase();
-    $("#known_bugs_table > tr").filter(function() {
+    $("#intentions_table > tr").filter(function() {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
     });
   });

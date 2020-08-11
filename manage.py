@@ -35,7 +35,7 @@ def read_env():
 
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "production_services.settings_local")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "production_services.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError:

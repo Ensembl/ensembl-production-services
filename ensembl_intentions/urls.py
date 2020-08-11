@@ -13,11 +13,11 @@
 """
 from django.urls import path
 
-from .views import KnownBugsView, known_bugs_export
+from .views import IntentionsView, intentions_export
 
-app_name = 'ensembl_bugs'
+app_name = 'ensembl_intentions'
 
 urlpatterns = [
-    path("", KnownBugsView.as_view(), name='index'),
-    path("export.txt", known_bugs_export, name='export'),
+    path("", IntentionsView.as_view(), name='index'),
+    path("export.txt", intentions_export, name='export'),
 ]
