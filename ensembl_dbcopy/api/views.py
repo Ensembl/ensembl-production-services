@@ -15,17 +15,22 @@ from mysql.connector import (connection)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ensembl_dbcopy.models import Host
+
 
 def mysql_connection(query_params={}):
-    host = query_params.get('host', None)
-    port = query_params.get('port', None)
-    user = query_params.get('user', None)
+    # host = query_params.get('host', None)
+    host = Host.objects.filter(name=query_params.get('host', None),
+                               port=query_params.get('port', None)).first()
+    # port = query_params.get('port', None)
+    # user = query_params.get('user', None)
     password = query_params.get('password', None)
-    return connection.MySQLConnection(user=user,
-                                      host=host,
-                                      port=port,
-                                      password=password,
-                                      database='information_schema')
+    if host:
+        return connection.MySQLConnection(user=host.mysql_user,
+                                          host=host.name,
+                                          port=host.port,
+                                          password=password,
+                                          database='information_schema')
 
 
 class ListDatabases(APIView):
