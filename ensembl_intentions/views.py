@@ -16,7 +16,6 @@ import re
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from jira import JIRA
-
 from ensembl_production.models import Credentials
 
 
@@ -25,6 +24,15 @@ class IntentionsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         jira_issues = get_jira_issues()
+        context = super().get_context_data(**kwargs)
+        context['intentions'] = jira_issues
+        return context
+
+class IntentionView2(IntentionsView):
+
+    def get_context_data(self, **kwargs):
+        jira_issues = get_jira_issues(issuetype='Epic')
+        print(jira_issues)
         context = super().get_context_data(**kwargs)
         context['intentions'] = jira_issues
         return context
@@ -40,18 +48,20 @@ def intentions_export(request):
     )
 
 
-def get_jira_issues(request=None):
+def get_jira_issues(request=None, **kwargs):
     jira_credentials = Credentials.objects.get(cred_name="Jira")
     jira = JIRA(server=jira_credentials.cred_url,
                 basic_auth=(jira_credentials.user, jira_credentials.credentials))
 
     name_map = {field['name']: field['id'] for field in jira.fields()}
-
+    issuetype = kwargs.get('issuetype', 'Bug')
     jira_filter = \
         'project = ENSINT AND ' + \
-        'issuetype = Bug AND ' + \
-        'Website in (Archives, Blog, GRCh37, "Live site", Mirrors, Mobile) ' + \
-        'ORDER BY Rank DESC'
+        'issuetype = ' + issuetype + \
+        ' ORDER BY Rank DESC'
+    #+ ' AND ' + \
+    #'Website in (Archives, Blog, GRCh37, "Live site", Mirrors, Mobile) ' + \
+
     jira_issues = jira.search_issues(jira_filter, expand='renderedFields')
 
     separator = ', '

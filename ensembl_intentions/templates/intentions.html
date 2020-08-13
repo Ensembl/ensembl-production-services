@@ -1,7 +1,7 @@
-{%  extends "home.html" %}
+{% extends "admin/base.html" %}
 
 {% block content %}
-<div class="container col-md-6 col-md-offset-3">
+<div class="container col-md-12 col-md-offset-3">
   <form action="{% url 'ensembl_intentions:export' %}" method="post">
   <div class="row p-3">
       {% csrf_token %}
@@ -16,7 +16,7 @@
 </div>
 {% endblock %}
 
-{% block extra_script %}
+{% block extrajs %}
 <script>
 $(document).ready(function(){
   $("#intentions_filter").on("keyup", function() {

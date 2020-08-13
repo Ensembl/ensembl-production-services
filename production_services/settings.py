@@ -14,6 +14,7 @@
 """
 import os
 import sys
+
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -33,7 +34,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'jet',
+    #'jet',
     'ensembl_production.apps.EnsemblProductionConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -140,7 +141,7 @@ DATABASES = {
         'PORT': os.getenv('DB_COPY_PORT', '3306'),
         'OPTIONS': {
             "init_command": "SET default_storage_engine=InnoDB",
-    }
+        }
     },
 }
 
@@ -219,6 +220,40 @@ JET_SIDE_MENU_COMPACT = False
 JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
 JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
 
+JET_SIDE_MENU_ITEMS = [
+    {'app_label': 'auth', 'items': [
+        {'name': 'group'},
+        {'name': 'user'},
+    ]},
+    {'app_label': 'ensembl_dbcopy', 'items': [
+        {'name': 'requestjob'},
+        {'name': 'group'},
+        {'name': 'host'},
+    ]},
+    {'app_label': 'ensembl_production_db', 'items': [
+        {'name': 'analysisdescription'},
+        {'name': 'masterattribset'},
+        {'name': 'masterattribtype'},
+        {'name': 'masterattrib'},
+        {'name': 'masterbiotype'},
+        {'name': 'masterexternaldb'},
+        {'name': 'metakey'},
+        {'name': 'webdata'},
+    ]},
+    {'label': 'Production Team', 'items': [
+        {'name': 'ensembl_production.credentials'},
+        {'name': 'sitetree', 'label': 'Menu Items management'},
+        {'name': 'ensembl_production.productionflaskapp'},
+    ]},
+    {'app_label': 'ensembl_website', 'items': [
+        {'name': 'faqrecord'},
+        {'name': 'helplink'},
+        {'name': 'lookuprecord'},
+        {'name': 'movierecord'},
+        {'name': 'viewrecord'},
+    ]},
+]
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
@@ -226,4 +261,3 @@ LOGOUT_REDIRECT_URL = "/"
 
 ## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
 # USE_X_FORWARDED_HOST = True
-
