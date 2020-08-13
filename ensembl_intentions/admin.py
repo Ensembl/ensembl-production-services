@@ -12,18 +12,34 @@
    limitations under the License.
 """
 from django.contrib import admin
-from .views import IntentionsView, IntentionView2
 
-_admin_site_get_urls = admin.site.get_urls
+from ensembl_production.admin import ProductionUserAdminMixin
+from .views import IntentionsView, IntentionView2, get_jira_issues
+from .models import Intention, KnownBug
 
-def get_urls():
-    from django.conf.urls import url
-    urls = _admin_site_get_urls()
-    urls += [
-        url(r'^bugs/$', admin.site.admin_view(IntentionsView.as_view())),
-        url(r'^intentions/$', admin.site.admin_view(IntentionView2.as_view()))
-    ]
-    return urls
+class JiraAdminMixin(admin.ModelAdmin):
+    readonly_fields = []
+    _issuetype = None
+    change_list_template = 'jira_issue_list.html'
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = {'intentions': self.model._default_manager.all()}
+        return super().changelist_view(request, extra_context)
 
 
-admin.site.get_urls = get_urls
+@admin.register(Intention)
+class IntentionAdmin(JiraAdminMixin):
+    pass
+
+@admin.register(KnownBug)
+class KnownBugAdmin(JiraAdminMixin):
+    pass

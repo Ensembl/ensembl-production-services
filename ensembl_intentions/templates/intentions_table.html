@@ -1,35 +1,12 @@
 <table class="table table-bordered">
   <thead class="thead-light">
     <tr>
-      <th colspan="2">Intentions in Ensembl</th>
+      <th colspan="2">{{ cl.opts.verbose_name_plural }} in Ensembl</th>
     </tr>
   </thead>
   <tbody id="intentions_table">
     {% for kb in intentions %}
-      <tr>
-        <td>
-          <table class="table table-bordered">
-            <tr>
-              <td colspan="2"><h3>{{ kb.fields.summary }}</h3></td>
-            </tr>
-            <tr>
-              <td class="col-md-2"><strong>Affects: </strong>{{ kb.affected_sites }}</td>
-              <td class="col-md-4"><strong>Versions: </strong>{{ kb.versions_list }}</td>
-            </tr>
-            <tr>
-              <td colspan="2"><strong>Description: </strong>{{ kb.renderedFields.description | safe }}</td>
-            </tr>
-            <tr>
-              <td colspan="2"><strong>Workaround: </strong>{{ kb.workaround | safe }}</td>
-            </tr>
-            {% if jira_link %}
-              <tr>
-                <td colspan="2" class="text-right"><a href="{{ kb.permalink }}" target="_blank"><strong>{{ kb.key }}</strong> in JIRA</a></td>
-              </tr>
-            {% endif %}
-          </table>
-        </td>
-      </tr>
+        {% include kb.template with item=kb %}
    {% endfor %}
   </tbody>
 </table>
