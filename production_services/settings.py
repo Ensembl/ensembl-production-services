@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    #'jet',
+    'jet',
     'ensembl_production.apps.EnsemblProductionConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
     'ensembl_dbcopy.apps.EnsemblDbcopyConfig',
-    'ensembl_intentions.apps.KnownBugsConfig',
+    'ensembl_intentions.apps.JiraIntentionConfig',
     # utils
     'multiselectfield',
     'ckeditor',
@@ -101,7 +101,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_production_services'),
         'USER': os.getenv('USER_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
+        'PASSWORD': os.getenv('USER_DB_PASSWORD', 'ensembl'),
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
         'OPTIONS': {}
@@ -110,7 +110,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production'),
         'USER': os.getenv('PROD_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
+        'PASSWORD': os.getenv('PROD_DB_PASSWORD', 'ensembl'),
         'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
         'OPTIONS': {
@@ -123,7 +123,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website'),
         'USER': os.getenv('WEBSITE_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', ''),
+        'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', 'ensembl'),
         'HOST': os.getenv('WEBSITE_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
         'OPTIONS': {
@@ -136,13 +136,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('DB_COPY_DATABASE', 'ensembl_dbcopy'),
         'USER': os.getenv('DB_COPY_USER', 'ensembl'),
-        'PASSWORD': os.getenv('DB_COPY_PASSWORD', ''),
+        'PASSWORD': os.getenv('DB_COPY_PASSWORD', 'ensembl'),
         'HOST': os.getenv('DB_COPY_HOST', '127.0.0.1'),
         'PORT': os.getenv('DB_COPY_PORT', '3306'),
         'OPTIONS': {
             "init_command": "SET default_storage_engine=InnoDB",
         }
-    },
+    }
 }
 
 DATABASE_ROUTERS = [
@@ -150,6 +150,7 @@ DATABASE_ROUTERS = [
     'ensembl_website.router.WebsiteRouter',
     'ensembl_dbcopy.router.DbCopyRouter',
     'ensembl_production.router.ProductionServicesRouter',
+    #'ensembl_intentions.router.JiraRouter'
 ]
 
 # Password validation
@@ -220,39 +221,6 @@ JET_SIDE_MENU_COMPACT = False
 JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
 JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
 
-JET_SIDE_MENU_ITEMS = [
-    {'app_label': 'auth', 'items': [
-        {'name': 'group'},
-        {'name': 'user'},
-    ]},
-    {'app_label': 'ensembl_dbcopy', 'items': [
-        {'name': 'requestjob'},
-        {'name': 'group'},
-        {'name': 'host'},
-    ]},
-    {'app_label': 'ensembl_production_db', 'items': [
-        {'name': 'analysisdescription'},
-        {'name': 'masterattribset'},
-        {'name': 'masterattribtype'},
-        {'name': 'masterattrib'},
-        {'name': 'masterbiotype'},
-        {'name': 'masterexternaldb'},
-        {'name': 'metakey'},
-        {'name': 'webdata'},
-    ]},
-    {'label': 'Production Team', 'items': [
-        {'name': 'ensembl_production.credentials'},
-        {'name': 'sitetree', 'label': 'Menu Items management'},
-        {'name': 'ensembl_production.productionflaskapp'},
-    ]},
-    {'app_label': 'ensembl_website', 'items': [
-        {'name': 'faqrecord'},
-        {'name': 'helplink'},
-        {'name': 'lookuprecord'},
-        {'name': 'movierecord'},
-        {'name': 'viewrecord'},
-    ]},
-]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
