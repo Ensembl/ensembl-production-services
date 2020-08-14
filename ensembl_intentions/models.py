@@ -13,12 +13,24 @@
 """
 
 # fake models to allow standard admin integration.
+import re
+
 from django.db import models
 from jira import JIRA
 
-from ensembl_intentions.views import matches_filter
 from ensembl_production.models import Credentials
 
+def matches_filter(jira_issue, intentions_filter):
+    fields_string = " ".join(filter(None, [
+        jira_issue.key,
+        jira_issue.fields.summary,
+        jira_issue.fields.description,
+        jira_issue.affected_sites,
+        jira_issue.versions_list,
+        jira_issue.workaround
+    ]))
+    escaped_filter = re.escape(intentions_filter)
+    return re.search(escaped_filter, fields_string)
 
 class JiraManager(models.Manager):
     _field_list = ()
@@ -26,28 +38,25 @@ class JiraManager(models.Manager):
         jira_credentials = Credentials.objects.get(cred_name="Jira")
         jira = JIRA(server=jira_credentials.cred_url,
                     basic_auth=(jira_credentials.user, jira_credentials.credentials))
-
         name_map = {field['name']: field['id'] for field in jira.fields()}
-
         jira_issues = jira.search_issues(self.model.jira_filter, expand='renderedFields')
         return [self.model(issue=jira_issue, map=name_map) for jira_issue in jira_issues]
 
     def filter(self, *args, **kwargs):
-        request = kwargs['request'] or None
+        request = kwargs.get('request', None)
+        issues = self.all()
         if request is not None:
             if request.method == 'POST' and 'intentions_filter' in request.POST:
-                jira_issues = [x for x in self.all() if matches_filter(x, request.POST['intentions_filter'])]
-
-        return jira_issues
+                issues = [x for x in issues if matches_filter(x.issue, request.POST['intentions_filter'])]
+        return issues
 
 
 class JiraFakeModel(models.Model):
     ''' Readonly fake models to allow easy JIRA ticket listing integration in Django backend. '''
 
     class Meta:
-        db_table = "empty"
-        verbose_name = "Known bug"
-
+        db_table = "jira"
+        app_label = 'ensembl_intentions'
 
     objects = JiraManager()
 
@@ -55,12 +64,6 @@ class JiraFakeModel(models.Model):
         self.issue = issue
         self.map = map
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        # DO NOTHING
-        pass
-
-    def cname(self):
-        return self.__class__.__name__
 
 class Intention(JiraFakeModel):
     jira_filter = 'project = ENSINT AND issuetype = Epic ORDER BY fixVersion DESC, Rank DESC'
@@ -68,6 +71,7 @@ class Intention(JiraFakeModel):
 
     class Meta:
         proxy = True
+        verbose_name = "Release Intentions"
 
 
 class KnownBug(JiraFakeModel):
@@ -78,6 +82,7 @@ class KnownBug(JiraFakeModel):
     _field_list = ()
     class Meta:
         proxy = True
+        verbose_name = "Known bug"
 
     def __init__(self, issue, map):
         super().__init__(issue, map)
@@ -85,3 +90,5 @@ class KnownBug(JiraFakeModel):
         self.workaround = getattr(issue.renderedFields, map['Work Around'])
         websites = getattr(issue.fields, map['Website']) or []
         self.affected_sites = ', '.join(w.value for w in websites)
+
+

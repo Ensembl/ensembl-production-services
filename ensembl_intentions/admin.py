@@ -12,34 +12,46 @@
    limitations under the License.
 """
 from django.contrib import admin
-
-from ensembl_production.admin import ProductionUserAdminMixin
-from .views import IntentionsView, IntentionView2, get_jira_issues
+from django.template.response import TemplateResponse
+from django.urls import path
 from .models import Intention, KnownBug
 
-class JiraAdminMixin(admin.ModelAdmin):
+class JiraAdmin(admin.ModelAdmin):
     readonly_fields = []
-    _issuetype = None
     change_list_template = 'jira_issue_list.html'
+
+    def get_urls(self):
+        urls = super().get_urls()
+        info = self.model._meta.app_label, self.model._meta.model_name
+        my_urls = [
+            path('export.txt', self.admin_site.admin_view(self.export_view), name='%s_%s_export' % info)
+        ]
+        return my_urls + urls
 
     def has_add_permission(self, request):
         return False
-
-    def has_change_permission(self, request, obj=None):
-        return True
 
     def has_delete_permission(self, request, obj=None):
         return False
 
     def changelist_view(self, request, extra_context=None):
-        extra_context = {'intentions': self.model._default_manager.all()}
+        extra_context = {
+            'intentions': self.model._default_manager.all(),
+            'export_view_name': 'admin:' + '_'.join([self.model._meta.app_label, self.model._meta.model_name, 'export'])
+        }
         return super().changelist_view(request, extra_context)
+
+    def export_view(self, request):
+        context = dict(
+            intentions = self.model._default_manager.filter(request)
+        )
+        return TemplateResponse(request, "intentions_export.html", context, 'application/force-download')
 
 
 @admin.register(Intention)
-class IntentionAdmin(JiraAdminMixin):
+class IntentionAdmin(JiraAdmin):
     pass
 
 @admin.register(KnownBug)
-class KnownBugAdmin(JiraAdminMixin):
+class KnownBugAdmin(JiraAdmin):
     pass
