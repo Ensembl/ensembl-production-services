@@ -37,6 +37,7 @@ class JiraAdmin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         extra_context = {
             'intentions': self.model._default_manager.all(),
+            'export_verbose': self.model._meta.verbose_name,
             'export_view_name': 'admin:' + '_'.join([self.model._meta.app_label, self.model._meta.model_name, 'export'])
         }
         return super().changelist_view(request, extra_context)

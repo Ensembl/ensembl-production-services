@@ -20,34 +20,30 @@ from jira import JIRA
 
 from ensembl_production.models import Credentials
 
+
 def matches_filter(jira_issue, intentions_filter):
     fields_string = " ".join(filter(None, [
-        jira_issue.key,
-        jira_issue.fields.summary,
-        jira_issue.fields.description,
-        jira_issue.affected_sites,
-        jira_issue.versions_list,
-        jira_issue.workaround
+        getattr(jira_issue, field_name) for field_name in jira_issue.filter_on
     ]))
     escaped_filter = re.escape(intentions_filter)
     return re.search(escaped_filter, fields_string)
 
+
 class JiraManager(models.Manager):
     _field_list = ()
+
     def all(self):
         jira_credentials = Credentials.objects.get(cred_name="Jira")
         jira = JIRA(server=jira_credentials.cred_url,
                     basic_auth=(jira_credentials.user, jira_credentials.credentials))
         name_map = {field['name']: field['id'] for field in jira.fields()}
         jira_issues = jira.search_issues(self.model.jira_filter, expand='renderedFields')
-        return [self.model(issue=jira_issue, map=name_map) for jira_issue in jira_issues]
+        return [self.model(issue=jira_issue, name_map=name_map) for jira_issue in jira_issues]
 
-    def filter(self, *args, **kwargs):
-        request = kwargs.get('request', None)
+    def filter(self, request):
         issues = self.all()
-        if request is not None:
-            if request.method == 'POST' and 'intentions_filter' in request.POST:
-                issues = [x for x in issues if matches_filter(x.issue, request.POST['intentions_filter'])]
+        if request is not None and request.method == 'POST' and 'intentions_filter' in request.POST:
+            issues = [x for x in issues if matches_filter(x, request.POST['intentions_filter'])]
         return issues
 
 
@@ -60,18 +56,35 @@ class JiraFakeModel(models.Model):
 
     objects = JiraManager()
 
-    def __init__(self, issue, map):
-        self.issue = issue
-        self.map = map
+    def __init__(self, issue, name_map):
+        # short cut attributes to jira_issues ones
+        self.permalink = issue.permalink
+        self.key = issue.key
+        self.summary = issue.fields.summary
+        self.description = issue.fields.description
 
 
 class Intention(JiraFakeModel):
-    jira_filter = 'project = ENSINT AND issuetype = Epic ORDER BY fixVersion DESC, Rank DESC'
+    jira_filter = 'project = ENSINT AND issuetype = Epic AND fixVersion in unreleasedVersions() ' \
+                  'ORDER BY fixVersion DESC, goal ASC, Rank DESC'
     template = 'intention.html'
-
+    filter_on = (
+        'key',
+        'summary',
+        'description',
+        'target_version',
+        'declaration_type',
+        'declaring_team'
+    )
     class Meta:
         proxy = True
         verbose_name = "Release Intentions"
+
+    def __init__(self, issue, name_map):
+        super().__init__(issue, name_map)
+        self.declaring_team = getattr(issue.fields, name_map['Declaring Team']).value
+        self.declaration_type = getattr(issue.fields, name_map['Goal']).value
+        self.target_version = issue.fields.fixVersions[0].name if issue.fields.fixVersions else 'N/A'
 
 
 class KnownBug(JiraFakeModel):
@@ -79,16 +92,22 @@ class KnownBug(JiraFakeModel):
                   '(Archives, Blog, GRCh37, "Live site", Mirrors, Mobile) ' \
                   ' and status != Closed ORDER BY Rank DESC'
     template = 'knownbug.html'
-    _field_list = ()
+    filter_on = (
+        'key',
+        'summary',
+        'description',
+        'affected_sites',
+        'versions_list',
+        'workaround'
+    )
+
     class Meta:
         proxy = True
         verbose_name = "Known bug"
 
-    def __init__(self, issue, map):
-        super().__init__(issue, map)
+    def __init__(self, issue, name_map):
+        super().__init__(issue, name_map)
         self.versions_list = ', '.join(v.name for v in issue.fields.versions)
-        self.workaround = getattr(issue.renderedFields, map['Work Around'])
-        websites = getattr(issue.fields, map['Website']) or []
+        self.workaround = getattr(issue.renderedFields, name_map['Work Around'])
+        websites = getattr(issue.fields, name_map['Website']) or []
         self.affected_sites = ', '.join(w.value for w in websites)
-
-
