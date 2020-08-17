@@ -101,7 +101,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_production_services'),
         'USER': os.getenv('USER_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('USER_DB_PASSWORD', 'ensembl'),
+        'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
         'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('USER_DB_PORT', '3306'),
         'OPTIONS': {}
@@ -110,7 +110,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production'),
         'USER': os.getenv('PROD_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('PROD_DB_PASSWORD', 'ensembl'),
+        'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
         'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('PROD_DB_PORT', '3306'),
         'OPTIONS': {
@@ -123,7 +123,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website'),
         'USER': os.getenv('WEBSITE_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', 'ensembl'),
+        'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', ''),
         'HOST': os.getenv('WEBSITE_DB_HOST', '127.0.0.1'),
         'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
         'OPTIONS': {
@@ -136,7 +136,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('DB_COPY_DATABASE', 'ensembl_dbcopy'),
         'USER': os.getenv('DB_COPY_USER', 'ensembl'),
-        'PASSWORD': os.getenv('DB_COPY_PASSWORD', 'ensembl'),
+        'PASSWORD': os.getenv('DB_COPY_PASSWORD', ''),
         'HOST': os.getenv('DB_COPY_HOST', '127.0.0.1'),
         'PORT': os.getenv('DB_COPY_PORT', '3306'),
         'OPTIONS': {
