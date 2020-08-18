@@ -16,22 +16,26 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from ensembl_dbcopy.models import Host
+import logging
 
+logger = logging.getLogger(__name__)
 
-def mysql_connection(query_params={}):
+def mysql_connection(query_params=None):
     # host = query_params.get('host', None)
-    host = Host.objects.filter(name=query_params.get('host', None),
-                               port=query_params.get('port', None)).first()
-    # port = query_params.get('port', None)
-    # user = query_params.get('user', None)
+    if query_params is None:
+        query_params = {}
+    logger.debug('Query Params %s', query_params)
+    host = Host.objects.filter(name=query_params.get('host', 'localhost'),
+                               port=query_params.get('port', 3306)).first()
     password = query_params.get('password', None)
     if host:
+        logger.debug('Retrieved host %s', host)
         return connection.MySQLConnection(user=host.mysql_user,
                                           host=host.name,
                                           port=host.port,
                                           password=password,
                                           database='information_schema')
-
+    raise RuntimeError('No host corresponding to parameters %s' % query_params)
 
 class ListDatabases(APIView):
     """
@@ -46,7 +50,7 @@ class ListDatabases(APIView):
         cursor = cnx.cursor()
         query = "SELECT SCHEMA_NAME FROM SCHEMATA WHERE SCHEMA_NAME LIKE %s ORDER BY SCHEMA_NAME;"
 
-        database = self.request.query_params.get('database', None)
+        database = self.request.query_params.get('database', '')
         database_list = []
         cursor.execute(query, ("%" + database + "%",))
         for (SCHEMA_NAME) in cursor:
@@ -54,6 +58,7 @@ class ListDatabases(APIView):
         cursor.close()
         cnx.close()
         return Response(database_list)
+
 
 
 class ListTables(APIView):
