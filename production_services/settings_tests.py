@@ -14,34 +14,30 @@
 """
 # Import base config.
 from production_services.settings import *
+import logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
 
 # Database override
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_tests'),
-        'USER': os.getenv('USER_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('USER_DB_PASSWORD', 'ensembl'),
-        'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('USER_DB_PORT', '3306'),
-    },
-    # FAKED DB for testing host schema retrieval for db_copy service
-    'test_copy_db_1': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_tests_db_copy_1'),
-        'USER': os.getenv('USER_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('USER_DB_PASSWORD', 'ensembl'),
-        'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('USER_DB_PORT', '3306'),
-    },
-    'test_copy_db_2': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_tests_db_copy_2'),
-        'USER': os.getenv('USER_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('USER_DB_PASSWORD', 'ensembl'),
-        'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('USER_DB_PORT', '3306'),
-    },
+        'NAME': 'production_services',
+        'USER': 'ensembl',
+        'HOST': 'localhost',
+        'PORT': 3306,
+    }
 }
-
 DATABASE_ROUTERS = []
