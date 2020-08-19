@@ -18,6 +18,7 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.http import HttpResponseRedirect
 from django.urls import path, re_path
 from django.views import static
 from django.views.decorators.cache import never_cache
@@ -31,7 +32,7 @@ urlpatterns = [
          name='home'),
     path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     path('admin/', admin.site.urls),
-    path('bugs/', include('ensembl_bugs.urls')),
+    url('bugs/', RedirectView.as_view(url='admin/ensembl_intentions/knownbug')),
     path('dbcopy/', include('ensembl_dbcopy.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),

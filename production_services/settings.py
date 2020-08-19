@@ -14,6 +14,7 @@
 """
 import os
 import sys
+
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
     'ensembl_production_db.apps.EnsemblProductionDbConfig',
     'ensembl_website.apps.EnsemblWebsiteConfig',
     'ensembl_dbcopy.apps.EnsemblDbcopyConfig',
-    'ensembl_bugs.apps.KnownBugsConfig',
+    'ensembl_intentions.apps.JiraIntentionConfig',
     # utils
     'multiselectfield',
     'ckeditor',
@@ -140,8 +141,8 @@ DATABASES = {
         'PORT': os.getenv('DB_COPY_PORT', '3306'),
         'OPTIONS': {
             "init_command": "SET default_storage_engine=InnoDB",
+        }
     }
-    },
 }
 
 DATABASE_ROUTERS = [
@@ -149,6 +150,7 @@ DATABASE_ROUTERS = [
     'ensembl_website.router.WebsiteRouter',
     'ensembl_dbcopy.router.DbCopyRouter',
     'ensembl_production.router.ProductionServicesRouter',
+    #'ensembl_intentions.router.JiraRouter'
 ]
 
 # Password validation
@@ -219,6 +221,7 @@ JET_SIDE_MENU_COMPACT = False
 JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
 JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
 
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
@@ -226,4 +229,3 @@ LOGOUT_REDIRECT_URL = "/"
 
 ## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
 # USE_X_FORWARDED_HOST = True
-

@@ -14,6 +14,6 @@
 from django.apps import AppConfig
 
 
-class KnownBugsConfig(AppConfig):
-    name = 'ensembl_bugs'
-    verbose_name = "Known Bugs"
+class JiraIntentionConfig(AppConfig):
+    name = 'ensembl_intentions'
+    verbose_name = "Ensembl Blog"
