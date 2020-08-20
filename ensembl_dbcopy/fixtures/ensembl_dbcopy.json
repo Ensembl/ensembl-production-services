@@ -177,6 +177,16 @@
   },
   {
     "model": "ensembl_dbcopy.host",
+    "pk": "99",
+    "fields": {
+      "name": "localhost",
+      "port": 3306,
+      "mysql_user": "ensembl",
+      "mysqld_file_owner": "ensmysql"
+    }
+  },
+  {
+    "model": "ensembl_dbcopy.host",
     "pk": "3",
     "fields": {
       "name": "mysql-ens-general-dev-1",

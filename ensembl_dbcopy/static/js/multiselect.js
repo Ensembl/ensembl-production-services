@@ -35,14 +35,17 @@ $(function () {
         select: function (event, ui) {
             $.map(SrcHostResults, function (item) {
                 var curr_item = item.name + ":" + item.port
-                if (ui.item.value == curr_item) {
+                if (ui.item.value === curr_item) {
                     //Compare list of hosts from the endpoint stored in SrcHostResults variables with the host selected by the user
                     // Store the server details into the SrcHostDetails variable
                     SrcHostDetails = item;
                 }
             })
         }
-    });
+    }).blur(function(){
+        host_details = $("#id_src_host").val().split(':');
+        SrcHostDetails = {'name': host_details[0], 'port': host_details[1]};
+    })
 });
 // Autocomplete for the target host field (allows mutiple values)
 $(function () {
@@ -187,7 +190,6 @@ $(function () {
                 data: {
                     host: SrcHostDetails.name,
                     port: SrcHostDetails.port,
-                    user: SrcHostDetails.mysql_user,
                     // Get the first database from the id_src_incl_db field
                     database: $("#id_src_incl_db").val().split(",")[0],
                     table: extractLast(request.term)

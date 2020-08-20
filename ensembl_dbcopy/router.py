@@ -54,4 +54,7 @@ class DbCopyRouter:
             return db == 'dbcopy'
         if 'target_db' in hints:
             return hints['target_db'] == "dbcopy"
+        if db == 'dbcopy':
+            return False
+
         return None

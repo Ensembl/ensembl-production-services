@@ -72,7 +72,6 @@ def handler500(request, *args, **argv):
 
 
 def handler403(request, *args, **argv):
-    print('in here')
     response = render_to_response('403.html', {})
     response.status_code = 403
     return response
