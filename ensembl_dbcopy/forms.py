@@ -17,22 +17,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
 
-from ensembl_dbcopy.models import RequestJob, Group, Host, NAME_CHOICES_GROUP
-
-
-class GroupForm(forms.ModelForm):
-    class Meta:
-        model = Group
-        exclude = ('group_id',)
-    group_name = forms.MultipleChoiceField(choices=NAME_CHOICES_GROUP, required=True, label="Group Name")
-
-    def __init__(self, *args, **kwargs):
-        super(GroupForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_id = 'group-job-form'
-        self.helper.form_class = 'group-job-form'
-        self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Submit'))
+from ensembl_dbcopy.models import RequestJob, Group, Host
 
 
 class SubmitForm(forms.ModelForm):
@@ -149,13 +134,3 @@ class SubmitForm(forms.ModelForm):
         self.helper.form_class = 'copy-job-form'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
-
-
-class HostRecordForm(forms.ModelForm):
-    class Meta:
-        exclude = ('auto_id',)
-
-
-class GroupRecordForm(forms.ModelForm):
-    class Meta:
-        exclude = ('group_id',)
