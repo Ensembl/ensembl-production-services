@@ -19,7 +19,8 @@ class ProductionServicesRouter:
     A router to control all database operations on models in the
     auth application.
     """
-    app_list = ('auth', 'admin', 'contenttypes', 'jet', 'sessions', 'ensembl_production', 'sitetree')
+    app_list = ('auth', 'admin', 'contenttypes', 'sitetree'
+                'jet', 'sessions', 'ensembl_production')
 
     def db_for_read(self, model, **hints):
         """
@@ -41,8 +42,7 @@ class ProductionServicesRouter:
         """
         Allow relations if a model in the auth is involved.
         """
-        if obj1._meta.app_label in self.app_list or \
-                obj2._meta.app_label in self.app_list:
+        if obj1._meta.app_label in self.app_list or obj2._meta.app_label in self.app_list:
             return True
         return None
 
@@ -53,4 +53,4 @@ class ProductionServicesRouter:
         """
         if app_label in self.app_list:
             return db == 'default'
-        return None
+        return False

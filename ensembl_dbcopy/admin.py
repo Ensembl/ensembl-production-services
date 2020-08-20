@@ -14,29 +14,43 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
+from django.contrib.auth.models import Group as UsersGroup
 from django.core.paginator import Paginator
-from django.db.models import Count
-from django.db.models import F, Q
+from django.db.models import Count, F, Q
 from django.utils.html import format_html
 
-from ensembl_dbcopy.forms import SubmitForm
-from ensembl_dbcopy.models import Host, Group, RequestJob
+from ensembl_dbcopy.forms import SubmitForm, GroupRecordForm
+from ensembl_dbcopy.models import Host, RequestJob, Group
 from ensembl_production.admin import SuperUserAdmin
 
 
-class HostRecordForm(forms.ModelForm):
+class GroupInlineForm(forms.ModelForm):
     class Meta:
-        exclude = ('auto_id',)
+        model = Group
+        fields = ('group_name',)
+
+    group_name = forms.ModelChoiceField(queryset=UsersGroup.objects.all().order_by('name'), to_field_name='name',
+                                        empty_label='Please Select', required=True)
 
 
-class GroupRecordForm(forms.ModelForm):
-    class Meta:
-        exclude = ('group_id',)
+class GroupInline(admin.TabularInline):
+    model = Group
+    extra = 1
+    form = GroupInlineForm
+    fields = ('group_name',)
+    verbose_name = "Group restriction"
+    verbose_name_plural = "Group restrictions"
 
 
 @admin.register(Host)
 class HostItemAdmin(admin.ModelAdmin, SuperUserAdmin):
-    form = HostRecordForm
+    class Media:
+        css = {
+            'all': ('css/db_copy.css',)
+        }
+
+    # form = HostRecordForm
+    inlines = (GroupInline,)
     list_display = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
     fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
     search_fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
@@ -109,14 +123,6 @@ class UserFilter(SimpleListFilter):
             else:
                 return queryset.all()
         return queryset.filter(user=request.user)
-
-
-@admin.register(Group)
-class GroupItemAdmin(admin.ModelAdmin, SuperUserAdmin):
-    form = GroupRecordForm
-    list_display = ('host_id', 'group_name')
-    fields = ('host_id', 'group_name')
-    search_fields = ('host_id', 'group_name')
 
 
 @admin.register(RequestJob)

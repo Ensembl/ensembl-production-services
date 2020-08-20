@@ -17,14 +17,7 @@ from django.db import models
 
 from ensembl_production.models import NullTextField
 
-NAME_CHOICES_GROUP = (('Vertebrates', 'Vertebrates'),
-                      ('Microbes', 'Microbes'),
-                      ('Metazoa', 'Metazoa'),
-                      ('VectorBase', 'VectorBase'),
-                      ('Plants', 'Plants'),
-                      ('WormBase', 'WormBase'),
-                      ('Compara', 'Compara'),
-                      ('Production', 'Production'))
+
 
 
 class Dbs2Exclude(models.Model):
@@ -47,6 +40,12 @@ class DebugLog(models.Model):
 
 
 class RequestJob(models.Model):
+    class Meta:
+        db_table = 'request_job'
+        app_label = 'ensembl_dbcopy'
+        verbose_name = "Copy job"
+        verbose_name_plural = "Copy jobs"
+
     job_id = models.CharField(primary_key=True, max_length=128, default=uuid.uuid1, editable=False)
     src_host = models.TextField(max_length=2048)
     src_incl_db = NullTextField(max_length=2048, blank=True, null=True)
@@ -64,13 +63,7 @@ class RequestJob(models.Model):
     end_date = models.DateTimeField(blank=True, null=True, editable=False)
     user = models.CharField(max_length=64, blank=True, null=True)
     status = models.CharField(max_length=20, blank=True, null=True, editable=False)
-    request_date = models.DateTimeField(editable=False,auto_now_add=True)
-
-    class Meta:
-        db_table = 'request_job'
-        app_label = 'ensembl_dbcopy'
-        verbose_name = "Copy job"
-        verbose_name_plural = "Copy jobs"
+    request_date = models.DateTimeField(editable=False, auto_now_add=True)
 
     def __str__(self):
         return str(self.job_id)
@@ -78,12 +71,12 @@ class RequestJob(models.Model):
     @property
     def overall_status(self):
         if self.status:
-            if (self.end_date and self.status=='Transfer Ended') or 'Try:' in self.status:
+            if (self.end_date and self.status == 'Transfer Ended') or 'Try:' in self.status:
                 if self.transfer_logs.filter(end_date__isnull=True).count() > 0:
                     return 'Failed'
                 else:
                     return 'Complete'
-            elif self.transfer_logs.count() > 0 and self.status=='Processing Requests':
+            elif self.transfer_logs.count() > 0 and self.status == 'Processing Requests':
                 return 'Running'
         else:
             return 'Submitted'
@@ -100,10 +93,10 @@ class RequestJob(models.Model):
                     'progress': progress}
         elif total_tables > 0:
             if self.status:
-                if (self.end_date and self.status=='Transfer Ended') or ('Try:' in self.status):
+                if (self.end_date and self.status == 'Transfer Ended') or ('Try:' in self.status):
                     return {'status_msg': 'Failed', 'table_copied': table_copied, 'total_tables': total_tables,
                             'progress': progress}
-                if self.status=='Processing Requests':
+                if self.status == 'Processing Requests':
                     return {'status_msg': 'Running', 'table_copied': table_copied, 'total_tables': total_tables,
                             'progress': progress}
             else:
@@ -126,6 +119,12 @@ class RequestJob(models.Model):
 
 
 class TransferLog(models.Model):
+    class Meta:
+        db_table = 'transfer_log'
+        unique_together = (('job_id', 'tgt_host', 'table_schema', 'table_name'),)
+        app_label = 'ensembl_dbcopy'
+        verbose_name = 'TransferLog'
+
     auto_id = models.BigAutoField(primary_key=True)
     job_id = models.ForeignKey(RequestJob, db_column='job_id', on_delete=models.CASCADE, related_name='transfer_logs')
     tgt_host = models.CharField(max_length=512, editable=False)
@@ -140,18 +139,12 @@ class TransferLog(models.Model):
     retries = models.IntegerField(blank=True, null=True, editable=False)
     message = models.CharField(max_length=255, blank=True, null=True, editable=False)
 
-    class Meta:
-        db_table = 'transfer_log'
-        unique_together = (('job_id', 'tgt_host', 'table_schema', 'table_name'),)
-        app_label = 'ensembl_dbcopy'
-        verbose_name = 'TransferLog'
-
     @property
     def table_status(self):
         if self.end_date:
             return 'Complete'
         elif self.job_id.status:
-            if (self.job_id.end_date and self.job_id.status=='Transfer Ended') or ('Try:' in self.job_id.status):
+            if (self.job_id.end_date and self.job_id.status == 'Transfer Ended') or ('Try:' in self.job_id.status):
                 return 'Failed'
             else:
                 return 'Running'
@@ -160,6 +153,12 @@ class TransferLog(models.Model):
 
 
 class Host(models.Model):
+    class Meta:
+        db_table = 'host'
+        unique_together = (('name', 'port'),)
+        app_label = 'ensembl_dbcopy'
+        verbose_name = 'Host'
+
     auto_id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=64)
     port = models.IntegerField()
@@ -167,22 +166,17 @@ class Host(models.Model):
     virtual_machine = models.CharField(max_length=255, blank=True, null=True)
     mysqld_file_owner = models.CharField(max_length=128)
 
-    class Meta:
-        db_table = 'host'
-        unique_together = (('name', 'port'),)
-        app_label = 'ensembl_dbcopy'
-        verbose_name = 'Host'
-
     def __str__(self):
         return '{}:{}'.format(self.name, self.port)
 
 
 class Group(models.Model):
-    group_id = models.BigAutoField(primary_key=True)
-    host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE)
-    group_name = models.CharField(choices=NAME_CHOICES_GROUP, max_length=80, default='Vertebrates')
-
     class Meta:
         db_table = 'group'
         app_label = 'ensembl_dbcopy'
-        verbose_name = 'Group'
+        verbose_name = 'Host Group'
+    #GROUP_CHOICES_NAME = ((group.name, group.name) for group in UsersGroup.objects.all().order_by('name'))
+
+    group_id = models.BigAutoField(primary_key=True)
+    host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE, related_name='groups')
+    group_name = models.CharField('User Group', max_length=80)#, choices=UsersGroup.objects.all().order_by('name'), max_length=80)

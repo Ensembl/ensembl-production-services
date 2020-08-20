@@ -130,7 +130,7 @@ DATABASES = {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': os.getenv('WEBSITE_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
-        }
+        } 
     },
     'dbcopy': {
         'ENGINE': 'django.db.backends.mysql',
@@ -141,8 +141,8 @@ DATABASES = {
         'PORT': os.getenv('DB_COPY_PORT', '3306'),
         'OPTIONS': {
             "init_command": "SET default_storage_engine=InnoDB",
-        }
     }
+    },
 }
 
 DATABASE_ROUTERS = [
