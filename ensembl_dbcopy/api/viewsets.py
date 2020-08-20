@@ -39,8 +39,9 @@ class SourceHostViewSet(viewsets.ReadOnlyModelViewSet):
         Return a list of hosts according to a keyword
         """
         queryset = Host.objects.all()
-        host_name = self.request.query_params.get('name', None)
-        if host_name is not None:
+        host = self.request.query_params.get('name', None)
+        if host is not None:
+            host_name = host.split(':')[0]
             queryset = queryset.filter(name__contains=host_name)
         return queryset
 
