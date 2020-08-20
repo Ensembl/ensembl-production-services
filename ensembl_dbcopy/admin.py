@@ -125,14 +125,6 @@ class UserFilter(SimpleListFilter):
         return queryset.filter(user=request.user)
 
 
-# @admin.register(HostGroup)
-class GroupItemAdmin(admin.ModelAdmin, SuperUserAdmin):
-    form = GroupRecordForm
-    list_display = ('host_id', 'group_name')
-    fields = ('host_id', 'group_name')
-    search_fields = ('host_id', 'group_name')
-
-
 @admin.register(RequestJob)
 class RequestJobAdmin(admin.ModelAdmin):
     class Media:
