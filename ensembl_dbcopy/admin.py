@@ -11,23 +11,34 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
+from django.contrib.auth.models import Group as UsersGroup
 from django.core.paginator import Paginator
-from django.db.models import Count
-from django.db.models import F, Q
+from django.db.models import Count, F, Q
 from django.utils.html import format_html
 
-from ensembl_dbcopy.forms import SubmitForm, HostRecordForm, GroupRecordForm
+from ensembl_dbcopy.forms import SubmitForm, GroupRecordForm
 from ensembl_dbcopy.models import Host, RequestJob, Group
 from ensembl_production.admin import SuperUserAdmin
 
 
+class GroupInlineForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ('group_name',)
+
+    group_name = forms.ModelChoiceField(queryset=UsersGroup.objects.all().order_by('name'), to_field_name='name',
+                                        empty_label='Please Select', required=True)
+
+
 class GroupInline(admin.TabularInline):
     model = Group
-    extra = 2
-    fields = ('group_name', )
-    verbose_name = "Restricted to groups"
+    extra = 1
+    form = GroupInlineForm
+    fields = ('group_name',)
+    verbose_name = "Group restriction"
     verbose_name_plural = "Group restrictions"
 
 
@@ -37,7 +48,8 @@ class HostItemAdmin(admin.ModelAdmin, SuperUserAdmin):
         css = {
             'all': ('css/db_copy.css',)
         }
-    #form = HostRecordForm
+
+    # form = HostRecordForm
     inlines = (GroupInline,)
     list_display = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
     fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')

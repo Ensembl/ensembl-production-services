@@ -13,12 +13,11 @@
 """
 import uuid
 
-from django.contrib.auth.models import Group as UsersGroup
 from django.db import models
 
 from ensembl_production.models import NullTextField
 
-GROUP_CHOICES_NAME = ((group.name, group.name) for group in UsersGroup.objects.all().order_by('name'))
+
 
 
 class Dbs2Exclude(models.Model):
@@ -176,7 +175,8 @@ class Group(models.Model):
         db_table = 'group'
         app_label = 'ensembl_dbcopy'
         verbose_name = 'Host Group'
+    #GROUP_CHOICES_NAME = ((group.name, group.name) for group in UsersGroup.objects.all().order_by('name'))
 
     group_id = models.BigAutoField(primary_key=True)
     host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE, related_name='groups')
-    group_name = models.CharField('User Group', choices=GROUP_CHOICES_NAME, max_length=80)
+    group_name = models.CharField('User Group', max_length=80)#, choices=UsersGroup.objects.all().order_by('name'), max_length=80)
