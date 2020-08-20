@@ -4,11 +4,15 @@
     <div class="container-fluid">
         <div class="p-3 my-3 border">
             <a href="{% url 'admin:ensembl_dbcopy_requestjob_changelist' %}" class="btn btn-secondary" role="button">Back
-                to list</a>
+                to
+                list</a>
             <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}" class="btn btn-secondary" role="button">Submit New
                 Copy</a>
-            <a href="{% url 'ensembl_dbcopy:reset_failed_jobs' original.job_id %}" class="btn btn-secondary"
-               role="button">Reset failed jobs</a>
+            {% if user.is_superuser %}
+                <a href="{% url 'ensembl_dbcopy:reset_failed_jobs' original.job_id %}" class="btn btn-secondary" role="button">Reset failed jobs</a>
+            {% endif %}
+            <a href="{% url 'admin:ensembl_dbcopy_requestjob_change' original.job_id %}" class="btn btn-secondary"
+               role="button">Refresh</a>
             <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}?from_request_job={{ original.pk }}"
                class="btn btn-secondary" role="button">Resubmit job</a>
         </div>
@@ -29,52 +33,37 @@
                 <div class="col-sm-2">
                     <div class="tablekey">Source Host:</div>
                 </div>
-                <div class="col-sm-10 tablevalue field-src_host">{{ original.src_host }}</div>
+                <div class="col-sm-10 tablevalue">{{ original.src_host }}</div>
             </div>
-            {% if original.src_incl_db %}
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="tablekey">Source DBs:</div>
-                    </div>
-                    <div class="col-sm-10 tablevalue field-src_incl_db">{{ original.src_incl_db }}</div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="tablekey">Source DBs:</div>
                 </div>
-            {% elif original.src_skip_db %}
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="tablekey">Source DBs:</div>
-                    </div>
-                    <div class="col-sm-10 tablevalue field-src_incl_db">All the databases
-                        excluding {{ original.src_skip_db }}</div>
+                <div class="col-sm-10 tablevalue">
+                    {% if original.src_skip_db %}
+                        All databases excluding {{ original.src_skip_db }}
+                    {% else %}
+                        {{ original.src_incl_db }}
+                    {% endif %}
                 </div>
-            {% else %}
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="tablekey">Source DBs:</div>
-                    </div>
-                    <div class="col-sm-10 tablevalue field-src_incl_db">All the databases</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="tablekey">Source Tables:</div>
                 </div>
-            {% endif %}
-            {% if original.src_incl_tables %}
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="tablekey">Source Tables:</div>
-                    </div>
-                    <div class="col-sm-10 tablevalue field-src_incl_db">{{ original.src_incl_tables }}</div>
+                <div class="col-sm-10 tablevalue">
+                    {% if original.src_skip_tables %}
+                        All tables excluding {{ original.src_skip_tables }}
+                    {% else %}
+                        All tables
+                    {% endif %}
                 </div>
-            {% elif original.src_skip_tables %}
-                <div class="row">
-                    <div class="col-sm-2">
-                        <div class="tablekey">Source Tables:</div>
-                    </div>
-                    <div class="col-sm-10 tablevalue field-src_skip_db">All the tables
-                        excluding {{ original.src_skip_tables }}</div>
-                </div>
-            {% endif %}
+            </div>
             <div class="row">
                 <div class="col-sm-2">
                     <div class="tablekey">Target Hosts:</div>
                 </div>
-                <div class="col-sm-10 tablevalue field-tgt_host">{{ original.tgt_host }}</div>
+                <div class="col-sm-10 tablevalue">{{ original.tgt_host }}</div>
             </div>
             {% if original.tgt_db_name %}
                 <div class="row">
@@ -101,19 +90,27 @@
             {% if original.detailed_status.status_msg == 'Running' %}
                 <div class="row">
                     <div class="col-sm-2">
-                        <div class="tablekey">Status:</div>
+                        <div class="tablekey">Current task:</div>
                     </div>
-                    <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}:
-                        Copying table {{ running_copy.table_name }} for {{ running_copy.renamed_table_schema }}
-                        to {{ running_copy.tgt_host }} in progress...
-                    </div>
+                    {% if running_copy.table_name %}
+                        <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}:
+                            Copying table {{ running_copy.table_name }}
+                            for {{ running_copy.renamed_table_schema }}
+                            to {{ running_copy.tgt_host }} in progress...
+                        </div>
+                    {% else %}
+                        <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}:
+                            Post-copy tasks in progress...
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="row">
                     <div class="col-sm-2">
                         <div class="tablekey">Progress:</div>
                     </div>
                     <div class="col-sm-10 tablevalue progress">
-                        <div class="progress-bar tablevalue" style="width:{{ original.detailed_status.progress }}%">
+                        <div class="progress-bar tablevalue"
+                             style="width:{{ original.detailed_status.progress }}%">
                             <span class="job-completed">{{ original.detailed_status.table_copied }}/{{ original.detailed_status.total_tables }} tasks done</span>
                         </div>
                     </div>
@@ -121,7 +118,7 @@
             {% elif original.detailed_status.status_msg == 'Failed' and original.failed_msg %}
                 <div class="row">
                     <div class="col-sm-2">
-                        <div class="tablekey">Status:</div>
+                        <div class="tablekey">Details:</div>
                     </div>
                     <div class="col-sm-10 tablevalue {{ original.detailed_status.status_msg }}">{{ original.detailed_status.status_msg }}: {{ original.failed_msg }}</div>
                 </div>
@@ -152,12 +149,13 @@
                     {% for log in transfer_logs %}
                         {% if log.message %}
                             {% if log.table_status != 'Complete' %}
-                                <div class="p-3 my-3 border">
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <div class="tablekey">Failure detail:</div>
+                               <div class="p-3 my-3 border">
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <div class="tablekey">Failure detail:</div>
+                                        </div>
+                                        <div class="col-sm-10 tablevalue Failed"> {{ log.table_schema }}.{{ log.table_name }}: {{ log.message }}</div>
                                     </div>
-                                    <div class="col-sm-10 tablevalue Failed"> {{ log.table_schema }}.{{ log.table_name }}: {{ log.message }}</div>
                                 </div>
                             {% endif %}
                         {% endif %}
@@ -194,7 +192,8 @@
                             <a class="page-link"
                                href="{{ request.get_full_path }}&page={{ transfer_logs.paginator.num_pages }}">last &raquo;</a>
                         {% else %}
-                            <a class="page-link" href="?page={{ transfer_logs.next_page_number }}">next</a>
+                            <a class="page-link"
+                               href="?page={{ transfer_logs.next_page_number }}">next</a>
                             <a class="page-link" href="?page={{ transfer_logs.paginator.num_pages }}">last &raquo;</a>
                         {% endif %}
                     {% endif %}
