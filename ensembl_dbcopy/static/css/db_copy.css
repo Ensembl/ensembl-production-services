@@ -68,3 +68,9 @@
 .action-checkbox {
   vertical-align: auto;
 }
+.tabular.inline-related .form-row {
+  display:table-row;
+}
+.tabular.inline-related .empty-form {
+  display: none;
+}
