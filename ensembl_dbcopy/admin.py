@@ -19,7 +19,7 @@ from django.core.paginator import Paginator
 from django.db.models import Count, F, Q
 from django.utils.html import format_html
 
-from ensembl_dbcopy.forms import SubmitForm, GroupRecordForm
+from ensembl_dbcopy.forms import SubmitForm
 from ensembl_dbcopy.models import Host, RequestJob, Group
 from ensembl_production.admin import SuperUserAdmin
 

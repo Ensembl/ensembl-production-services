@@ -78,32 +78,25 @@ class RequestJob(models.Model):
                     return 'Complete'
             elif self.transfer_logs.count() > 0 and self.status == 'Processing Requests':
                 return 'Running'
-        else:
-            return 'Submitted'
+        return 'Submitted'
 
     @property
     def detailed_status(self):
         total_tables = self.transfer_logs.count()
         table_copied = self.table_copied
         progress = 0
+        status_msg='Submitted'
         if table_copied and total_tables:
             progress = (table_copied / total_tables) * 100
-        if progress == 100.0:
-            return {'status_msg': 'Complete', 'table_copied': table_copied, 'total_tables': total_tables,
-                    'progress': progress}
+        if progress == 100.0 and self.status=='Transfer Ended':
+            status_msg='Complete'
         elif total_tables > 0:
             if self.status:
-                if (self.end_date and self.status == 'Transfer Ended') or ('Try:' in self.status):
-                    return {'status_msg': 'Failed', 'table_copied': table_copied, 'total_tables': total_tables,
-                            'progress': progress}
-                if self.status == 'Processing Requests':
-                    return {'status_msg': 'Running', 'table_copied': table_copied, 'total_tables': total_tables,
-                            'progress': progress}
-            else:
-                return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
-                        'progress': progress}
-        else:
-            return {'status_msg': 'Submitted', 'table_copied': table_copied, 'total_tables': total_tables,
+                if (self.end_date and self.status=='Transfer Ended') or ('Try:' in self.status):
+                    status_msg='Failed'
+                if self.status=='Processing Requests':
+                    status_msg='Running'
+        return {'status_msg': status_msg, 'table_copied': table_copied, 'total_tables': total_tables,
                     'progress': progress}
 
     @property
@@ -146,10 +139,9 @@ class TransferLog(models.Model):
         elif self.job_id.status:
             if (self.job_id.end_date and self.job_id.status == 'Transfer Ended') or ('Try:' in self.job_id.status):
                 return 'Failed'
-            else:
+            elif self.job_id.status == 'Processing Requests':
                 return 'Running'
-        else:
-            return 'Submitted'
+        return 'Submitted'
 
 
 class Host(models.Model):
@@ -164,7 +156,7 @@ class Host(models.Model):
     port = models.IntegerField()
     mysql_user = models.CharField(max_length=64)
     virtual_machine = models.CharField(max_length=255, blank=True, null=True)
-    mysqld_file_owner = models.CharField(max_length=128)
+    mysqld_file_owner = models.CharField(max_length=128, null=True, blank=True)
 
     def __str__(self):
         return '{}:{}'.format(self.name, self.port)
@@ -175,8 +167,7 @@ class Group(models.Model):
         db_table = 'group'
         app_label = 'ensembl_dbcopy'
         verbose_name = 'Host Group'
-    #GROUP_CHOICES_NAME = ((group.name, group.name) for group in UsersGroup.objects.all().order_by('name'))
-
+    
     group_id = models.BigAutoField(primary_key=True)
     host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE, related_name='groups')
-    group_name = models.CharField('User Group', max_length=80)#, choices=UsersGroup.objects.all().order_by('name'), max_length=80)
+    group_name = models.CharField('User Group', max_length=80)

@@ -134,13 +134,3 @@ class SubmitForm(forms.ModelForm):
         self.helper.form_class = 'copy-job-form'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
-
-
-class HostRecordForm(forms.ModelForm):
-    class Meta:
-        exclude = ('auto_id',)
-
-
-class GroupRecordForm(forms.ModelForm):
-    class Meta:
-        exclude = ('group_id',)
