@@ -11,6 +11,7 @@ django-mysql==3.3.0
 django-jet==1.0.8
 django-ckeditor==5.9.0
 drf_yasg==1.17.1
+django-cors-headers==3.5.0
 django-crispy-forms==1.8.1
 mysql-connector-python==8.0.18
 django-fernet-fields==0.6

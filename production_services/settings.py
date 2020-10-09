@@ -30,6 +30,9 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'l2!hqu2y5o3q7yxfkzfw=ivn(kg_tz!^1l8l%36&$u
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
+CORS_ALLOWED_ORIGINS = [
+    "https://www.ebi.ac.uk",
+]
 
 # Application definition
 
@@ -54,10 +57,12 @@ INSTALLED_APPS = [
     'ckeditor',
     'crispy_forms',
     'drf_yasg',
-    'sitetree'
+    'sitetree',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
