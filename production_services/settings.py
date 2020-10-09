@@ -30,8 +30,11 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'l2!hqu2y5o3q7yxfkzfw=ivn(kg_tz!^1l8l%36&$u
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
-    "https://www.ebi.ac.uk",
+    # Insert Origins here and set CORS_ALLOW_ALL_ORIGINS = False
 ]
 
 # Application definition
