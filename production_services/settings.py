@@ -31,10 +31,11 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
-CORS_ALLOW_ALL_ORIGINS = True
+# Uncomment to allow all origins
+# CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    # Insert Origins here and set CORS_ALLOW_ALL_ORIGINS = False
+    'https://www.ebi.ac.uk',
 ]
 
 # Application definition
