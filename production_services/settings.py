@@ -31,6 +31,13 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
+# Uncomment to allow all origins
+# CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    'https://www.ebi.ac.uk',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -54,10 +61,12 @@ INSTALLED_APPS = [
     'ckeditor',
     'crispy_forms',
     'drf_yasg',
-    'sitetree'
+    'sitetree',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
