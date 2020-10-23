@@ -13,12 +13,12 @@
    limitations under the License.
 """
 # Import base config.
+import os
 from production_services.settings import *
-import logging
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': False if DEBUG else True,
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
@@ -34,8 +34,9 @@ LOGGING = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'production_services',
-        'USER': 'ensembl',
+        'NAME': os.getenv('TEST_DB_DATABASE', 'production_services'),
+        'USER': os.getenv('TEST_DB_USER', 'ensembl'),
+        'PASSWORD': os.getenv('TEST_DB_PASSWORD', None),
         'HOST': 'localhost',
         'PORT': 3306,
     }
