@@ -11,31 +11,31 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from mysql.connector import (connection)
+import re
+from functools import lru_cache
+import sqlalchemy as sa
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import status
 
 from ensembl_dbcopy.models import Host
 import logging
 
+
 logger = logging.getLogger(__name__)
 
-def mysql_connection(query_params=None):
-    # host = query_params.get('host', None)
-    if query_params is None:
-        query_params = {}
-    logger.debug('Query Params %s', query_params)
-    host = Host.objects.filter(name=query_params.get('host', 'localhost'),
-                               port=query_params.get('port', 3306)).first()
-    password = query_params.get('password', None)
-    if host:
-        logger.debug('Retrieved host %s', host)
-        return connection.MySQLConnection(user=host.mysql_user,
-                                          host=host.name,
-                                          port=host.port,
-                                          password=password,
-                                          database='information_schema')
-    raise RuntimeError('No host corresponding to parameters %s' % query_params)
+
+@lru_cache(maxsize=None)
+def get_engine(hostname, port, password=''):
+    host = Host.objects.filter(name=hostname, port=port).first()
+    if not host:
+        raise RuntimeError('No host corresponding to %s:%s' % (hostname, port))
+    uri = 'mysql://{}:{}@{}:{}'.format(host.mysql_user,
+                                       password,
+                                       host.name,
+                                       host.port)
+    return sa.create_engine(uri, pool_recycle=3600)
+
 
 class ListDatabases(APIView):
     """
@@ -44,21 +44,31 @@ class ListDatabases(APIView):
 
     def get(self, request, format=None):
         """
-        Return a list of all users.
+        Return a list of all schema names
         """
-        cnx = mysql_connection(request.query_params)
-        cursor = cnx.cursor()
-        query = "SELECT SCHEMA_NAME FROM SCHEMATA WHERE SCHEMA_NAME LIKE %s ORDER BY SCHEMA_NAME;"
-
-        database = self.request.query_params.get('database', '')
-        database_list = []
-        cursor.execute(query, ("%" + database + "%",))
-        for (SCHEMA_NAME) in cursor:
-            database_list.append(SCHEMA_NAME[0])
-        cursor.close()
-        cnx.close()
-        return Response(database_list)
-
+        hostname = request.query_params.get('host')
+        port = request.query_params.get('port')
+        if not (hostname and port):
+            return Response('Required parameters: host, port',
+                            status=status.HTTP_400_BAD_REQUEST)
+        dbname_filter = request.query_params.get('search', '').strip('%')
+        dbnames_matches = request.query_params.getlist('matches[]')
+        try:
+            db_engine = get_engine(hostname, port)
+        except RuntimeError as e:
+            return Response(str(e), status=status.HTTP_404_NOT_FOUND)
+        database_list = sa.inspect(db_engine).get_schema_names()
+        if dbnames_matches:
+            database_set = set(database_list)
+            dbnames_set = set(dbnames_matches)
+            result = database_set.intersection(dbnames_set)
+        else:
+            try:
+                filter_db_re = re.compile(dbname_filter)
+            except re.error as e:
+                return Response('Database not found', status=status.HTTP_404_NOT_FOUND)
+            result = filter(filter_db_re.search, database_list)
+        return Response(result)
 
 
 class ListTables(APIView):
@@ -70,16 +80,24 @@ class ListTables(APIView):
         """
         Return a list of all users.
         """
-        cnx = mysql_connection(request.query_params)
-        cursor = cnx.cursor()
-        query = "SELECT TABLE_NAME FROM TABLES WHERE TABLE_SCHEMA=%s AND TABLE_NAME LIKE %s ORDER BY TABLE_NAME;"
-
-        database = self.request.query_params.get('database', None)
-        table = self.request.query_params.get('table', None)
-        table_list = []
-        cursor.execute(query, (database, "%" + table + "%",))
-        for (TABLE_NAME) in cursor:
-            table_list.append(TABLE_NAME[0])
-        cursor.close()
-        cnx.close()
-        return Response(table_list)
+        hostname = request.query_params.get('host')
+        port = request.query_params.get('port')
+        database = request.query_params.get('database', '').strip('%')
+        if not (hostname and port and database):
+            return Response('Required parameters: host, port, database',
+                            status=status.HTTP_400_BAD_REQUEST)
+        table_name_filter = request.query_params.get('filter', '')
+        try:
+            filter_table_re = re.compile(table_name_filter)
+        except re.error as e:
+            return Response('Table not found', status=status.HTTP_404_NOT_FOUND)
+        try:
+            db_engine = get_engine(hostname, port)
+        except RuntimeError as e:
+            return Response(str(e), status=status.HTTP_404_NOT_FOUND)
+        try:
+            table_list = sa.inspect(db_engine).get_table_names(schema=database)
+        except sa.exc.OperationalError as e:
+            return Response(str(e), status=status.HTTP_404_NOT_FOUND)
+        result = filter(filter_table_re.search, table_list)
+        return Response(result)
