@@ -183,7 +183,6 @@ class RequestJobTest(APITestCase):
                                    {'host': PRODUCTION_DB.get('HOST', 'localhost'),
                                     'port': PRODUCTION_DB.get('PORT', 3306),
                                     'user': PRODUCTION_DB.get('USER', 'ensembl'),
-                                    'password': PRODUCTION_DB.get('PASSWORD', ''),
                                     'database': PRODUCTION_DB.get('NAME', 'ensembl_tests'),
                                     'filter': 'meta'})
         response_list = json.loads(response.content.decode('utf-8'))
