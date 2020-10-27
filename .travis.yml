@@ -8,9 +8,7 @@ python:
 services:
   - mysql
 env:
-  - DJANGO=2.2.13
-  - DB=mysql
-  - DEBUG=f
+  - DJANGO=2.2.13 DB=mysql DEBUG=f
 before_script:
   - mysql -u root -e "CREATE USER 'ensembl'@'localhost' IDENTIFIED BY '';"
   - mysql -u root -e "GRANT ALL ON *.* TO 'ensembl'@'localhost';"
