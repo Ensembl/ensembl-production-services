@@ -149,7 +149,9 @@ class RequestJobTest(APITestCase):
                                    {'host': 'bad-host',
                                     'port': PRODUCTION_DB.get('PORT', 3306),
                                     'search': 'test_production_services'})
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response_list), 0)
         response = self.client.get(reverse('databaselist'),
                                    {'host': PRODUCTION_DB.get('HOST', 'localhost'),
                                     'port': PRODUCTION_DB.get('PORT', 3306),
@@ -184,25 +186,29 @@ class RequestJobTest(APITestCase):
                                     'port': PRODUCTION_DB.get('PORT', 3306),
                                     'user': PRODUCTION_DB.get('USER', 'ensembl'),
                                     'database': PRODUCTION_DB.get('NAME', 'ensembl_tests'),
-                                    'filter': 'meta'})
+                                    'search': 'meta'})
         response_list = json.loads(response.content.decode('utf-8'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_list), 1)
         response = self.client.get(reverse('tablelist'),
                                    {'host': PRODUCTION_DB.get('HOST', 'localhost'),
                                     'port': PRODUCTION_DB.get('PORT', 3306),
-                                    'filter': 'table_name'})
+                                    'search': 'table_name'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         response = self.client.get(reverse('tablelist'),
                                    {'host': 'bad-host',
                                     'port': PRODUCTION_DB.get('PORT', 3306),
                                     'database': PRODUCTION_DB.get('NAME', 'ensembl_tests'),
-                                    'filter': 'meta'})
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+                                    'search': 'meta'})
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response_list), 0)
         response = self.client.get(reverse('tablelist'),
                                    {'host': PRODUCTION_DB.get('HOST', 'localhost'),
                                     'port': PRODUCTION_DB.get('PORT', 3306),
                                     'database': 'not_a_database',
-                                    'filter': 'bad_table_name'})
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+                                    'search': 'bad_table_name'})
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response_list), 0)
 
