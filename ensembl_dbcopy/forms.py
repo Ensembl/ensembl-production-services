@@ -135,30 +135,31 @@ class SubmitForm(forms.ModelForm):
                     "You can't rename a pattern")
         return tgt_db_name
 
-    def clean_wipe_target(self):
-        wipe_target = self.cleaned_data.get('wipe_target')
-        src_dbs = self._text_field_as_set(self._cleaned_text_field('src_incl_db'))
-        src_skip_dbs = self._text_field_as_set(self._cleaned_text_field('src_skip_db'))
-        src_db_names = src_dbs.difference(src_skip_dbs)
-        tgt_db_names = self._text_field_as_set(self._cleaned_text_field('tgt_db_name'))
-        new_db_names = tgt_db_names if tgt_db_names else src_db_names
-        src_incl_tables = self._cleaned_text_field('src_incl_tables')
-        if (wipe_target is False) and (not src_incl_tables) and new_db_names:
-            tgt_hosts = self._text_field_as_set(self._cleaned_text_field('tgt_host'))
-            for tgt_host in tgt_hosts:
-                hostname, port = tgt_host.split(':')
-                try:
-                    db_engine = get_engine(hostname, port)
-                except RuntimeError as e:
-                    self.add_error('tgt_host', 'Invalid host: {}'.format(tgt_host))
-                    continue
-                tgt_present_db_names = set(sa.inspect(db_engine).get_schema_names())
-                if tgt_present_db_names.intersection(new_db_names):
-                    field_name = 'tgt_db_name' if tgt_db_names else 'src_incl_db'
-                    self.add_error(field_name,
-                                   'One or more database names already present on the target. Consider enabling Wipe target option.')
-                    break
-        return wipe_target
+    ## Commented until this feature is enabled by DBAs
+    #  def clean_wipe_target(self):
+    #      wipe_target = self.cleaned_data.get('wipe_target')
+    #      src_dbs = self._text_field_as_set(self._cleaned_text_field('src_incl_db'))
+    #      src_skip_dbs = self._text_field_as_set(self._cleaned_text_field('src_skip_db'))
+    #      src_db_names = src_dbs.difference(src_skip_dbs)
+    #      tgt_db_names = self._text_field_as_set(self._cleaned_text_field('tgt_db_name'))
+    #      new_db_names = tgt_db_names if tgt_db_names else src_db_names
+    #      src_incl_tables = self._cleaned_text_field('src_incl_tables')
+    #      if (wipe_target is False) and (not src_incl_tables) and new_db_names:
+    #          tgt_hosts = self._text_field_as_set(self._cleaned_text_field('tgt_host'))
+    #          for tgt_host in tgt_hosts:
+    #              hostname, port = tgt_host.split(':')
+    #              try:
+    #                  db_engine = get_engine(hostname, port)
+    #              except RuntimeError as e:
+    #                  self.add_error('tgt_host', 'Invalid host: {}'.format(tgt_host))
+    #                  continue
+    #              tgt_present_db_names = set(sa.inspect(db_engine).get_schema_names())
+    #              if tgt_present_db_names.intersection(new_db_names):
+    #                  field_name = 'tgt_db_name' if tgt_db_names else 'src_incl_db'
+    #                  self.add_error(field_name,
+    #                                 'One or more database names already present on the target. Consider enabling Wipe target option.')
+    #                  break
+    #      return wipe_target
 
     def __init__(self, *args, **kwargs):
         if 'initial' in kwargs and 'from_request_job' in kwargs['initial']:
