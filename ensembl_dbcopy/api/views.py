@@ -56,7 +56,7 @@ class ListDatabases(APIView):
         try:
             db_engine = get_engine(hostname, port)
         except RuntimeError as e:
-            return Response(str(e), status=status.HTTP_404_NOT_FOUND)
+            return Response([])
         database_list = sa.inspect(db_engine).get_schema_names()
         if dbnames_matches:
             database_set = set(database_list)
@@ -66,7 +66,7 @@ class ListDatabases(APIView):
             try:
                 filter_db_re = re.compile(dbname_filter)
             except re.error as e:
-                return Response('Database not found', status=status.HTTP_404_NOT_FOUND)
+                return Response([])
             result = filter(filter_db_re.search, database_list)
         return Response(result)
 
@@ -86,18 +86,24 @@ class ListTables(APIView):
         if not (hostname and port and database):
             return Response('Required parameters: host, port, database',
                             status=status.HTTP_400_BAD_REQUEST)
-        table_name_filter = request.query_params.get('filter', '')
+        table_name_filter = request.query_params.get('search', '')
+        table_name_matches = request.query_params.getlist('matches[]')
         try:
             filter_table_re = re.compile(table_name_filter)
         except re.error as e:
-            return Response('Table not found', status=status.HTTP_404_NOT_FOUND)
+            return Response([])
         try:
             db_engine = get_engine(hostname, port)
         except RuntimeError as e:
-            return Response(str(e), status=status.HTTP_404_NOT_FOUND)
+            return Response([])
         try:
             table_list = sa.inspect(db_engine).get_table_names(schema=database)
         except sa.exc.OperationalError as e:
-            return Response(str(e), status=status.HTTP_404_NOT_FOUND)
-        result = filter(filter_table_re.search, table_list)
+            return Response([])
+        if table_name_matches:
+            table_set = set(table_list)
+            table_names_set = set(table_name_matches)
+            result = table_set.intersection(table_names_set)
+        else:
+            result = filter(filter_table_re.search, table_list)
         return Response(result)
