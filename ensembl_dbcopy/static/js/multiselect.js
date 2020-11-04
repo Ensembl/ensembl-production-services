@@ -18,13 +18,12 @@ function extractLast(term) {
 }
 
 // Insert alert after
-function insertAlertAfter(elem, alertText) {
-  $($("#bootstrapAlert").html()).insertAfter(elem).append(alertText);
+function insertAlertAfter(elem, divID, alertText) {
+  $($("#bootstrapAlert").html()).insertAfter(elem).attr('id', divID).append(alertText);
 }
 
-// Remove alert after element
-function removeAlertAfter(elem) {
-  $(elem).nextAll(".alert").remove();
+function insertAlertBefore(elem, divID, alertText) {
+  $($("#bootstrapAlert").html()).insertBefore(elem).attr('id', divID).append(alertText);
 }
 
 // Clean and split the string in elem and return an array
@@ -182,19 +181,19 @@ function updateAlerts() {
   }
 }
 
-function updateTableAlert() {
+function updateTableAlert(tableOnly) {
   if (DBNames.length == 1) {
     const inclTables = getSplitNames("#id_src_incl_tables");
     const skipTables = getSplitNames("#id_src_skip_tables");
 
     checkTableNames(inclTables, SrcHostDetails, DBNames[0], function (foundTableNames) {
       TableNames = arrayDiff(foundTableNames, skipTables);
-      rebuildAlerts();
+      rebuildAlerts(tableOnly);
     });
   }
   else {
     TableNames = [];
-    rebuildAlerts();
+    rebuildAlerts(tableOnly);
   }
 }
 
@@ -216,7 +215,7 @@ function buildDBConflictsAlert(hostsDetails, dbNames) {
     let alertMsg = "<strong>Alert!</strong> The following database(s) are already present:";
     const alertText = buildAlertText(alertMsg, toWipeDBs);
     if (alertText.length) {
-      insertAlertAfter("#div_id_email_list", alertText);
+      insertAlertAfter("#div_id_email_list", "db-alert", alertText);
     }
   });
 }
@@ -226,21 +225,27 @@ function buildTableConflictsAlert(hostDetails, databaseName, tableNames) {
     let alertMsg = "<strong>Alert!</strong> The following table(s) are already present in the selected database:";
     const alertText = buildAlertText(alertMsg, foundTableNames);
     if (alertText.length) {
-      insertAlertAfter("#div_id_email_list", alertText);
+      insertAlertBefore($("#submit-id-submit").parent().parent(), "table-alert", alertText);
     }
   });
 }
 
-function rebuildAlerts() {
-  removeAlertAfter("#div_id_email_list");
-  removeAlertAfter("#div_id_email_list");
+function rebuildAlerts(tableOnly) {
   if (SrcHostDetails.name && TgtHostsDetails.length && DBNames.length) {
     $("#submit-id-submit").prop("disabled", "true");
     if (TableNames.length && TgtHostsDetails.length == 1) {
+      $("#table-alert").remove();
       buildTableConflictsAlert(TgtHostsDetails[0], DBNames[0], TableNames);
     }
-    buildDBConflictsAlert(TgtHostsDetails, DBNames);
+    if (!tableOnly) {
+      $("#db-alert").remove();
+      buildDBConflictsAlert(TgtHostsDetails, DBNames);
+    }
     $("#submit-id-submit").removeAttr("disabled");
+  }
+  else {
+    $("#db-alert").remove();
+    $("#table-alert").remove();
   }
 }
 
@@ -474,7 +479,7 @@ $(function () {
         },
         change: function (event, ui) {
             $(this).removeClass("is-invalid");
-            updateAlerts();
+            updateTableAlert(true);
             // // Commented until Wipe target is enabled by DBAs
             // checkWipeTarget();
         }
@@ -515,7 +520,7 @@ $(function () {
         },
         change: function (event, ui) {
             $(this).removeClass("is-invalid");
-            updateAlerts();
+            updateTableAlert(true);
             // // Commented until Wipe target is enabled by DBAs
             // checkWipeTarget();
         }
