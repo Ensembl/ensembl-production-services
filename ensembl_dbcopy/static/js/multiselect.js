@@ -304,7 +304,7 @@ $(function () {
   const srcHostElem = $("#id_src_host");
   const tgtHostElem = $("#id_tgt_host");
   if (srcHostElem.length && tgtHostElem.length) {
-    SrcHostDetails = getHostsDetails(srcHostElem);
+    SrcHostDetails = hostStringToDetails(srcHostElem.val());
     TgtHostsDetails = getHostsDetails(tgtHostElem);
     updateAlerts();
   }
