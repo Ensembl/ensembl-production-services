@@ -40,10 +40,10 @@
                     <div class="tablekey">Source DBs:</div>
                 </div>
                 <div class="col-sm-10 tablevalue">
-                    {% if original.src_skip_db %}
-                        All databases excluding {{ original.src_skip_db }}
+                    {% if original.src_incl_db %}
+                        {{ original.src_incl_db }} {% if original.src_skip_db %} excluding {{ original.src_skip_db }} {% endif %}
                     {% else %}
-                        {{ original.src_incl_db }}
+                        All databases {% if original.src_skip_db %} excluding {{ original.src_skip_db }} {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -52,10 +52,10 @@
                     <div class="tablekey">Source Tables:</div>
                 </div>
                 <div class="col-sm-10 tablevalue">
-                    {% if original.src_skip_tables %}
-                        All tables excluding {{ original.src_skip_tables }}
+                    {% if original.src_incl_tables %}
+                        {{ original.src_incl_tables }} {% if original.src_skip_tables %} excluding {{ original.src_skip_tables }} {% endif %}
                     {% else %}
-                        All tables
+                        All tables {% if original.src_skip_tables %} excluding {{ original.src_skip_tables }} {% endif %}
                     {% endif %}
                 </div>
             </div>
