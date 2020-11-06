@@ -233,8 +233,8 @@ function buildTableConflictsAlert(hostDetails, databaseName, tableNames) {
 function rebuildAlerts(tableOnly) {
   if (SrcHostDetails.name && TgtHostsDetails.length && DBNames.length) {
     $("#submit-id-submit").prop("disabled", "true");
+    $("#table-alert").remove();
     if (TableNames.length && TgtHostsDetails.length == 1) {
-      $("#table-alert").remove();
       buildTableConflictsAlert(TgtHostsDetails[0], DBNames[0], TableNames);
     }
     if (!tableOnly) {
