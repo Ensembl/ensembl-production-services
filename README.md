@@ -19,7 +19,7 @@ cp bin/nginx.conf.sample bin/nginx.conf
 ```
 cp bin/.env.conf.sample bin/.env
 vi bin/.env
-```    
+```
 5. put required parameters such as follow:
 ```
 DJANGO_SETTINGS_MODULE=production_services.settings
@@ -60,11 +60,13 @@ export $(cut -d= -f1 ./bin/.env)
 8. start nginx with ~/bin/nginx.sh start
 ```
 ./bin/nginx.sh start
-```   
-*All Done* go to http://your_host/ and see.
+```
+
+**All Done** go to `http://your_host/` and see.
 
 
 Default parameter for Angular Apps:
+```
 angular.module('app.config', [])
     .constant('CONFIG', {
 	'LIVE_URI': 'mysql://ensro@ensro@127.0.0.1:3306/',
@@ -81,3 +83,4 @@ angular.module('app.config', [])
 	'HANDOVER_SRV_URL': 'http://127.0.0.1:5004/',
 	'WEBSITE_NAME': 'TEST'
     });
+```
