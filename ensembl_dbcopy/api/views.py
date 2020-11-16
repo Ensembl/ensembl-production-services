@@ -18,11 +18,22 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
-from ensembl_dbcopy.models import Host
+from ensembl_dbcopy.models import Host, Dbs2Exclude
 import logging
 
 
 logger = logging.getLogger(__name__)
+
+
+def make_excluded_schemas():
+    schemas = set()
+    def closure():
+        if not schemas:
+            schemas.update(Dbs2Exclude.objects.values_list('table_schema', flat=True))
+        return schemas
+    return closure
+
+get_excluded_schemas = make_excluded_schemas()
 
 
 @lru_cache(maxsize=None)
@@ -35,6 +46,46 @@ def get_engine(hostname, port, password=''):
                                        host.name,
                                        host.port)
     return sa.create_engine(uri, pool_recycle=3600)
+
+
+def get_database_set(hostname, port, name_filter='', name_matches=[]):
+    try:
+        db_engine = get_engine(hostname, port)
+    except RuntimeError as e:
+        return []
+    database_list = sa.inspect(db_engine).get_schema_names()
+    excluded_schemas = get_excluded_schemas()
+    if name_matches:
+        database_set = set(database_list)
+        names_set = set(name_matches)
+        return database_set.difference(excluded_schemas).intersection(names_set)
+    else:
+        try:
+            filter_db_re = re.compile(name_filter)
+        except re.error as e:
+            return []
+        return set(filter(filter_db_re.search, database_list)).difference(excluded_schemas)
+
+
+def get_table_set(hostname, port, database, name_filter='', name_matches=[]):
+    try:
+        filter_table_re = re.compile(name_filter)
+    except re.error as e:
+        return []
+    try:
+        db_engine = get_engine(hostname, port)
+    except RuntimeError as e:
+        return []
+    try:
+        table_list = sa.inspect(db_engine).get_table_names(schema=database)
+    except sa.exc.OperationalError as e:
+        return []
+    excluded_schemas = get_excluded_schemas()
+    if name_matches:
+        table_set = set(table_list)
+        table_names_set = set(name_matches)
+        return table_set.difference(excluded_schemas).intersection(table_names_set)
+    return set(filter(filter_table_re.search, table_list)).difference(excluded_schemas)
 
 
 class ListDatabases(APIView):
@@ -51,23 +102,9 @@ class ListDatabases(APIView):
         if not (hostname and port):
             return Response('Required parameters: host, port',
                             status=status.HTTP_400_BAD_REQUEST)
-        dbname_filter = request.query_params.get('search', '').strip('%')
-        dbnames_matches = request.query_params.getlist('matches[]')
-        try:
-            db_engine = get_engine(hostname, port)
-        except RuntimeError as e:
-            return Response([])
-        database_list = sa.inspect(db_engine).get_schema_names()
-        if dbnames_matches:
-            database_set = set(database_list)
-            dbnames_set = set(dbnames_matches)
-            result = database_set.intersection(dbnames_set)
-        else:
-            try:
-                filter_db_re = re.compile(dbname_filter)
-            except re.error as e:
-                return Response([])
-            result = filter(filter_db_re.search, database_list)
+        name_filter = request.query_params.get('search', '').replace('%', '.*').replace('_', '.')
+        name_matches = request.query_params.getlist('matches[]')
+        result = get_database_set(hostname, port, name_filter, name_matches)
         return Response(result)
 
 
@@ -82,28 +119,11 @@ class ListTables(APIView):
         """
         hostname = request.query_params.get('host')
         port = request.query_params.get('port')
-        database = request.query_params.get('database', '').strip('%')
+        database = request.query_params.get('database', '')
         if not (hostname and port and database):
             return Response('Required parameters: host, port, database',
                             status=status.HTTP_400_BAD_REQUEST)
-        table_name_filter = request.query_params.get('search', '')
-        table_name_matches = request.query_params.getlist('matches[]')
-        try:
-            filter_table_re = re.compile(table_name_filter)
-        except re.error as e:
-            return Response([])
-        try:
-            db_engine = get_engine(hostname, port)
-        except RuntimeError as e:
-            return Response([])
-        try:
-            table_list = sa.inspect(db_engine).get_table_names(schema=database)
-        except sa.exc.OperationalError as e:
-            return Response([])
-        if table_name_matches:
-            table_set = set(table_list)
-            table_names_set = set(table_name_matches)
-            result = table_set.intersection(table_names_set)
-        else:
-            result = filter(filter_table_re.search, table_list)
+        name_filter = request.query_params.get('search', '')
+        name_matches = request.query_params.getlist('matches[]')
+        result = get_table_set(hostname, port, database, name_filter, name_matches)
         return Response(result)

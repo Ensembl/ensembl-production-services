@@ -19,7 +19,19 @@ from django import forms
 import sqlalchemy as sa
 
 from ensembl_dbcopy.models import RequestJob, Group, Host
-from ensembl_dbcopy.api.views import get_engine
+from ensembl_dbcopy.api.views import get_engine, get_database_set
+
+
+def _text_field_as_set(text):
+    return set(filter(lambda x: x != '', text.split(',')))
+
+
+def _apply_db_names_filter(db_names, all_db_names):
+    if len(db_names) == 1:
+        db_name = db_names.pop()
+        filter_re = re.compile(db_name.replace('%', '.*').replace('_', '.'))
+        return set(filter(filter_re.search, all_db_names))
+    return db_names
 
 
 class SubmitForm(forms.ModelForm):
@@ -65,9 +77,6 @@ class SubmitForm(forms.ModelForm):
     def _cleaned_text_field(self, field_name):
         return self.cleaned_data.get(field_name, '').replace(' ', '').rstrip(',')
 
-    def _text_field_as_set(self, text):
-        return set(filter(lambda x: x != '', text.split(',')))
-
     def clean_src_host(self):
         src_host_pattern = re.compile("^.+:[0-9]{4}")
         data = self._cleaned_text_field('src_host')
@@ -100,8 +109,8 @@ class SubmitForm(forms.ModelForm):
     def clean_src_skip_db(self):
         src_skip_db = self._cleaned_text_field('src_skip_db')
         tgt_db_name = self._cleaned_text_field('tgt_db_name')
-        src_skip_db_names = self._text_field_as_set(src_skip_db)
-        tgt_db_names = self._text_field_as_set(tgt_db_name)
+        src_skip_db_names = _text_field_as_set(src_skip_db)
+        tgt_db_names = _text_field_as_set(tgt_db_name)
         if src_skip_db_names and tgt_db_names:
             raise forms.ValidationError(
                     'Field "Names of databases on Target Host" is not empty. Consider clear it, or clear this field.')
@@ -124,8 +133,8 @@ class SubmitForm(forms.ModelForm):
     def clean_tgt_db_name(self):
         tgt_db_name = self._cleaned_text_field('tgt_db_name')
         src_incl_db = self._cleaned_text_field('src_incl_db')
-        tgt_dbs = self._text_field_as_set(tgt_db_name)
-        src_dbs = self._text_field_as_set(src_incl_db)
+        tgt_dbs = _text_field_as_set(tgt_db_name)
+        src_dbs = _text_field_as_set(src_incl_db)
         if tgt_db_name:
             if len(tgt_dbs) != len(src_dbs):
                 raise forms.ValidationError(
@@ -134,6 +143,27 @@ class SubmitForm(forms.ModelForm):
                 raise forms.ValidationError(
                     "You can't rename a pattern")
         return tgt_db_name
+
+    def clean(self):
+        cleaned_data = super().clean()
+        src_host = cleaned_data.get('src_host')
+        tgt_hosts = _text_field_as_set(cleaned_data.get('tgt_host'))
+        src_dbs = _text_field_as_set(cleaned_data.get('src_incl_db'))
+        src_skip_dbs = _text_field_as_set(cleaned_data.get('src_skip_db'))
+        tgt_db_names = _text_field_as_set(cleaned_data.get('tgt_db_name'))
+        if src_host in tgt_hosts:
+            hostname, port = src_host.split(':')
+            present_dbs = get_database_set(hostname, port)
+            if tgt_db_names:
+                tgt_conflicts = tgt_db_names.intersection(present_dbs)
+                if tgt_conflicts:
+                    raise forms.ValidationError('Some source and target databases coincide. Please change conflicting target names')
+            else:
+                src_names = src_dbs if src_dbs else present_dbs
+                skip_names = _apply_db_names_filter(src_skip_dbs, present_dbs)
+                db_names = _apply_db_names_filter(src_names, present_dbs).difference(skip_names)
+                if db_names:
+                    raise forms.ValidationError('Some source and target databases coincide. Please add target names or change sources')
 
     ## Commented until this feature is enabled by DBAs
     #  def clean_wipe_target(self):

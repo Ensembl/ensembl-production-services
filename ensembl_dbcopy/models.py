@@ -18,10 +18,8 @@ from django.db import models
 from ensembl_production.models import NullTextField
 
 
-
-
 class Dbs2Exclude(models.Model):
-    table_schema = models.CharField(db_column='TABLE_SCHEMA', max_length=64)  # Field name made lowercase.
+    table_schema = models.CharField(primary_key=True, db_column='TABLE_SCHEMA', max_length=64)  # Field name made lowercase.
 
     class Meta:
         db_table = 'dbs_2_exclude'
@@ -166,7 +164,7 @@ class Group(models.Model):
         db_table = 'group'
         app_label = 'ensembl_dbcopy'
         verbose_name = 'Host Group'
-    
+
     group_id = models.BigAutoField(primary_key=True)
     host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE, related_name='groups')
     group_name = models.CharField('User Group', max_length=80)

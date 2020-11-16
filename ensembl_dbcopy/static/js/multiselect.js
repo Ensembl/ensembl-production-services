@@ -112,7 +112,7 @@ function fetchPresentTableNames(hostDetails, databaseName, matchesTables, thenFu
 }
 
 function checkDBNames(dbNames, hostDetails, thenFunc) {
-  if (dbNames.length && !dbNames[0].startsWith("%")) {
+  if (dbNames.length && dbNames.length > 1) {
     thenFunc(dbNames);
   }
   else {
