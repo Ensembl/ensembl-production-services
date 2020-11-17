@@ -73,11 +73,9 @@ function fetchPresentDBNames(hostsDetails, matchesDBs, thenFunc) {
   $(hostsDetails).each(function (_i, hostDetails) {
     asyncCalls.push(
       $.ajax({
-        url: "/api/dbcopy/databases",
+        url: `/api/dbcopy/databases/${hostDetails.name}/${hostDetails.port}`,
         dataType: "json",
         data: {
-            host: hostDetails.name,
-            port: hostDetails.port,
             matches: matchesDBs,
         },
         success: function (data) {
@@ -85,6 +83,10 @@ function fetchPresentDBNames(hostsDetails, matchesDBs, thenFunc) {
           data.forEach(function (dbName) {
             presentDBs.push(hostString + "/" + dbName);
           });
+        },
+        error: function (request, textStatus, error) {
+          console.log(textStatus);
+          console.log(error);
         }
       })
     );
@@ -97,16 +99,19 @@ function fetchPresentDBNames(hostsDetails, matchesDBs, thenFunc) {
 // Fetch Databases per server
 function fetchPresentTableNames(hostDetails, databaseName, matchesTables, thenFunc) {
   $.ajax({
-    url: "/api/dbcopy/tables",
+    url: `/api/dbcopy/tables/${hostDetails.name}/${hostDetails.port}/${databaseName}`,
     dataType: "json",
     data: {
-        host: hostDetails.name,
-        port: hostDetails.port,
         database: databaseName,
         matches: matchesTables,
     },
     success: function (data) {
         thenFunc($.makeArray(data));
+    },
+    error: function (request, textStatus, error) {
+        console.log(textStatus);
+        console.log(error);
+        thenFunc([]);
     }
   });
 }
@@ -117,15 +122,18 @@ function checkDBNames(dbNames, hostDetails, thenFunc) {
   }
   else {
     $.ajax({
-      url: "/api/dbcopy/databases",
+      url: `/api/dbcopy/databases/${hostDetails.name}/${hostDetails.port}`,
       dataType: "json",
       data: {
-          host: hostDetails.name,
-          port: hostDetails.port,
           search: dbNames[0],
       },
       success: function (data) {
         thenFunc($.makeArray(data));
+      },
+      error: function (request, textStatus, error) {
+        console.log(textStatus);
+        console.log(error);
+        thenFunc([]);
       }
     });
   }
@@ -137,15 +145,15 @@ function checkTableNames(tableNames, hostDetails, databaseName, thenFunc) {
   }
   else {
     $.ajax({
-      url: "/api/dbcopy/tables",
+      url: `/api/dbcopy/tables/${hostDetails.name}/${hostDetails.port}/${databaseName}`,
       dataType: "json",
-      data: {
-          host: hostDetails.name,
-          port: hostDetails.port,
-          database: databaseName
-      },
       success: function (data) {
         thenFunc($.makeArray(data));
+      },
+      error: function (request, textStatus, error) {
+        console.log(textStatus);
+        console.log(error);
+        thenFunc([]);
       }
     });
   }
@@ -385,15 +393,18 @@ $(function () {
     $("#id_src_incl_db").autocomplete({
         source: function (request, response) {
             $.ajax({
-                url: "/api/dbcopy/databases",
+                url: `/api/dbcopy/databases/${SrcHostDetails.name}/${SrcHostDetails.port}`,
                 dataType: "json",
                 data: {
-                    host: SrcHostDetails.name,
-                    port: SrcHostDetails.port,
                     search: extractLast(request.term)
                 },
                 success: function (data) {
                     response(data);
+                },
+                error: function (request, textStatus, error) {
+                  console.log(textStatus);
+                  console.log(error);
+                  response([]);
                 }
             });
         },
@@ -418,15 +429,18 @@ $(function () {
     $("#id_src_skip_db").autocomplete({
         source: function (request, response) {
             $.ajax({
-                url: "/api/dbcopy/databases",
+                url: `/api/dbcopy/databases/${SrcHostDetails.name}/${SrcHostDetails.port}`,
                 dataType: "json",
                 data: {
-                    host: SrcHostDetails.name,
-                    port: SrcHostDetails.port,
                     search: extractLast(request.term)
                 },
                 success: function (data) {
                     response(data);
+                },
+                error: function (request, textStatus, error) {
+                  console.log(textStatus);
+                  console.log(error);
+                  response([]);
                 }
             });
         },
@@ -451,17 +465,19 @@ $(function () {
             const srcDBs = getSplitNames("#id_src_incl_db");
             if (srcDBs.length) {
                 $.ajax({
-                    url: "/api/dbcopy/tables",
+                    url: `/api/dbcopy/tables/${SrcHostDetails.name}/${SrcHostDetails.port}/${srcDBs[0]}`,
                     dataType: "json",
                     data: {
-                        host: SrcHostDetails.name,
-                        port: SrcHostDetails.port,
                         // Get the first database from the id_src_incl_db field
-                        database: srcDBs[0],
                         search: extractLast(request.term)
                     },
                     success: function (data) {
                         response(data);
+                    },
+                    error: function (request, textStatus, error) {
+                      console.log(textStatus);
+                      console.log(error);
+                      response([]);
                     }
                 });
             }
@@ -492,17 +508,19 @@ $(function () {
             const srcDBs = getSplitNames("#id_src_incl_db");
             if (srcDBs.length) {
                 $.ajax({
-                    url: "/api/dbcopy/tables",
+                    url: `/api/dbcopy/tables/${SrcHostDetails.name}/${SrcHostDetails.port}/${srcDBs[0]}`,
                     dataType: "json",
                     data: {
-                        host: SrcHostDetails.name,
-                        port: SrcHostDetails.port,
                         // Get the first database from the id_src_incl_db field
-                        database: srcDBs[0],
                         search: extractLast(request.term)
                     },
                     success: function (data) {
                         response(data);
+                    },
+                    error: function (request, textStatus, error) {
+                      console.log(textStatus);
+                      console.log(error);
+                      response([]);
                     }
                 });
             }

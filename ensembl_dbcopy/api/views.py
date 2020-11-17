@@ -52,7 +52,7 @@ def get_database_set(hostname, port, name_filter='', name_matches=[]):
     try:
         db_engine = get_engine(hostname, port)
     except RuntimeError as e:
-        return []
+        raise ValueError('Invalid hostname: {} or port: {}'.format(hostname, port)) from e
     database_list = sa.inspect(db_engine).get_schema_names()
     excluded_schemas = get_excluded_schemas()
     if name_matches:
@@ -63,7 +63,7 @@ def get_database_set(hostname, port, name_filter='', name_matches=[]):
         try:
             filter_db_re = re.compile(name_filter)
         except re.error as e:
-            return []
+            raise ValueError('Invalid name_filter: {}'.format(name_filter)) from e
         return set(filter(filter_db_re.search, database_list)).difference(excluded_schemas)
 
 
@@ -71,15 +71,15 @@ def get_table_set(hostname, port, database, name_filter='', name_matches=[]):
     try:
         filter_table_re = re.compile(name_filter)
     except re.error as e:
-        return []
+        raise ValueError('Invalid name_filter: {}'.format(name_filter)) from e
     try:
         db_engine = get_engine(hostname, port)
     except RuntimeError as e:
-        return []
+        raise ValueError('Invalid hostname: {} or port: {}'.format(hostname, port)) from e
     try:
         table_list = sa.inspect(db_engine).get_table_names(schema=database)
     except sa.exc.OperationalError as e:
-        return []
+        raise ValueError('Invalid database: {}'.format(database)) from e
     excluded_schemas = get_excluded_schemas()
     if name_matches:
         table_set = set(table_list)
@@ -93,37 +93,38 @@ class ListDatabases(APIView):
     View to list all databases from a given server
     """
 
-    def get(self, request, format=None):
+    def get(self, request, *args, **kwargs):
         """
         Return a list of all schema names
         """
-        hostname = request.query_params.get('host')
-        port = request.query_params.get('port')
-        if not (hostname and port):
-            return Response('Required parameters: host, port',
-                            status=status.HTTP_400_BAD_REQUEST)
+        hostname = kwargs.get('host')
+        port = kwargs.get('port')
         name_filter = request.query_params.get('search', '').replace('%', '.*').replace('_', '.')
         name_matches = request.query_params.getlist('matches[]')
-        result = get_database_set(hostname, port, name_filter, name_matches)
+        try:
+            result = get_database_set(hostname, port, name_filter, name_matches)
+        except ValueError as e:
+            return Response(str(e), status=status.HTTP_404_NOT_FOUND)
         return Response(result)
 
 
 class ListTables(APIView):
     """
-    View to list all databases from a given server
+    View to list all tables from a given database
     """
 
-    def get(self, request, format=None):
+    def get(self, request, *args, **kwargs):
         """
-        Return a list of all users.
+        Return a list of tables
         """
-        hostname = request.query_params.get('host')
-        port = request.query_params.get('port')
-        database = request.query_params.get('database', '')
-        if not (hostname and port and database):
-            return Response('Required parameters: host, port, database',
-                            status=status.HTTP_400_BAD_REQUEST)
+        hostname = kwargs.get('host')
+        port = kwargs.get('port')
+        database = kwargs.get('database')
         name_filter = request.query_params.get('search', '')
         name_matches = request.query_params.getlist('matches[]')
-        result = get_table_set(hostname, port, database, name_filter, name_matches)
+        try:
+            result = get_table_set(hostname, port, database, name_filter, name_matches)
+        except ValueError as e:
+            return Response(str(e), status=status.HTTP_404_NOT_FOUND)
         return Response(result)
+

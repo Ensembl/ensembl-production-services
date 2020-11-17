@@ -19,7 +19,7 @@ from django import forms
 import sqlalchemy as sa
 
 from ensembl_dbcopy.models import RequestJob, Group, Host
-from ensembl_dbcopy.api.views import get_engine, get_database_set
+from ensembl_dbcopy.api.views import get_database_set #, get_engine
 
 
 def _text_field_as_set(text):
@@ -153,7 +153,10 @@ class SubmitForm(forms.ModelForm):
         tgt_db_names = _text_field_as_set(cleaned_data.get('tgt_db_name'))
         if src_host in tgt_hosts:
             hostname, port = src_host.split(':')
-            present_dbs = get_database_set(hostname, port)
+            try:
+                present_dbs = get_database_set(hostname, port)
+            except ValueError as e:
+                raise forms.ValidationError('Invalid source hostname or port')
             if tgt_db_names:
                 tgt_conflicts = tgt_db_names.intersection(present_dbs)
                 if tgt_conflicts:
