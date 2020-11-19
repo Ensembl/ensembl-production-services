@@ -76,6 +76,8 @@ class RequestJob(models.Model):
                     return 'Complete'
             elif self.transfer_logs.count() > 0 and self.status == 'Processing Requests':
                 return 'Running'
+            elif self.status == 'Processing Requests' or self.status == 'Creating Requests':
+                return 'Scheduled'
         return 'Submitted'
 
     @property
@@ -83,7 +85,9 @@ class RequestJob(models.Model):
         total_tables = self.transfer_logs.count()
         table_copied = self.table_copied
         progress = 0
-        status_msg='Submitted'
+        status_msg = 'Submitted'
+        if self.status == 'Processing Requests' or self.status == 'Creating Requests':
+            status_msg = 'Scheduled'
         if table_copied and total_tables:
             progress = (table_copied / total_tables) * 100
         if progress == 100.0 and self.status == 'Transfer Ended':
@@ -92,7 +96,7 @@ class RequestJob(models.Model):
             if self.status:
                 if (self.end_date and self.status == 'Transfer Ended') or ('Try:' in self.status):
                     status_msg = 'Failed'
-                if self.status == 'Processing Requests':
+                elif self.status == 'Processing Requests':
                     status_msg = 'Running'
         return {'status_msg': status_msg,
                 'table_copied': table_copied,

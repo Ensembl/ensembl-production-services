@@ -1,11 +1,11 @@
-.tablekey { 
+.tablekey {
   background-color: lightgray;
   text-align : right;
   font-weight: bold;
   padding: 5px 5px 5px 5px;
   height: 100%;
 }
-.tablevalue { 
+.tablevalue {
   text-align : left;
   padding: 5px 5px 5px 5px;
   border-radius: 4px;
@@ -21,7 +21,7 @@
 .Incomplete {
   background-color: lightblue;
 }
-.Submitted {
+.Submitted, .Scheduled {
   background-color: lightblue;
 }
 .Running {

@@ -12,8 +12,9 @@
    limitations under the License.
 """
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
+from django.contrib.admin.utils import model_ngettext
 from django.contrib.auth.models import Group as UsersGroup
 from django.core.paginator import Paginator
 from django.db.models import Count, F, Q
@@ -151,6 +152,7 @@ class RequestJobAdmin(admin.ModelAdmin):
     form = SubmitForm
     add_form_template = "admin/dbcopy/submit.html"
     change_form_template = "admin/dbcopy/detail.html"
+    delete_selected_confirmation_template = "admin/dbcopy/delete_selected_confirmation.html"
     list_display = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
                     'start_date', 'end_date', 'request_date', 'overall_status')
     search_fields = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
@@ -168,8 +170,8 @@ class RequestJobAdmin(admin.ModelAdmin):
         return request.user.is_staff
 
     def has_delete_permission(self, request, obj=None):
-        # Allow delete only for superusers
-        return request.user.is_superuser
+        # Allow delete only for superusers and obj owners
+        return request.user.is_superuser or (obj is not None and request.user.username == obj.user)
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
@@ -193,6 +195,29 @@ class RequestJobAdmin(admin.ModelAdmin):
             context["running_copy"] = transfers_logs.filter(end_date__isnull=True).order_by(
                 F('end_date').desc(nulls_first=True)).earliest('auto_id')
         return super().change_view(request, object_id, form_url, context)
+
+    def _get_deletable_objects(self, queryset):
+        return queryset.exclude(Q(status='Creating Requests') | Q(status='Processing Requests'))
+
+    def get_deleted_objects(self, queryset, request):
+        deletable_queryset = self._get_deletable_objects(queryset)
+        return super().get_deleted_objects(deletable_queryset, request)
+
+    def delete_queryset(self, request, queryset):
+        deletable_queryset = self._get_deletable_objects(queryset)
+        count = deletable_queryset.count()
+        super().delete_queryset(request, deletable_queryset)
+        message = "Successfully deleted %(count)d %(items)s." % {
+                'count': count, 'items': model_ngettext(self.opts, count)
+        }
+        messages.add_message(request, messages.SUCCESS, message, extra_tags='', fail_silently=False)
+
+    def message_user(self, *args, **kwargs):
+        pass
+
+    def log_deletion(self, request, obj, obj_display):
+        if obj.status != 'Creating Requests' and obj.status != 'Processing Requests':
+            super().log_deletion(request, obj, obj_display)
 
     def overall_status(self, obj):
         return format_html(
