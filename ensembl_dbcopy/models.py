@@ -56,6 +56,7 @@ class RequestJob(models.Model):
     skip_optimize = models.BooleanField(default=False)
     wipe_target = models.BooleanField(default=False)
     convert_innodb = models.BooleanField(default=False)
+    dry_run = models.BooleanField(default=False)
     email_list = models.TextField(max_length=2048, blank=True, null=True)
     start_date = models.DateTimeField(blank=True, null=True, editable=False)
     end_date = models.DateTimeField(blank=True, null=True, editable=False)

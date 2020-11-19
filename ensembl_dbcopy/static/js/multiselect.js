@@ -305,6 +305,7 @@ function rebuildAlerts(tableOnly) {
 $(function () {
   $("#div_id_wipe_target").parent().prop("hidden", "true");
   $("#div_id_convert_innodb").parent().prop("hidden", "true");
+  $("#div_id_dry_run").parent().prop("hidden", "true");
 });
 
 // Initialize Hosts Details
