@@ -84,9 +84,7 @@ function fetchPresentDBNames(hostsDetails, matchesDBs, thenFunc) {
             presentDBs.push(hostString + "/" + dbName);
           });
         },
-        error: function (request, textStatus, error) {
-          console.log(textStatus);
-          console.log(error);
+        error: function (_request, _textStatus, _error) {
         }
       })
     );
@@ -102,15 +100,12 @@ function fetchPresentTableNames(hostDetails, databaseName, matchesTables, thenFu
     url: `/api/dbcopy/tables/${hostDetails.name}/${hostDetails.port}/${databaseName}`,
     dataType: "json",
     data: {
-        database: databaseName,
         matches: matchesTables,
     },
     success: function (data) {
         thenFunc($.makeArray(data));
     },
-    error: function (request, textStatus, error) {
-        console.log(textStatus);
-        console.log(error);
+    error: function (_request, _textStatus, _error) {
         thenFunc([]);
     }
   });
@@ -130,9 +125,7 @@ function checkDBNames(dbNames, hostDetails, thenFunc) {
       success: function (data) {
         thenFunc($.makeArray(data));
       },
-      error: function (request, textStatus, error) {
-        console.log(textStatus);
-        console.log(error);
+      error: function (_request, _textStatus, _error) {
         thenFunc([]);
       }
     });
@@ -150,9 +143,7 @@ function checkTableNames(tableNames, hostDetails, databaseName, thenFunc) {
       success: function (data) {
         thenFunc($.makeArray(data));
       },
-      error: function (request, textStatus, error) {
-        console.log(textStatus);
-        console.log(error);
+      error: function (_request, _textStatus, _error) {
         thenFunc([]);
       }
     });
@@ -402,9 +393,7 @@ $(function () {
                 success: function (data) {
                     response(data);
                 },
-                error: function (request, textStatus, error) {
-                  console.log(textStatus);
-                  console.log(error);
+                error: function (_request, _textStatus, _error) {
                   response([]);
                 }
             });
@@ -438,9 +427,7 @@ $(function () {
                 success: function (data) {
                     response(data);
                 },
-                error: function (request, textStatus, error) {
-                  console.log(textStatus);
-                  console.log(error);
+                error: function (_request, _textStatus, _error) {
                   response([]);
                 }
             });
@@ -475,9 +462,7 @@ $(function () {
                     success: function (data) {
                         response(data);
                     },
-                    error: function (request, textStatus, error) {
-                      console.log(textStatus);
-                      console.log(error);
+                    error: function (_request, _textStatus, _error) {
                       response([]);
                     }
                 });
@@ -518,9 +503,7 @@ $(function () {
                     success: function (data) {
                         response(data);
                     },
-                    error: function (request, textStatus, error) {
-                      console.log(textStatus);
-                      console.log(error);
+                    error: function (_request, _textStatus, _error) {
                       response([]);
                     }
                 });
