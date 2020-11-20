@@ -205,10 +205,9 @@ class RequestJobAdmin(admin.ModelAdmin):
 
     def delete_queryset(self, request, queryset):
         deletable_queryset = self._get_deletable_objects(queryset)
-        count = deletable_queryset.count()
-        super().delete_queryset(request, deletable_queryset)
+        deleted_count, _rows_count = deletable_queryset.delete()
         message = "Successfully deleted %(count)d %(items)s." % {
-                'count': count, 'items': model_ngettext(self.opts, count)
+                'count': deleted_count, 'items': model_ngettext(self.opts, deleted_count)
         }
         messages.add_message(request, messages.SUCCESS, message, extra_tags='', fail_silently=False)
 
