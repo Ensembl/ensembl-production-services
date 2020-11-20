@@ -11,10 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterModelOptions(
-            name='group',
-            options={'verbose_name': 'Host Group'},
-        ),
         migrations.RemoveField(
             model_name='dbs2exclude',
             name='id',
@@ -28,20 +24,5 @@ class Migration(migrations.Migration):
             model_name='dbs2exclude',
             name='table_schema',
             field=models.CharField(db_column='TABLE_SCHEMA', max_length=64, primary_key=True, serialize=False),
-        ),
-        migrations.AlterField(
-            model_name='group',
-            name='group_name',
-            field=models.CharField(max_length=80, verbose_name='User Group'),
-        ),
-        migrations.AlterField(
-            model_name='group',
-            name='host_id',
-            field=models.ForeignKey(db_column='auto_id', on_delete=django.db.models.deletion.CASCADE, related_name='groups', to='ensembl_dbcopy.Host'),
-        ),
-        migrations.AlterField(
-            model_name='host',
-            name='mysqld_file_owner',
-            field=models.CharField(blank=True, max_length=128, null=True),
         ),
     ]
