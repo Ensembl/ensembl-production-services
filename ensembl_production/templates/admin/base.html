@@ -17,8 +17,8 @@
 <link rel="stylesheet" type="text/css" href="{% static "jet/css/themes/"|add:THEME|add:"/select2.theme.css" as url %}{{ url|jet_append_version }}" class="select2-stylesheet" />
 <link rel="stylesheet" type="text/css" href="{% static "jet/css/themes/"|add:THEME|add:"/jquery-ui.theme.css" as url %}{{ url|jet_append_version }}" class="jquery-ui-stylesheet" />
 {% if not is_popup %}
-    {%  include 'inc/headers.inc.html' %}
-{%  endif %}
+    {% include 'inc/headers.inc.html' %}
+{% endif %}
 
 {% block extrastyle %}{% endblock %}
 {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
@@ -54,7 +54,7 @@
 <!-- Container -->
 <div id="container">
     {% if not is_popup %}
-    {%  include 'inc/menu_bar.inc.html' %}
+    {% include 'inc/menu_bar.inc.html' %}
     <!-- Header -->
     <div id="header">
         <div id="branding">

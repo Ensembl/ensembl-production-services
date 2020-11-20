@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
-    {% include "inc/headers.inc.html"  with app_theme=flask_app.app_theme %}
+    {% include "inc/headers.inc.html" with app_theme=flask_app.app_theme %}
     {% block extra_headers %}{% endblock %}
     {% block extrastyle %}{% endblock %}
 </head>
@@ -18,7 +18,7 @@
 
 <!-- Navigation -->
 <header>
-    {% include "inc/menu_bar.inc.html"  with current=flask_app.app_prod_url flask_app=flask_app %}
+    {% include "inc/menu_bar.inc.html" with current=flask_app.app_prod_url flask_app=flask_app %}
 </header>
 <!-- Page Content -->
 <div class="page-content">
