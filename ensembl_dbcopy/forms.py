@@ -11,22 +11,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-import re
-
 import logging
+import re
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
 from django.core.validators import RegexValidator, EmailValidator
-import sqlalchemy as sa
 
+from ensembl_dbcopy.api.views import get_database_set  # , get_engine
 from ensembl_dbcopy.models import RequestJob, Group, Host
-from ensembl_dbcopy.api.views import get_database_set #, get_engine
-
 
 logger = logging.getLogger(__name__)
-
 
 COMMA_RE = re.compile(',+')
 
@@ -71,7 +67,8 @@ class SubmitForm(forms.ModelForm):
         exclude = ('job_id', 'tgt_directory')
 
     src_host = TrimmedCharField(
-        label="Source Host (e.g: host:port)",
+        label="Source Host ",
+        help_text="host:port",
         max_length=2048,
         required=True,
         validators=[
@@ -81,7 +78,8 @@ class SubmitForm(forms.ModelForm):
             )
         ])
     tgt_host = TrimmedCharField(
-        label="Target Hosts (e.g: Host1:port1,Host2:port2)",
+        label="Target Hosts",
+        help_text="Host1:port1,Host2:port2",
         max_length=2048,
         required=True,
         validators=[
@@ -91,27 +89,33 @@ class SubmitForm(forms.ModelForm):
             )
         ])
     src_incl_db = TrimmedCharField(
-        label="Databases to copy (e.g: db1,db2,.. or %variation_99% )",
+        label="Databases to copy",
+        help_text='db1,db2,.. or %variation_99% ',
         max_length=2048,
         required=False)
     src_skip_db = TrimmedCharField(
-        label="Databases to exclude (e.g db1,db2 or %mart%)",
+        label="Databases to exclude",
+        help_text='db1,db2 or %mart%',
         max_length=2048,
         required=False)
     src_incl_tables = TrimmedCharField(
-        label="Only Copy these tables (e.g: table1,table2,..):",
+        label="Only Copy these tables",
+        help_text='table1,table2,..',
         max_length=2048,
         required=False)
     src_skip_tables = TrimmedCharField(
-        label="Skip these tables (e.g: table1,table2)",
+        label="Skip these tables",
+        help_text='table1,table2,..',
         max_length=2048,
         required=False)
     tgt_db_name = TrimmedCharField(
-        label="Name of databases on Target Hosts (e.g: db1,db2)",
+        label="Name of databases on Target Hosts",
+        help_text='db1,db2,..',
         max_length=2048,
         required=False)
     email_list = TrimmedCharField(
         label="Email list",
+        help_text='Comma separated list',
         max_length=2048,
         required=True,
         validators=[
@@ -125,13 +129,13 @@ class SubmitForm(forms.ModelForm):
     def _validate_db_skipping(self, src_skip_db_names, tgt_db_names):
         if src_skip_db_names and tgt_db_names:
             self.add_error('src_skip_db',
-                    'Field "Names of databases on Target Host" is not empty. Consider clear it, or clear this field.')
+                           'Field "Names of databases on Target Host" is not empty. Consider clear it, or clear this field.')
 
     def _validate_db_renaming(self, src_dbs, tgt_dbs):
         if tgt_dbs:
             if len(tgt_dbs) != len(src_dbs):
                 self.add_error('tgt_db_name',
-                    "The number of databases to copy should match the number of databases renamed on target hosts")
+                               "The number of databases to copy should match the number of databases renamed on target hosts")
             for dbname in src_dbs:
                 if '%' in dbname:
                     self.add_error('tgt_db_name', "You can't rename a pattern")
@@ -146,13 +150,15 @@ class SubmitForm(forms.ModelForm):
             if tgt_db_names:
                 tgt_conflicts = tgt_db_names.intersection(present_dbs)
                 if tgt_conflicts:
-                    raise forms.ValidationError('Some source and target databases coincide. Please change conflicting target names')
+                    raise forms.ValidationError(
+                        'Some source and target databases coincide. Please change conflicting target names')
             else:
                 src_names = src_dbs if src_dbs else present_dbs
                 skip_names = _apply_db_names_filter(src_skip_dbs, present_dbs)
                 db_names = _apply_db_names_filter(src_names, present_dbs).difference(skip_names)
                 if db_names:
-                    raise forms.ValidationError('Some source and target databases coincide. Please add target names or change sources')
+                    raise forms.ValidationError(
+                        'Some source and target databases coincide. Please add target names or change sources')
 
     #  # Commented until this feature is enabled by DBAs
     #  def _validate_wipe_target(self, wipe_target, src_dbs, src_skip_dbs, tgt_hosts, tgt_db_names, src_incl_tables):

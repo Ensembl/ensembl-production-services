@@ -150,8 +150,7 @@ class RequestJobAdmin(admin.ModelAdmin):
     resubmit_jobs.short_description = 'Resubmit Jobs'
 
     form = SubmitForm
-    add_form_template = "admin/add_form.html"
-    change_form_template = "admin/detail.html"
+
     list_display = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
                     'start_date', 'end_date', 'request_date', 'overall_status')
     search_fields = ('job_id', 'src_host', 'src_incl_db', 'src_skip_db', 'tgt_host', 'tgt_db_name', 'user',
