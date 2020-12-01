@@ -145,7 +145,8 @@ class RequestJobAdmin(admin.ModelAdmin):
             newJob.end_date = None
             newJob.status = None
             newJob.save()
-            self.message_user(request, 'Job {} resubmitted [new job_id {}]'.format(query.pk, newJob.pk))
+            message = 'Job {} resubmitted [new job_id {}]'.format(query.pk, newJob.pk)
+            messages.add_message(request, messages.SUCCESS, message, extra_tags='', fail_silently=False)
 
     resubmit_jobs.short_description = 'Resubmit Jobs'
 
