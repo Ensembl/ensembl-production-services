@@ -137,23 +137,54 @@ class RequestJobTest(APITestCase):
     # Test DatabaseList endpoint
     def testDatabaseList(self):
         # Test getting test Production dbs
-
-        response = self.client.get(reverse('databaselist'),
-                                   {'host': PRODUCTION_DB.get('HOST', 'localhost'),
-                                    'port': PRODUCTION_DB.get('PORT', 3306),
-                                    'database': 'test_production_services'})
+        args = {
+            'host': PRODUCTION_DB.get('HOST', 'localhost'),
+            'port': PRODUCTION_DB.get('PORT', 3306)
+        }
+        response = self.client.get(reverse('databaselist', kwargs=args),
+                                   {'search': 'test_production_services'})
         response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_list), 1)
+        response = self.client.get(reverse('databaselist', kwargs={**args, 'host': 'bad-host'}),
+                                   {'search': 'test_production_services'})
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response = self.client.get(reverse('databaselist', kwargs=args),
+                                   {'search': 'no_result_search'})
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response_list), 0)
+        response = self.client.get(reverse('databaselist', kwargs=args),
+                                   {'matches[]': ['test_production_services']})
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response_list), 1)
+        response = self.client.get(reverse('databaselist', kwargs=args),
+                                   {'matches[]': ['no_match']})
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response_list), 0)
 
     # Test TableList endpoint
     def testTableList(self):
+        args = {
+            'host': PRODUCTION_DB.get('HOST', 'localhost'),
+            'port': PRODUCTION_DB.get('PORT', 3306),
+            'database': PRODUCTION_DB.get('NAME', 'ensembl_tests')
+        }
         # Test getting meta_key table for Production dbs
-        response = self.client.get(reverse('tablelist'),
-                                   {'host': PRODUCTION_DB.get('HOST', 'localhost'),
-                                    'port': PRODUCTION_DB.get('PORT', 3306),
-                                    'user': PRODUCTION_DB.get('USER', 'ensembl'),
-                                    'password': PRODUCTION_DB.get('PASSWORD', ''),
-                                    'database': PRODUCTION_DB.get('NAME', 'ensembl_tests'),
-                                    'table': 'meta'})
+        response = self.client.get(reverse('tablelist', kwargs=args),
+                                   {'search': 'meta'})
         response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response_list), 1)
+        response = self.client.get(reverse('tablelist', kwargs={**args, 'host': 'bad-host'}),
+                                   {'search': 'meta'})
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response = self.client.get(reverse('tablelist', kwargs={**args, 'database': 'bad_database'}),
+                                   {'search': 'bad_table_name'})
+        response_list = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+

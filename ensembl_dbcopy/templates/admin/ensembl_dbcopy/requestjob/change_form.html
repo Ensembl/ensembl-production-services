@@ -1,8 +1,10 @@
 {% extends 'admin/change_form.html' %}
 {% load static %}
 {% block content %}
+    {% if change %}
     <div class="container-fluid">
         <div class="p-3 my-3 border">
+            <h1>Changing</h1>
             <a href="{% url 'admin:ensembl_dbcopy_requestjob_changelist' %}" class="btn btn-secondary" role="button">Back
                 to
                 list</a>
@@ -40,10 +42,10 @@
                     <div class="tablekey">Source DBs:</div>
                 </div>
                 <div class="col-sm-10 tablevalue">
-                    {% if original.src_skip_db %}
-                        All databases excluding {{ original.src_skip_db }}
+                    {% if original.src_incl_db %}
+                        {{ original.src_incl_db }} {% if original.src_skip_db %} excluding {{ original.src_skip_db }} {% endif %}
                     {% else %}
-                        {{ original.src_incl_db }}
+                        All databases {% if original.src_skip_db %} excluding {{ original.src_skip_db }} {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -52,10 +54,10 @@
                     <div class="tablekey">Source Tables:</div>
                 </div>
                 <div class="col-sm-10 tablevalue">
-                    {% if original.src_skip_tables %}
-                        All tables excluding {{ original.src_skip_tables }}
+                    {% if original.src_incl_tables %}
+                        {{ original.src_incl_tables }} {% if original.src_skip_tables %} excluding {{ original.src_skip_tables }} {% endif %}
                     {% else %}
-                        All tables
+                        All tables {% if original.src_skip_tables %} excluding {{ original.src_skip_tables }} {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -201,4 +203,16 @@
             </div>
         {% endif %}
     </div>
+    {% else %}
+        {% load crispy_forms_tags %}
+        <div class="container-fluid">
+            <h1>Adding form</h1>
+
+            <div class="p-3 my-3 border">
+                {% block submit %}
+                    {% crispy adminform.form adminform.form.helper %}
+                {% endblock submit %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock content %}
