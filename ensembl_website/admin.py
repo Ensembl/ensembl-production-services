@@ -13,8 +13,8 @@
    limitations under the License.
 """
 import json
+
 from ckeditor.widgets import CKEditorWidget
-from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
@@ -66,20 +66,38 @@ class MovieForm(WebSiteRecordForm):
             if 'initial' not in kwargs:
                 kwargs['initial'] = {}
                 data = json.loads(kwargs['instance'].data)
-                initial = {'title': data.get('title',""), 'list_position': data.get('list_position',""),
-                           'youtube_id': data.get('youtube_id',""), 'youku_id': data.get('youku_id',""),
-                           'length': data.get('length',"")}
+                initial = {'title': data.get('title', ""), 'list_position': data.get('list_position', ""),
+                           'youtube_id': data.get('youtube_id', ""), 'youku_id': data.get('youku_id', ""),
+                           'length': data.get('length', "")}
                 kwargs['initial'].update(initial)
         super(MovieForm, self).__init__(*args, **kwargs)
 
 
+FAQ_CATEGORY = (
+    ('archives', 'Archives'),
+    ('genes', 'Genes'),
+    ('assemblies', 'Genome assemblies'),
+    ('comparative', 'Comparative genomics'),
+    ('regulation', 'Regulation'),
+    ('variation', 'Variation'),
+    ('data', 'Export, uploads and downloads'),
+    ('z_data', 'Other data'),
+    ('core_api', 'Core API'),
+    ('compara_api', 'Compara API'),
+    ('compara', 'Compara'),
+    ('variation_api', 'Variation API'),
+    ('regulation_api', 'Regulation API'),
+    ('web', 'Website'),
+)
+
+
 class FaqForm(WebSiteRecordForm):
-    category = forms.CharField(label="Category")
+    category = forms.CharField(label="Category", widget=forms.Select(choices=FAQ_CATEGORY))
     question = forms.CharField(label="Question", widget=CKEditorWidget())
     answer = forms.CharField(label="Answer", widget=CKEditorWidget())
     keyword = forms.CharField(widget=forms.Textarea({'rows': 3}))
     division = forms.MultipleChoiceField(label='Division specific', required=False,
-        widget=forms.CheckboxSelectMultiple(), choices=DIVISION_CHOICES)
+                                         widget=forms.CheckboxSelectMultiple(), choices=DIVISION_CHOICES)
 
     def __init__(self, *args, **kwargs):
         # Populate the form with fields from the data object.
@@ -89,8 +107,8 @@ class FaqForm(WebSiteRecordForm):
                 kwargs['initial'] = {}
                 data = json.loads(kwargs['instance'].data)
                 kwargs['initial'].update(
-                    {'category': data.get('category',""), 'question': data.get('question',""),
-                     'answer': data.get('answer',""), 'division': data.get('division', "")})
+                    {'category': data.get('category', ""), 'question': data.get('question', ""),
+                     'answer': data.get('answer', ""), 'division': data.get('division', "")})
         super(FaqForm, self).__init__(*args, **kwargs)
 
 
@@ -110,8 +128,8 @@ class ViewForm(WebSiteRecordForm):
                 help_link = HelpLink.objects.filter(help_record_id=kwargs['instance'].pk).first()
                 data = json.loads(kwargs['instance'].data)
                 kwargs['initial'].update(
-                    {'content': data.get('content', ""), 'ensembl_action' : data.get('ensembl_action', ""),
-                     'ensembl_object': data.get('ensembl_object',""), 'help_link': help_link.page_url})
+                    {'content': data.get('content', ""), 'ensembl_action': data.get('ensembl_action', ""),
+                     'ensembl_object': data.get('ensembl_object', ""), 'help_link': help_link.page_url})
                 super(ViewForm, self).__init__(*args, **kwargs)
                 self.fields['help_link'].widget.attrs['readonly'] = True
             else:
@@ -200,7 +218,8 @@ class MovieItemAdmin(HelpRecordModelAdmin):
             return raw_data.get('youku_id')
 
     def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field in form.fields if
+        extra_field = {field: form.cleaned_data[field].replace('\n', '').replace('\r', '').replace('\t', '') for field
+                       in form.fields if
                        field in ('title', 'list_position', 'youtube_id', 'youku_id', 'length')}
         obj.data = json.dumps(extra_field)
         super().save_model(request, obj, form, change)
@@ -281,8 +300,9 @@ class ViewItemAdmin(HelpRecordModelAdmin):
                 return q.page_url
 
     def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field
-                       in form.fields if field in ('content','ensembl_action','ensembl_object') if form.cleaned_data.get(field, False)}
+        extra_field = {field: form.cleaned_data[field].replace('\n', '').replace('\r', '').replace('\t', '') for field
+                       in form.fields if field in ('content', 'ensembl_action', 'ensembl_object') if
+                       form.cleaned_data.get(field, False)}
         obj.data = json.dumps(extra_field)
         super().save_model(request, obj, form, change)
         q = HelpLink.objects.filter(help_record_id=obj.pk).first()
@@ -320,7 +340,7 @@ class LookupItemAdmin(HelpRecordModelAdmin):
             return mark_safe(raw_data.get('meaning'))
 
     def save_model(self, request, obj, form, change):
-        extra_field = {field: form.cleaned_data[field].replace('\n','').replace('\r','').replace('\t','') for field
+        extra_field = {field: form.cleaned_data[field].replace('\n', '').replace('\r', '').replace('\t', '') for field
                        in form.fields if
                        field in ('word', 'expanded', 'meaning')}
         obj.data = json.dumps(extra_field)
