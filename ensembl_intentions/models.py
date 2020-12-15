@@ -90,7 +90,7 @@ class Intention(JiraFakeModel):
 class KnownBug(JiraFakeModel):
     jira_filter = 'project = ENSINT AND issuetype = Bug AND Website in ' \
                   '(Archives, Blog, GRCh37, "Live site", Mirrors, Mobile) ' \
-                  ' and status != Closed ORDER BY Rank DESC'
+                  ' and status not in (Closed, "Under review") ORDER BY Rank DESC'
     template = 'knownbug.html'
     filter_on = (
         'key',
