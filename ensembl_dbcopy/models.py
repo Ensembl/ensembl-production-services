@@ -18,10 +18,8 @@ from django.db import models
 from ensembl_production.models import NullTextField
 
 
-
-
 class Dbs2Exclude(models.Model):
-    table_schema = models.CharField(db_column='TABLE_SCHEMA', max_length=64)  # Field name made lowercase.
+    table_schema = models.CharField(primary_key=True, db_column='TABLE_SCHEMA', max_length=64)  # Field name made lowercase.
 
     class Meta:
         db_table = 'dbs_2_exclude'
@@ -58,6 +56,7 @@ class RequestJob(models.Model):
     skip_optimize = models.BooleanField(default=False)
     wipe_target = models.BooleanField(default=False)
     convert_innodb = models.BooleanField(default=False)
+    dry_run = models.BooleanField(default=False)
     email_list = models.TextField(max_length=2048, blank=True, null=True)
     start_date = models.DateTimeField(blank=True, null=True, editable=False)
     end_date = models.DateTimeField(blank=True, null=True, editable=False)
@@ -78,6 +77,8 @@ class RequestJob(models.Model):
                     return 'Complete'
             elif self.transfer_logs.count() > 0 and self.status == 'Processing Requests':
                 return 'Running'
+            elif self.status == 'Processing Requests' or self.status == 'Creating Requests':
+                return 'Scheduled'
         return 'Submitted'
 
     @property
@@ -85,19 +86,23 @@ class RequestJob(models.Model):
         total_tables = self.transfer_logs.count()
         table_copied = self.table_copied
         progress = 0
-        status_msg='Submitted'
+        status_msg = 'Submitted'
+        if self.status == 'Processing Requests' or self.status == 'Creating Requests':
+            status_msg = 'Scheduled'
         if table_copied and total_tables:
             progress = (table_copied / total_tables) * 100
-        if progress == 100.0 and self.status=='Transfer Ended':
-            status_msg='Complete'
+        if progress == 100.0 and self.status == 'Transfer Ended':
+            status_msg = 'Complete'
         elif total_tables > 0:
             if self.status:
-                if (self.end_date and self.status=='Transfer Ended') or ('Try:' in self.status):
-                    status_msg='Failed'
-                if self.status=='Processing Requests':
-                    status_msg='Running'
-        return {'status_msg': status_msg, 'table_copied': table_copied, 'total_tables': total_tables,
-                    'progress': progress}
+                if (self.end_date and self.status == 'Transfer Ended') or ('Try:' in self.status):
+                    status_msg = 'Failed'
+                elif self.status == 'Processing Requests':
+                    status_msg = 'Running'
+        return {'status_msg': status_msg,
+                'table_copied': table_copied,
+                'total_tables': total_tables,
+                'progress': progress}
 
     @property
     def table_copied(self):
@@ -105,10 +110,7 @@ class RequestJob(models.Model):
         return nbr_tables
 
     def count_copied(self, log):
-        if log.end_date:
-            return 1
-        else:
-            return 0
+        return 1 if log.end_date else 0
 
 
 class TransferLog(models.Model):
@@ -167,7 +169,7 @@ class Group(models.Model):
         db_table = 'group'
         app_label = 'ensembl_dbcopy'
         verbose_name = 'Host Group'
-    
+
     group_id = models.BigAutoField(primary_key=True)
     host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE, related_name='groups')
     group_name = models.CharField('User Group', max_length=80)
