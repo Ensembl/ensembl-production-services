@@ -29,10 +29,20 @@ class JiraAdmin(admin.ModelAdmin):
         return my_urls + urls
 
     def has_add_permission(self, request):
+        # No add
         return False
 
     def has_delete_permission(self, request, obj=None):
+        # No delete
         return False
+
+    def has_view_permission(self, request, obj=None):
+        # View allowed to anyone from staff
+        return request.user.is_staff
+
+    def has_module_permission(self, request):
+        # Allow module access to staff
+        return request.user.is_staff
 
     def changelist_view(self, request, extra_context=None):
         extra_context = {
