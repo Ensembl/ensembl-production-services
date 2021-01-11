@@ -147,18 +147,21 @@ class SubmitForm(forms.ModelForm):
                 present_dbs = get_database_set(hostname, port)
             except ValueError as e:
                 raise forms.ValidationError('Invalid source hostname or port')
+            src_names = present_dbs
+            if src_dbs:
+                src_names = _apply_db_names_filter(src_dbs, src_names)
+            if src_skip_dbs:
+                skip_names = _apply_db_names_filter(src_skip_dbs, present_dbs)
+                src_names = src_names.difference(skip_names)
+
             if tgt_db_names:
-                tgt_conflicts = tgt_db_names.intersection(present_dbs)
+                tgt_conflicts = tgt_db_names.intersection(src_names)
                 if tgt_conflicts:
                     raise forms.ValidationError(
                         'Some source and target databases coincide. Please change conflicting target names')
-            else:
-                src_names = src_dbs if src_dbs else present_dbs
-                skip_names = _apply_db_names_filter(src_skip_dbs, present_dbs)
-                db_names = _apply_db_names_filter(src_names, present_dbs).difference(skip_names)
-                if db_names:
-                    raise forms.ValidationError(
-                        'Some source and target databases coincide. Please add target names or change sources')
+            elif src_names:
+                raise forms.ValidationError(
+                    'Some source and target databases coincide. Please add target names or change sources')
 
     #  # Commented until this feature is enabled by DBAs
     #  def _validate_wipe_target(self, wipe_target, src_dbs, src_skip_dbs, tgt_hosts, tgt_db_names, src_incl_tables):
