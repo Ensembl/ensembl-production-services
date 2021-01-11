@@ -184,16 +184,19 @@ class SubmitForm(forms.ModelForm):
 
     def _validate_user_permission(self, tgt_hosts):
         # Checking that user is allowed to copy to the target server.
-        for host in tgt_hosts:
-            cleaned_host = host.split(':')[0]
-            host_queryset = Host.objects.filter(name=cleaned_host)
-            group = Group.objects.filter(host_id=host_queryset[0].auto_id)
+        for tgt_host in tgt_hosts:
+            hostname = tgt_host.split(':')[0]
+            hosts = Host.objects.filter(name=hostname)
+            if not hosts:
+                self.add_error('tgt_host', hostname + " is not present in our system")
+                return
+            group = Group.objects.filter(host_id=hosts[0].auto_id)
             if group:
                 host_groups = group.values_list('group_name', flat=True)
                 user_groups = self.user.groups.values_list('name', flat=True)
                 common_groups = set(host_groups).intersection(set(user_groups))
                 if not common_groups:
-                    self.add_error('tgt_host', "You are not allowed to copy to " + cleaned_host)
+                    self.add_error('tgt_host', "You are not allowed to copy to " + hostname)
 
     def clean(self):
         cleaned_data = super().clean()
