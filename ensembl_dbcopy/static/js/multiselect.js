@@ -47,7 +47,7 @@ function hostStringToDetails(string) {
 }
 
 function hostDetailsToString(details) {
-  return details.name + ":" + details.port;
+  return details.name + ":" + details.port ;
 }
 
 function getHostsDetails(elem) {
@@ -324,29 +324,47 @@ $(function () {
                 success: function (data) {
                     SrcHostResults = data.results
                     response($.map(data.results, function (item) {
-                        return hostDetailsToString(item);
+                        return  item; //hostDetailsToString(item);
                     }));
                 }
             });
         },
         minLength: 1,
         select: function (event, ui) {
+
+            let seletedItem = hostDetailsToString(ui.item);
             $.map(SrcHostResults, function (item) {
                 let curr_item = hostDetailsToString(item);
-                if (ui.item.value === curr_item) {
+                if (seletedItem === curr_item) {
                     //Compare list of hosts from the endpoint stored in SrcHostResults
                     //variables with the host selected by the user
                     // Store the server details into the SrcHostDetails variable
                     SrcHostDetails = item;
+                    if(item.active){
+                      $('#id_src_host').val(seletedItem);
+                    }
+                    
                 }
             })
+            return false;
         },
         change: function (event, ui) {
             $(this).removeClass("is-invalid");
             SrcHostDetails = hostStringToDetails($(this).val());
             updateAlerts();
         }
-    });
+    }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+      let active = 'badge-danger';
+      let desc = 'In Active';
+      if(item.active){
+        active = 'badge-success';
+        desc = 'Active'
+      }
+      return $( "<li>" )
+      .append( '<span class="badge badge-pill '+  active + '">'+ desc+'</span> <span>' + item.name +'</span>')
+      .appendTo( ul );
+   };
+    
 });
 // Autocomplete for the target host field (allows mutiple values)
 $(function () {
@@ -359,9 +377,9 @@ $(function () {
                     name: extractLast(request.term)
                 },
                 success: function (data) {
-                    response($.map(data.results, function (item) {
-                        return hostDetailsToString(item);
-                    }));
+                  response($.map(data.results, function (item) {
+                    return  item; //hostDetailsToString(item);
+                  }));
                 }
             });
         },
@@ -370,15 +388,28 @@ $(function () {
             return false;
         },
         select: function (event, ui) {
-            this.value = insertItem(this.value, ui.item.value);
+          let seletedItem = hostDetailsToString(ui.item); 
+            this.value = insertItem(this.value, seletedItem );
             return false;
         },
         change: function (event, ui) {
             $(this).removeClass("is-invalid");
             TgtHostsDetails = getHostsDetails(this);
+            console.log('change...');
+            console.log(TgtHostsDetails);
             updateAlerts();
         }
-    });
+    }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+      let active = 'badge-danger';
+      let desc = 'In Active';
+      if(item.active){
+        active = 'badge-success';
+        desc = 'Active'
+      }
+      return $( "<li>" )
+      .append( '<span class="badge badge-pill '+  active + '">'+ desc+'</span> <span>' + item.name +'</span>')
+      .appendTo( ul );
+   };
 });
 // Autocomplete for the list of databases to copy
 $(function () {

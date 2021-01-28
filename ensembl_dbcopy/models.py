@@ -64,6 +64,7 @@ class RequestJob(models.Model):
     status = models.CharField(max_length=20, blank=True, null=True, editable=False)
     request_date = models.DateTimeField(editable=False, auto_now_add=True)
 
+
     def __str__(self):
         return str(self.job_id)
 
@@ -159,7 +160,7 @@ class Host(models.Model):
     mysql_user = models.CharField(max_length=64)
     virtual_machine = models.CharField(max_length=255, blank=True, null=True)
     mysqld_file_owner = models.CharField(max_length=128, null=True, blank=True)
-
+    active = models.BooleanField(default=True, blank=False)
     def __str__(self):
         return '{}:{}'.format(self.name, self.port)
 
