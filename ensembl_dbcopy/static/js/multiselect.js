@@ -388,15 +388,15 @@ $(function () {
             return false;
         },
         select: function (event, ui) {
-          let seletedItem = hostDetailsToString(ui.item); 
-            this.value = insertItem(this.value, seletedItem );
+            let seletedItem = hostDetailsToString(ui.item); 
+            if(ui.item.active){
+              this.value = insertItem(this.value, seletedItem );
+            }
             return false;
         },
         change: function (event, ui) {
             $(this).removeClass("is-invalid");
             TgtHostsDetails = getHostsDetails(this);
-            console.log('change...');
-            console.log(TgtHostsDetails);
             updateAlerts();
         }
     }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
