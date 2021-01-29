@@ -14,17 +14,21 @@
 from django.contrib import admin
 from django.template.response import TemplateResponse
 from django.urls import path
-from .models import Intention, KnownBug
+
+from .models import Intention, KnownBug, RRBug
+
 
 class JiraAdmin(admin.ModelAdmin):
     readonly_fields = []
     change_list_template = 'jira_issue_list.html'
+    export_template_name = "intentions_export.html"
+    export_file_name = "export.txt"
 
     def get_urls(self):
         urls = super().get_urls()
         info = self.model._meta.app_label, self.model._meta.model_name
         my_urls = [
-            path('export.txt', self.admin_site.admin_view(self.export_view), name='%s_%s_export' % info)
+            path('export', self.admin_site.admin_view(self.export_view), name='%s_%s_export' % info)
         ]
         return my_urls + urls
 
@@ -54,15 +58,24 @@ class JiraAdmin(admin.ModelAdmin):
 
     def export_view(self, request):
         context = dict(
-            intentions = self.model._default_manager.filter(request)
+            intentions=self.model._default_manager.filter(request)
         )
-        return TemplateResponse(request, "intentions_export.html", context, 'application/force-download')
+        response = TemplateResponse(request, self.export_template_name, context, 'application/force-download')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(self.export_file_name)
+        return response
 
 
 @admin.register(Intention)
 class IntentionAdmin(JiraAdmin):
     pass
 
+
 @admin.register(KnownBug)
 class KnownBugAdmin(JiraAdmin):
     pass
+
+
+@admin.register(RRBug)
+class RRBugAdmin(JiraAdmin):
+    export_template_name = "rapid_export.html"
+    export_file_name = "known_bugs.inc"

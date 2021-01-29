@@ -62,6 +62,7 @@ class JiraFakeModel(models.Model):
         self.key = issue.key
         self.summary = issue.fields.summary
         self.description = issue.fields.description
+        self.contact = issue.fields.reporter.emailAddress
 
 
 class Intention(JiraFakeModel):
@@ -111,3 +112,19 @@ class KnownBug(JiraFakeModel):
         self.workaround = getattr(issue.renderedFields, name_map['Work Around'])
         websites = getattr(issue.fields, name_map['Website']) or []
         self.affected_sites = ', '.join(w.value for w in websites)
+
+
+class RRBug(JiraFakeModel):
+    class Meta:
+        proxy = True
+        verbose_name = "Rapid Release Bugs"
+
+    jira_filter = 'project = "Ensembl Rapid Release" ' \
+                  'AND issuetype = Bug AND resolution is EMPTY ORDER BY updatedDate DESC'
+    template = 'rapid.html'
+    filter_on = (
+        'key',
+        'summary',
+        'description',
+    )
+
