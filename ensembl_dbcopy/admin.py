@@ -19,11 +19,29 @@ from django.contrib.auth.models import Group as UsersGroup
 from django.core.paginator import Paginator
 from django.db.models import Count, F, Q
 from django.utils.html import format_html
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 from ensembl_dbcopy.forms import SubmitForm
 from ensembl_dbcopy.models import Host, RequestJob, Group
 from ensembl_production.admin import SuperUserAdmin
 
+@receiver(post_save, sender=UsersGroup)
+def sync_groups(sender, instance, **kwargs):
+    user_groups = [ obj.name for obj in UsersGroup.objects.all() ]
+    host_groups = [ obj.group_name for obj in Group.objects.all() ]
+    new_usergroup = list(set(user_groups) - set(host_groups))
+    for each_group in new_usergroup:
+        g1 = Group(group_name=each_group)
+        g1.save()
+
+@receiver(post_delete, sender=UsersGroup)
+def delete_group(sender, instance, **kwargs):
+    user_groups = [ obj.name for obj in UsersGroup.objects.all() ]
+    host_groups = [ obj.group_name for obj in Group.objects.all() ]
+    new_usergroup = list( set(host_groups) - set(user_groups) )
+    for each_group in new_usergroup:
+        Group.objects.filter(group_name=each_group).delete()
 
 class GroupInlineForm(forms.ModelForm):
     class Meta:
@@ -51,10 +69,15 @@ class HostItemAdmin(admin.ModelAdmin, SuperUserAdmin):
         }
 
     # form = HostRecordForm
-    inlines = (GroupInline,)
-    list_display = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'active')
-    fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'active')
+    #inlines = (GroupInline,)
+    list_display = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'get_groups' ,'active')
+    fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner','groups', 'active')
     search_fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'active')
+    
+    def get_groups(self, obj):
+        return ", ".join([str(g) for g in obj.groups.all()])
+
+    get_groups.short_description = 'Groups '
 
 
 class OverallStatusFilter(SimpleListFilter):

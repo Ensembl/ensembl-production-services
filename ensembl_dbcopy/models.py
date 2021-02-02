@@ -160,7 +160,9 @@ class Host(models.Model):
     mysql_user = models.CharField(max_length=64)
     virtual_machine = models.CharField(max_length=255, blank=True, null=True)
     mysqld_file_owner = models.CharField(max_length=128, null=True, blank=True)
+    groups=models.ManyToManyField('Group')
     active = models.BooleanField(default=True, blank=False)
+    
     def __str__(self):
         return '{}:{}'.format(self.name, self.port)
 
@@ -172,5 +174,7 @@ class Group(models.Model):
         verbose_name = 'Host Group'
 
     group_id = models.BigAutoField(primary_key=True)
-    host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE, related_name='groups')
+    #host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE, related_name='groups')
     group_name = models.CharField('User Group', max_length=80)
+    def __str__(self):
+        return '{}'.format(self.group_name)
