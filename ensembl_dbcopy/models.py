@@ -161,6 +161,7 @@ class Host(models.Model):
     virtual_machine = models.CharField(max_length=255, blank=True, null=True)
     mysqld_file_owner = models.CharField(max_length=128, null=True, blank=True)
     active = models.BooleanField(default=True, blank=False)
+    
     def __str__(self):
         return '{}:{}'.format(self.name, self.port)
 
