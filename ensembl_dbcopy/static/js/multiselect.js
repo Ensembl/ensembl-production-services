@@ -355,7 +355,7 @@ $(function () {
         }
     }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
       let active = 'badge-danger';
-      let desc = 'In Active';
+      let desc = 'Not Active';
       if(item.active){
         active = 'badge-success';
         desc = 'Active'
@@ -401,7 +401,7 @@ $(function () {
         }
     }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
       let active = 'badge-danger';
-      let desc = 'In Active';
+      let desc = 'Not Active';
       if(item.active){
         active = 'badge-success';
         desc = 'Active'
