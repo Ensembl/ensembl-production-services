@@ -58,10 +58,10 @@ class JiraAdmin(admin.ModelAdmin):
 
     def export_view(self, request):
         context = dict(
-            intentions=self.model._default_manager.filter(request)
+            intentions=self.model._default_manager.filter(request.POST['intentions_filter'])
         )
-        response = TemplateResponse(request, self.export_template_name, context, 'application/force-download')
-        response['Content-Disposition'] = 'attachment; filename="{}"'.format(self.export_file_name)
+        response = TemplateResponse(request, self.model.export_template_name, context, 'application/force-download')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(self.model.export_file_name)
         return response
 
 
@@ -77,5 +77,4 @@ class KnownBugAdmin(JiraAdmin):
 
 @admin.register(RRBug)
 class RRBugAdmin(JiraAdmin):
-    export_template_name = "rapid_export.html"
-    export_file_name = "known_bugs.inc"
+    pass
