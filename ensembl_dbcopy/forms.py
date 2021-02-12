@@ -14,17 +14,52 @@
 import logging
 import re
 
+from django.db.models import fields
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
 from django.core.validators import RegexValidator, EmailValidator
 
 from ensembl_dbcopy.api.views import get_database_set  # , get_engine
-from ensembl_dbcopy.models import RequestJob, Group, Host
+from ensembl_dbcopy.models import RequestJob, Group, Host, TargetHostGroup
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group as UserGroup
+from collections import OrderedDict
 
 logger = logging.getLogger(__name__)
 
 COMMA_RE = re.compile(',+')
+
+
+def _target_host_group(username):
+
+    # get groups, current user belongs to 
+    user_groups = [   each_group .name 
+        for user_obj in User.objects.filter(username__contains=username).prefetch_related('groups').all()
+        for each_group in user_obj.groups.all()
+    ]
+
+    #get all host user can copy  based on assigned group 
+    user_hosts_ids = [ host.auto_id for host in Host.objects.filter(groups__group_name__in=user_groups) ]  
+    
+    #get all host names that target group contains
+    target_host_dict = {} 
+    for each_group in TargetHostGroup.objects.all():
+        target_host_dict[each_group.target_group_name] = ''
+        for each_host in each_group.target_host.all():
+            target_host_dict[each_group.target_group_name] += each_host.name +':'+str(each_host.port)+','
+            
+     
+    #get all the target group that has access to host from authgroup
+    target_groups =  list(set([ (
+                            target_host_dict[groups.target_group_name], 
+                            groups.target_group_name
+                            )  
+                        for groups in TargetHostGroup.objects.filter(target_host__auto_id__in=user_hosts_ids) 
+                    ]))
+    target_groups.insert(0, ('', '--select target group--'))
+    return target_groups
 
 
 def _text_field_as_set(text):
@@ -65,6 +100,9 @@ class SubmitForm(forms.ModelForm):
     class Meta:
         model = RequestJob
         exclude = ('job_id', 'tgt_directory')
+        # fields = ["src_host","src_incl_db","src_skip_db","src_incl_tables",
+        #             "src_skip_tables","tgt_host","tgt_db_name", "skip_optimize",
+        #             "email_list"]
 
     src_host = TrimmedCharField(
         label="Source Host ",
@@ -221,3 +259,20 @@ class SubmitForm(forms.ModelForm):
         self.helper.form_class = 'copy-job-form'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
+
+        target_host_group_list = _target_host_group(self.user.username)
+        if len(target_host_group_list):
+
+            tgt_group_host = forms.CharField()
+            tgt_group_host.widget = forms.Select(choices=target_host_group_list,
+                                                    attrs={'onchange': "targetHosts()"}
+                                                )
+            tgt_group_host.label = 'Host Target Group'
+            tgt_group_host.help_text="Select Group to autofill the target host"
+
+            field_order = list(self.fields.items())
+            field_order.insert(5, ("tgt_group_host", tgt_group_host ))
+            self.fields = OrderedDict(field_order)
+
+
+     
