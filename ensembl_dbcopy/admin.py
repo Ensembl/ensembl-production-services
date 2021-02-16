@@ -52,9 +52,9 @@ class HostItemAdmin(admin.ModelAdmin, SuperUserAdmin):
 
     # form = HostRecordForm
     inlines = (GroupInline,)
-    list_display = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
-    fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
-    search_fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner')
+    list_display = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'active')
+    fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'active')
+    search_fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'active')
 
 
 class OverallStatusFilter(SimpleListFilter):
@@ -158,7 +158,7 @@ class RequestJobAdmin(admin.ModelAdmin):
                      'start_date', 'end_date', 'request_date')
     list_filter = ('tgt_host', 'src_host', UserFilter, OverallStatusFilter)
     ordering = ('-request_date', '-start_date')
-
+    
     def has_add_permission(self, request):
         return request.user.is_staff
 
