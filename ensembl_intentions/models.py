@@ -40,10 +40,10 @@ class JiraManager(models.Manager):
         jira_issues = jira.search_issues(self.model.jira_filter, expand='renderedFields')
         return [self.model(issue=jira_issue, name_map=name_map) for jira_issue in jira_issues]
 
-    def filter(self, request):
+    def filter(self, filter_terms):
         issues = self.all()
-        if request is not None and request.method == 'POST' and 'intentions_filter' in request.POST:
-            issues = [x for x in issues if matches_filter(x, request.POST['intentions_filter'])]
+        if filter_terms is not None:
+            issues = [x for x in issues if matches_filter(x, filter_terms)]
         return issues
 
 
@@ -54,10 +54,13 @@ class JiraFakeModel(models.Model):
         db_table = "jira"
         app_label = 'ensembl_intentions'
 
+    export_template_name = "intentions_export.html"
+    export_file_name = "export.txt"
     objects = JiraManager()
 
     def __init__(self, issue, name_map):
         # short cut attributes to jira_issues ones
+        super().__init__()
         self.permalink = issue.permalink
         self.key = issue.key
         self.summary = issue.fields.summary
@@ -77,9 +80,10 @@ class Intention(JiraFakeModel):
         'declaration_type',
         'declaring_team'
     )
+
     class Meta:
         proxy = True
-        verbose_name = "Release Intentions"
+        verbose_name = "Release Intention"
 
     def __init__(self, issue, name_map):
         super().__init__(issue, name_map)
@@ -117,8 +121,10 @@ class KnownBug(JiraFakeModel):
 class RRBug(JiraFakeModel):
     class Meta:
         proxy = True
-        verbose_name = "Rapid Release Bugs"
+        verbose_name = "Rapid Release Bug"
 
+    export_template_name = "rapid_export.html"
+    export_file_name = "known_bugs.inc"
     jira_filter = 'project = "Ensembl Rapid Release" ' \
                   'AND issuetype = Bug AND resolution is EMPTY ORDER BY updatedDate DESC'
     template = 'rapid.html'
@@ -127,4 +133,3 @@ class RRBug(JiraFakeModel):
         'summary',
         'description',
     )
-

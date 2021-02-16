@@ -184,26 +184,29 @@ class SubmitForm(forms.ModelForm):
 
     def _validate_user_permission(self, tgt_hosts):
         # Checking that user is allowed to copy to the target server.
-        for host in tgt_hosts:
-            cleaned_host = host.split(':')[0]
-            host_queryset = Host.objects.filter(name=cleaned_host)
-            group = Group.objects.filter(host_id=host_queryset[0].auto_id)
+        for tgt_host in tgt_hosts:
+            hostname = tgt_host.split(':')[0]
+            hosts = Host.objects.filter(name=hostname)
+            if not hosts:
+                self.add_error('tgt_host', hostname + " is not present in our system")
+                return
+            group = Group.objects.filter(host_id=hosts[0].auto_id)
             if group:
                 host_groups = group.values_list('group_name', flat=True)
                 user_groups = self.user.groups.values_list('name', flat=True)
                 common_groups = set(host_groups).intersection(set(user_groups))
                 if not common_groups:
-                    self.add_error('tgt_host', "You are not allowed to copy to " + cleaned_host)
+                    self.add_error('tgt_host', "You are not allowed to copy to " + hostname)
 
     def clean(self):
         cleaned_data = super().clean()
-        src_host = cleaned_data['src_host']
-        # wipe_target = cleaned_data['wipe_target']
-        # src_incl_tables = cleaned_data['src_incl_tables']
-        tgt_hosts = _text_field_as_set(cleaned_data['tgt_host'])
-        src_dbs = _text_field_as_set(cleaned_data['src_incl_db'])
-        src_skip_dbs = _text_field_as_set(cleaned_data['src_skip_db'])
-        tgt_db_names = _text_field_as_set(cleaned_data['tgt_db_name'])
+        src_host = cleaned_data.get('src_host', '')
+        # wipe_target = cleaned_data.get('wipe_target', False)
+        # src_incl_tables = cleaned_data.get('src_incl_tables', '')
+        tgt_hosts = _text_field_as_set(cleaned_data.get('tgt_host', ''))
+        src_dbs = _text_field_as_set(cleaned_data.get('src_incl_db', ''))
+        src_skip_dbs = _text_field_as_set(cleaned_data.get('src_skip_db', ''))
+        tgt_db_names = _text_field_as_set(cleaned_data.get('tgt_db_name', ''))
         self._validate_db_skipping(src_skip_dbs, tgt_db_names)
         self._validate_db_renaming(src_dbs, tgt_db_names)
         self._validate_source_and_target(src_host, tgt_hosts, src_dbs, src_skip_dbs, tgt_db_names)
