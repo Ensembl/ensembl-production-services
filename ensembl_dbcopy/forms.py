@@ -200,13 +200,13 @@ class SubmitForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        src_host = cleaned_data['src_host']
-        # wipe_target = cleaned_data['wipe_target']
-        # src_incl_tables = cleaned_data['src_incl_tables']
-        tgt_hosts = _text_field_as_set(cleaned_data['tgt_host'])
-        src_dbs = _text_field_as_set(cleaned_data['src_incl_db'])
-        src_skip_dbs = _text_field_as_set(cleaned_data['src_skip_db'])
-        tgt_db_names = _text_field_as_set(cleaned_data['tgt_db_name'])
+        src_host = cleaned_data.get('src_host', '')
+        # wipe_target = cleaned_data.get('wipe_target', False)
+        # src_incl_tables = cleaned_data.get('src_incl_tables', '')
+        tgt_hosts = _text_field_as_set(cleaned_data.get('tgt_host', ''))
+        src_dbs = _text_field_as_set(cleaned_data.get('src_incl_db', ''))
+        src_skip_dbs = _text_field_as_set(cleaned_data.get('src_skip_db', ''))
+        tgt_db_names = _text_field_as_set(cleaned_data.get('tgt_db_name', ''))
         self._validate_db_skipping(src_skip_dbs, tgt_db_names)
         self._validate_db_renaming(src_dbs, tgt_db_names)
         self._validate_source_and_target(src_host, tgt_hosts, src_dbs, src_skip_dbs, tgt_db_names)
