@@ -568,3 +568,10 @@ $(function () {
   });
 });
 
+//set host target
+function targetHosts(){
+  let selectVal = $("#id_tgt_group_host option:selected").val();
+  if(selectVal !== ''){
+    $('#id_tgt_host').val(selectVal);
+  }
+}

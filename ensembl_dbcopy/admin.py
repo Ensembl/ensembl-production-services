@@ -21,7 +21,7 @@ from django.db.models import Count, F, Q
 from django.utils.html import format_html
 
 from ensembl_dbcopy.forms import SubmitForm
-from ensembl_dbcopy.models import Host, RequestJob, Group
+from ensembl_dbcopy.models import Host, RequestJob, Group, TargetHostGroup
 from ensembl_production.admin import SuperUserAdmin
 
 
@@ -42,6 +42,18 @@ class GroupInline(admin.TabularInline):
     verbose_name = "Group restriction"
     verbose_name_plural = "Group restrictions"
 
+@admin.register(TargetHostGroup)
+class TargetHostGroupAdmin(admin.ModelAdmin, SuperUserAdmin):
+   list_display = ('target_group_name', 'get_hosts' )
+   fields = ('target_group_name', 'target_host')
+   search_fields = ('target_group_name', 'target_host__name')
+
+   def get_hosts(self, obj):
+       return ", ".join([str(g) for g in obj.target_host.all()])
+
+class TargetGroupInline(admin.TabularInline):
+    model = TargetHostGroup.target_host.through
+
 
 @admin.register(Host)
 class HostItemAdmin(admin.ModelAdmin, SuperUserAdmin):
@@ -51,10 +63,17 @@ class HostItemAdmin(admin.ModelAdmin, SuperUserAdmin):
         }
 
     # form = HostRecordForm
-    inlines = (GroupInline,)
-    list_display = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'active')
+    inlines = (GroupInline, TargetGroupInline)
+    list_display = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'get_target_groups', 'active')
     fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'active')
     search_fields = ('name', 'port', 'mysql_user', 'virtual_machine', 'mysqld_file_owner', 'active')
+   
+    def get_target_groups(self, obj):
+        return ", ".join( [ str(each_group.target_group_name)
+                        for each_group in TargetHostGroup.objects.filter(target_host__auto_id=obj.auto_id)
+                    ] )
+
+    get_target_groups.short_description = 'Host Target Groups '
 
 
 class OverallStatusFilter(SimpleListFilter):

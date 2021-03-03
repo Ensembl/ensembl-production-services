@@ -165,6 +165,19 @@ class Host(models.Model):
     def __str__(self):
         return '{}:{}'.format(self.name, self.port)
 
+class TargetHostGroup(models.Model):
+    class Meta:
+        db_table = 'target_host_group'
+        app_label = 'ensembl_dbcopy'
+        verbose_name = 'Hosts Target Group'
+
+
+    target_group_id = models.BigAutoField(primary_key=True)
+    target_group_name = models.CharField('Hosts Group', max_length=80, unique=True)
+    target_host=models.ManyToManyField('Host')
+
+    def __str__(self):
+        return '{}'.format(self.target_group_name)
 
 class Group(models.Model):
     class Meta:
@@ -175,3 +188,6 @@ class Group(models.Model):
     group_id = models.BigAutoField(primary_key=True)
     host_id = models.ForeignKey(Host, db_column='auto_id', on_delete=models.CASCADE, related_name='groups')
     group_name = models.CharField('User Group', max_length=80)
+    
+    def __str__(self):
+        return '{}'.format(self.group_name)
