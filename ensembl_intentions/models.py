@@ -126,7 +126,8 @@ class RRBug(JiraFakeModel):
     export_template_name = "rapid_export.html"
     export_file_name = "known_bugs.inc"
     jira_filter = 'project = "Ensembl Rapid Release" ' \
-                  'AND issuetype = Bug AND resolution is EMPTY ORDER BY updatedDate DESC'
+                  'AND issuetype = Bug AND status not in (Closed, Done, "In Review")' \
+                  'AND resolution is EMPTY ORDER BY updatedDate DESC'
     template = 'rapid.html'
     filter_on = (
         'key',
