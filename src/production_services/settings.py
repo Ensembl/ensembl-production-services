@@ -1,21 +1,19 @@
-# -*- coding: utf-8 -*-
-"""
-.. See the NOTICE file distributed with this work for additional information
-   regarding copyright ownership.
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-       http://www.apache.org/licenses/LICENSE-2.0
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-"""
-import os
+#   See the NOTICE file distributed with this work for additional information
+#   regarding copyright ownership.
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#       http://www.apache.org/licenses/LICENSE-2.0
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.import os
 import sys
 
 from django.contrib.messages import constants as messages
+
+import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -42,6 +40,11 @@ LOGGING = {
             'style': '{',
         },
     },
+    'loggers':{
+        'asyncio': {
+            'level': 'WARNING',
+        }
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
@@ -51,7 +54,8 @@ LOGGING = {
     'root': {
         'handlers': ['console'],
         'level': 'DEBUG' if DEBUG else 'WARNING',
-    },
+    }
+
 }
 
 
@@ -67,8 +71,6 @@ CORS_ALLOWED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'jet',
-    'ensembl_production.apps.EnsemblProductionConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,10 +80,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_swagger',
     # Ensembl production stack
-    'ensembl_production_db.apps.EnsemblProductionDbConfig',
-    'ensembl_website.apps.EnsemblWebsiteConfig',
-    'ensembl_dbcopy.apps.EnsemblDbcopyConfig',
-    'ensembl_intentions.apps.JiraIntentionConfig',
+    'ensembl.production.portal',
+    'ensembl.production.dbcopy',
+    'ensembl.production.webhelp',
+    'ensembl.production.masterdb',
+    'ensembl.production.jira',
     # utils
     'multiselectfield',
     'ckeditor',
@@ -121,7 +124,7 @@ TEMPLATES = [
             ],
             'libraries': {
                 # make your file entry here.
-                'filter_tags': 'ensembl_production.templatetags.filter',
+                'filter_tags': 'ensembl.production.portal.templatetags.filter',
             }
         },
     }
@@ -181,11 +184,10 @@ DATABASES = {
 }
 
 DATABASE_ROUTERS = [
-    'ensembl_production_db.router.ProductionRouter',
-    'ensembl_website.router.WebsiteRouter',
-    'ensembl_dbcopy.router.DbCopyRouter',
-    'ensembl_production.router.ProductionServicesRouter',
-    #'ensembl_intentions.router.JiraRouter'
+    'ensembl.production.portal.routers.MasterDbRouter',
+    'ensembl.production.portal.routers.WebhelpRouter',
+    'ensembl.production.portal.routers.DbCopyRouter',
+    'ensembl.production.portal.routers.ProductionPortalRouter',
 ]
 
 # Password validation
@@ -250,12 +252,6 @@ MESSAGE_TAGS = {
 }
 
 IS_TESTING = sys.argv[1:2] == ['test']
-
-JET_DEFAULT_THEME = 'light-gray'
-JET_SIDE_MENU_COMPACT = False
-JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
-JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"

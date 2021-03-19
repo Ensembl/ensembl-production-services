@@ -1,4 +1,0 @@
-[submodule "web-app"]
-	path = web-app
-	url = https://github.com/Ensembl/ensembl-prodinf-web.git
-	branch = features/portal_integration
