@@ -10,54 +10,18 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.import jsonfield
 import jsonfield
-from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 # Unregister the provided model admin
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from fernet_fields import EncryptedCharField
+from ensembl.production.djcore.admin import ProductionUserAdminMixin, SuperUserAdmin
 
-from .models import ProductionFlaskApp, Credentials
-
-
-class ProductionUserAdminMixin(admin.ModelAdmin):
-    """ Mixin class to assiciated request user to integer ID in another database host
-    Allow cross linking within multiple database
-    Warning: Do not check for foreign key integrity across databases
-    """
-    readonly_fields = ('created_by', 'created_at', 'modified_by', 'modified_at')
-
-    class Media:
-        css = {
-            'all': ('css/production_admin.css',)
-        }
-
-    def save_model(self, request, obj, form, change):
-        if change:
-            if form.changed_data:
-                obj.modified_by = request.user
-        else:
-            obj.created_by = request.user
-        super().save_model(request, obj, form, change)
+from ensembl.production.portal.models import ProductionApp
 
 
-class SuperUserAdmin:
-    def has_add_permission(self, request):
-        return request.user.is_superuser
-
-    def has_change_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-    def has_delete_permission(self, request, obj=None):
-        return request.user.is_superuser
-
-    def has_module_permission(self, request):
-        return request.user.is_superuser
-
-
-@admin.register(ProductionFlaskApp)
+@admin.register(ProductionApp)
 class FlaskAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
     list_display = ('app_name', 'app_url', 'app_url_link', 'app_is_framed', 'img_url', 'app_theme_color')
     readonly_fields = ('img_url',
@@ -90,13 +54,6 @@ class FlaskAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
 
     img_url.short_description = 'App Logo'
     img_url.allow_tags = True
-
-
-@admin.register(Credentials)
-class CredentialsAdmin(admin.ModelAdmin, SuperUserAdmin):
-    formfield_overrides = {
-        EncryptedCharField: {'widget': forms.widgets.PasswordInput},
-    }
 
 
 admin.site.unregister(User)

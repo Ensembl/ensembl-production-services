@@ -16,14 +16,14 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 from django.views.generic import DetailView
 
-from .models import ProductionFlaskApp
+from ensembl.production.portal.models import ProductionApp
 
 
 class FlaskAppView(DetailView):
     template_name = "app/iframe.html"
-    model = ProductionFlaskApp
+    model = ProductionApp
     context_object_name = 'flask_app'
-    queryset = ProductionFlaskApp.objects.all()
+    queryset = ProductionApp.objects.all()
     slug_field = 'app_prod_url'
     slug_url_kwarg = "app_prod_url"
     object = None

@@ -9,11 +9,10 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.import os
-import sys
-
-from django.contrib.messages import constants as messages
-
 import os
+
+import sys
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,7 +39,7 @@ LOGGING = {
             'style': '{',
         },
     },
-    'loggers':{
+    'loggers': {
         'asyncio': {
             'level': 'WARNING',
         }
@@ -57,7 +56,6 @@ LOGGING = {
     }
 
 }
-
 
 ALLOWED_HOSTS = ['*']
 
@@ -114,7 +112,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
-        'DIRS': [os.path.join(BASE_DIR, 'ensembl_production/templates')],
+        'DIRS': [],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -168,7 +166,7 @@ DATABASES = {
             # Tell MySQLdb to connect with 'utf8mb4' character set
             'charset': os.getenv('WEBSITE_DB_CHARSET', 'utf8mb4'),
             "init_command": "SET default_storage_engine=MYISAM",
-        } 
+        }
     },
     'dbcopy': {
         'ENGINE': 'django.db.backends.mysql',
@@ -179,7 +177,7 @@ DATABASES = {
         'PORT': os.getenv('DB_COPY_PORT', '3306'),
         'OPTIONS': {
             "init_command": "SET default_storage_engine=InnoDB",
-    }
+        }
     },
 }
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 # Learn more: https://github.com/Ensembl/ols-client
 import os

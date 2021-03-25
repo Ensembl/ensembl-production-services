@@ -52,7 +52,7 @@ class ProductionPortalRouter:
         if 'target_db' in hints:
             return hints['target_db'] == self.db_entry
         if db == self.db_entry:
-            return db == 'production'
+            return True
         return False
 
 
