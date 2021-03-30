@@ -69,6 +69,10 @@ CORS_ALLOWED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
+    # Django admin
+    'jet',
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -77,13 +81,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
-    # Ensembl production stack
+    # Ensembl production apps
     'ensembl.production.portal',
     'ensembl.production.dbcopy',
     'ensembl.production.webhelp',
     'ensembl.production.masterdb',
     'ensembl.production.jira',
-    # utils
+    # Required utils
+    'django_admin_inline_paginator',
     'multiselectfield',
     'ckeditor',
     'crispy_forms',
@@ -115,7 +120,6 @@ TEMPLATES = [
         'DIRS': [],
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',

@@ -7,7 +7,7 @@ import fernet_fields.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ensembl_production', '0006_update_admin_menus'),
+        ('ensembl_prodinf_portal', '0006_update_admin_menus'),
     ]
 
     operations = [

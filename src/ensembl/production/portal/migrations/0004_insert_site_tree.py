@@ -4,12 +4,12 @@ from django.db import migrations
 
 
 def load_fixture(apps, schema_editor):
-    call_command('loaddata', 'treedump', app_label='ensembl_production')
+    call_command('loaddata', 'treedump', app_label='ensembl_prodinf_portal')
 
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('ensembl_production', '0003_auto_20190919_1325'),
+        ('ensembl_prodinf_portal', '0003_auto_20190919_1325'),
         ('sitetree', '0001_initial'),
     ]
 

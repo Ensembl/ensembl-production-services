@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ensembl_production', '0008_web_app_params'),
+        ('ensembl_prodinf_portal', '0008_web_app_params'),
     ]
 
     operations = [

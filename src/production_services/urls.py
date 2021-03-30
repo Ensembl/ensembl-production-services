@@ -20,22 +20,26 @@ from django.views import static
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView, RedirectView
 from datetime import datetime
+
 import ensembl.production.portal.views as views
 
+
+
 urlpatterns = [
-    path('',
-         TemplateView.as_view(template_name='home.html', extra_context={'current_date': datetime.now()}),
-         name='home'),
-    path('admin/', admin.site.urls),
-    url('bugs/', RedirectView.as_view(url='/admin/ensembl_jira/knownbug')),
-    path('dbcopy/', include('ensembl.production.dbcopy.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),
-    path('logout', auth_views.LogoutView.as_view(), name='logout'),
-    path('api/production_db/', include('ensembl.production.masterdb.api.urls')),
+    # path('',TemplateView.as_view(template_name='home.html', extra_context={'current_date': datetime.now()}), name='home'),
+    path('jet/', include('jet.urls', 'jet')),
+    path(f'', admin.site.urls),
+    path(f'bugs/', RedirectView.as_view(url='/admin/ensembl_jira/knownbug')),
+    path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),
+    # User reset
+    path(f'accounts/', include('django.contrib.auth.urls')),
+    path(f'login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),
+    path(f'logout', auth_views.LogoutView.as_view(), name='logout'),
+    # REST end points
+    path(f'api/production_db/', include('ensembl.production.masterdb.api.urls')),
     re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view(), name='production_app_view'),
     # API entries
-    path('api/dbcopy/', include('ensembl.production.dbcopy.api.urls')),
+    # path(f'api/dbcopy/', include('ensembl.production.dbcopy.api.urls')),
 ]
 
 
@@ -43,6 +47,6 @@ handler404 = 'ensembl.production.portal.views.handler404'
 handler500 = 'ensembl.production.portal.views.handler500'
 handler403 = 'ensembl.production.portal.views.handler403'
 
-admin.site.site_header = "Ensembl Production Services"
-admin.site.site_title = "Ensembl Production Services"
-admin.site.index_title = "Welcome to Ensembl Production Services"
+admin.site.site_header = "Ensembl Production Portal"
+admin.site.site_title = "Ensembl Production Portal"
+admin.site.index_title = "Welcome to Ensembl Production Portal"

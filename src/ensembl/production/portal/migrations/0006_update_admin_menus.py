@@ -18,7 +18,7 @@ def reverse_app_admin(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('ensembl_production', '0005_update_flask_apps')
+        ('ensembl_prodinf_portal', '0005_update_flask_apps')
     ]
 
     operations = [
