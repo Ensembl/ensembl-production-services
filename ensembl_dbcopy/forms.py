@@ -264,10 +264,10 @@ class SubmitForm(forms.ModelForm):
         self.helper.add_input(Submit('submit', 'Submit'))
 
         target_host_group_list = _target_host_group(self.user.username)
-        if len(target_host_group_list):
-
-            tgt_group_host = forms.CharField()
+        if len(target_host_group_list) > 1:
+            tgt_group_host = forms.CharField(required=False)
             tgt_group_host.widget = forms.Select(choices=target_host_group_list,
+                                                      
                                                     attrs={'onchange': "targetHosts()"}
                                                 )
             tgt_group_host.label = 'Host Target Group'
