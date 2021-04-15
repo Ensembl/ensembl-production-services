@@ -1,0 +1,22 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static "portal/css/production_admin.css" %}">
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <meta name="description" content="Ensembl Production team service portal" />
+    <meta name="author" content="Ensembl Production Team" />
+    <link rel="icon" href="{% static "portal/img/favicon.ico" %}" sizes="48x48" />
+    <link rel="shortcut icon" href="{% static "portal/img/favicon.ico" %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "portal/img/ensembl-apple-touch-icon.png" %}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "portal/img/ensembl-favicon-32.png" %}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "portal/img/ensembl-favicon-16.png" %}" />
+    <link rel="manifest" href="{% static "portal/site.webmanifest" %}" />
+{% endblock %}
+{% block welcome-msg %}
+    Welcome back <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+{% endblock %}
+
+

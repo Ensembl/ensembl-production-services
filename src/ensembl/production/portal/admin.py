@@ -9,20 +9,24 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.import jsonfield
+
 import jsonfield
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 # Unregister the provided model admin
+from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from django.urls import reverse
+from django.urls import reverse, path
 from django.utils.safestring import mark_safe
 from ensembl.production.djcore.admin import ProductionUserAdminMixin, SuperUserAdmin
 
 from ensembl.production.portal.models import ProductionApp
+from ensembl.production.portal.views import ProductionAppView
+
+admin.site.unregister(User)
 
 
 @admin.register(ProductionApp)
-class FlaskAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
+class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
     list_display = ('app_name', 'app_url', 'app_url_link', 'app_is_framed', 'img_url', 'app_theme_color')
     readonly_fields = ('img_url',
                        'app_theme_color', 'app_url_link', 'created_by', 'created_at', 'modified_at',
@@ -49,14 +53,20 @@ class FlaskAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
         else:
             return "N/A"
 
+    def get_urls(self):
+        urls = super().get_urls()
+        info = self.model._meta.app_label, self.model._meta.model_name
+        view_name = '%s_%s_appview' % info
+        urls += [
+            path('<path:object_id>/app/', ProductionAppView.as_view(), name=view_name),
+        ]
+        return urls
+
     def img_url(self, obj):
         return obj.img_admin_tag
 
     img_url.short_description = 'App Logo'
     img_url.allow_tags = True
-
-
-admin.site.unregister(User)
 
 
 @admin.register(User)

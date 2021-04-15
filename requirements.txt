@@ -1,9 +1,10 @@
-Django~=3.1.7
+django==3.2
+django-baton~=2.1.5
 django-cors-headers~=3.7.0
 django-ckeditor~=6.0.0
 django-sitetree~=1.16.0
-django-jet-reboot~=1.1.1
 ensembl_prodinf_dbcopy@git+ssh://git@github.com/Ensembl/ensembl-prodinf-dbcopy.git#egg=ensembl_prodinf_dbcopy
 ensembl_prodinf_webhelp@git+ssh://git@github.com/Ensembl/ensembl-prodinf-webhelp.git#egg=ensembl_prodinf_webhelp
 ensembl_prodinf_masterdb@git+ssh://git@github.com/Ensembl/ensembl-prodinf-masterdb.git#egg=ensembl_prodinf_masterdb
 ensembl_prodinf_jira@git+ssh://git@github.com/Ensembl/ensembl-prodinf-jira.git#egg=ensembl_prodinf_jira
+mysqlclient~=2.0.3

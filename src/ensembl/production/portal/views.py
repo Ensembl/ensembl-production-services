@@ -9,17 +9,34 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.import random
-
 import random
-
 from django.core.exceptions import PermissionDenied
+
 from django.shortcuts import render
 from django.views.generic import DetailView
 
 from ensembl.production.portal.models import ProductionApp
 
 
-class FlaskAppView(DetailView):
+def handler404(request, *args, **argv):
+    response = render(request, '404.html', {})
+    response.status_code = 404
+    return response
+
+
+def handler500(request, *args, **argv):
+    response = render(request, '500.html', {})
+    response.status_code = 500
+    return response
+
+
+def handler403(request, *args, **argv):
+    response = render(request, '403.html', {})
+    response.status_code = 403
+    return response
+
+
+class ProductionAppView(DetailView):
     template_name = "app/iframe.html"
     model = ProductionApp
     context_object_name = 'flask_app'
@@ -41,35 +58,3 @@ class FlaskAppView(DetailView):
             raise PermissionDenied()
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
-
-    def get_template_names(self):
-        if self.object and self.object.app_is_framed:
-            return ["app/iframe.html"]
-        else:
-            return ["app/angular.html"]
-
-
-class AngularConfigView(FlaskAppView):
-    template_name = "app/config.js.tpl"
-    content_type = 'application/javascript'
-
-    def get_template_names(self):
-        return [self.template_name]
-
-
-def handler404(request, *args, **argv):
-    response = render(request,'404.html', {})
-    response.status_code = 404
-    return response
-
-
-def handler500(request, *args, **argv):
-    response = render(request,'500.html', {})
-    response.status_code = 500
-    return response
-
-
-def handler403(request, *args, **argv):
-    response = render(request,'403.html', {})
-    response.status_code = 403
-    return response

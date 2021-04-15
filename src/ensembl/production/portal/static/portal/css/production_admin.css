@@ -1,0 +1,52 @@
+/*.related-widget-wrapper .select2, .vTextField {
+    min-width: 500px;
+}
+
+li input[type=checkbox] {
+    display: inline;
+}
+
+ul.messagelist li.warning{
+    color: #856404;
+    background-color: #ffc107;
+    border-color: #ffeeba;
+}
+
+ul.messagelist li.sucess{
+    color: #856404;
+    background-color: #ffc107;
+    border-color: #ffeeba;
+}
+#select2-id_web_data-container {
+    max-width: 400px;
+}
+
+.field-is_optional img, .field-is_current img, .field-app_is_framed img, .field-displayable img {
+    display: block;
+}
+*/
+body.jazzmin-login-page {
+  background: #333333 url("/static/portal/img/splash.jpg") no-repeat center center;
+  background-size: cover;
+
+}
+.login-logo {
+  display: none;
+}
+
+.select2-container {
+  max-width: 500px;
+}
+.admin_app_logo {
+    max-width: 30px;
+}
+.admin_app_theme_color {
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+.field-division li, .field-db_type li {
+  list-style: none;
+}

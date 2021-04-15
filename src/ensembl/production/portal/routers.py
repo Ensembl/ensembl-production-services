@@ -9,13 +9,12 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-
 class ProductionPortalRouter:
     """
     A router to control all database operations on models in the
     auth application.
     """
-    route_app_labels = {'auth', 'admin', 'contenttypes', 'sitetree', 'sessions', 'ensembl_production'}
+    route_app_labels = {'auth', 'contenttypes', 'jet', 'sitetree', 'ensembl_prodinf_portal', 'ensembl_jira'}
     db_entry = 'default'
 
     def db_for_read(self, model, **hints):
@@ -47,13 +46,11 @@ class ProductionPortalRouter:
         Make sure the auth only appears in the 'auth_db'
         database.
         """
-        if app_label in self.route_app_labels:
-            return db == self.db_entry
         if 'target_db' in hints:
             return hints['target_db'] == self.db_entry
-        if db == self.db_entry:
-            return True
-        return False
+        if app_label in self.route_app_labels:
+            return db == self.db_entry
+        return None
 
 
 class DbCopyRouter(ProductionPortalRouter):
@@ -73,7 +70,7 @@ class MasterDbRouter(ProductionPortalRouter):
     db_entry = 'production'
 
 
-class WebhelpRouter:
+class WebhelpRouter(ProductionPortalRouter):
     """
     A router to control all database operations on models in the WebHelp application.
     """

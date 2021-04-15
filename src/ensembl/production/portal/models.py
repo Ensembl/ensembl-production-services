@@ -30,7 +30,6 @@ NOT_PROVIDED = object()
 
 class ProductionApp(BaseTimestampedModel):
     class Meta:
-        db_table = 'remote_app'
         app_label = 'ensembl_prodinf_portal'
         verbose_name = 'Production App'
         verbose_name_plural = 'Production Apps'
@@ -61,14 +60,18 @@ class ProductionApp(BaseTimestampedModel):
 
     @property
     def img(self):
-        if finders.find('img/' + self.app_prod_url.split('-')[0] + ".png"):
-            return u'img/' + self.app_prod_url.split('-')[0] + ".png"
+        if finders.find('portal/img/' + self.app_prod_url.split('-')[0] + ".png"):
+            return u'portal/img/' + self.app_prod_url.split('-')[0] + ".png"
         else:
-            return u'img/logo_industry.png'
+            return u'portal/img/logo_industry.png'
 
     @property
     def img_admin_tag(self):
         return mark_safe(u"<img class='admin_app_logo' src='" + static(self.img) + "'/>")
+
+    @property
+    def app_admin_url(self):
+        return '/app/' + self.app_prod_url
 
     def clean(self):
         super().clean()

@@ -4,7 +4,8 @@ from django.db import migrations
 from ensembl.production.portal.models import ProductionApp
 
 def load_fixture(apps, schema_editor):
-    call_command('loaddata', 'ensembl/production/portal/fixtures/elastic_hq.json', app_label='ensembl_prodinf_portal')
+    call_command('loaddata', 'ensembl/production/portal/fixtures/elastic_hq.json',
+                 app_label='ensembl_prodinf_portal')
 
 
 class Migration(migrations.Migration):

@@ -5,15 +5,6 @@ import ensembl.production.portal.models
 from django.conf import settings
 from django.db import migrations, models
 
-
-def initial_flask_app(apps, schema_editor):
-    from django.core.management import call_command
-    Group = apps.get_model('auth', 'Group')
-    if Group.objects.count() == 0:
-        call_command('loaddata', 'ensembl/production/portal/fixtures/groups.json')
-    call_command('loaddata', 'ensembl/production/portal/fixtures/init.json')
-
-
 class Migration(migrations.Migration):
     initial = True
 
@@ -60,6 +51,4 @@ class Migration(migrations.Migration):
                 'db_table': 'flask_app',
             },
         ),
-        # migrations.RunPython(initial_flask_app, None),
-
     ]

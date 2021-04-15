@@ -10,43 +10,31 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.from datetime import datetime
 
-from django.conf import settings
-from django.conf.urls import url, include
+from django.conf.urls import include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.http import HttpResponseRedirect
 from django.urls import path, re_path
-from django.views import static
-from django.views.decorators.cache import never_cache
-from django.views.generic import TemplateView, RedirectView
-from datetime import datetime
-
-import ensembl.production.portal.views as views
-
-
+from django.views.generic import RedirectView
+import ensembl.production.portal.views
 
 urlpatterns = [
     # path('',TemplateView.as_view(template_name='home.html', extra_context={'current_date': datetime.now()}), name='home'),
-    path('jet/', include('jet.urls', 'jet')),
     path(f'', admin.site.urls),
-    path(f'bugs/', RedirectView.as_view(url='/admin/ensembl_jira/knownbug')),
-    path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),
-    # User reset
+    #path(f'baton/', include('baton.urls')),
     path(f'accounts/', include('django.contrib.auth.urls')),
     path(f'login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),
     path(f'logout', auth_views.LogoutView.as_view(), name='logout'),
-    # REST end points
+    # Production apps
+    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', ensembl.production.portal.views.ProductionAppView.as_view(),
+            name='production_app_view'),
+    # New apps layout urls
     path(f'api/production_db/', include('ensembl.production.masterdb.api.urls')),
-    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', views.FlaskAppView.as_view(), name='production_app_view'),
-    # API entries
-    # path(f'api/dbcopy/', include('ensembl.production.dbcopy.api.urls')),
+    path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),
+    # Retro compatibility redirect - obsolete in 1.2.0
+    # path(f'api/production_db/', RedirectView.as_view(url='/masterdb', permanent=True), name='production_db'),
+    # path(f'api/production_db/', RedirectView.as_view(url='/masterdb', permanent=True), name='production_db'),
 ]
-
 
 handler404 = 'ensembl.production.portal.views.handler404'
 handler500 = 'ensembl.production.portal.views.handler500'
 handler403 = 'ensembl.production.portal.views.handler403'
-
-admin.site.site_header = "Ensembl Production Portal"
-admin.site.site_title = "Ensembl Production Portal"
-admin.site.index_title = "Welcome to Ensembl Production Portal"

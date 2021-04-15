@@ -10,8 +10,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.from django.apps import AppConfig
 from django.apps import AppConfig
+from django.contrib.admin.apps import AdminConfig
 from django.db.models.signals import class_prepared
-
 from ensembl.production.djcore.config import override_logentry
 
 
@@ -27,3 +27,7 @@ class EnsemblProductionConfig(AppConfig):
         """
         class_prepared.connect(override_logentry)
         pass
+
+
+class PortalAdminConfig(AdminConfig):
+    default_site = 'ensembl.production.portal.admin.PortalAdminSite'
