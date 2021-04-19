@@ -89,7 +89,7 @@ INSTALLED_APPS = [
     # 'multiselectfield',
     'ckeditor',
     'drf_yasg',
-    'sitetree',
+    # 'sitetree',
     'corsheaders',
 ]
 
@@ -119,7 +119,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'ensembl.production.portal.context_processors.context_app_info'
             ],
             'libraries': {
                 # make your file entry here.
@@ -236,11 +235,9 @@ REST_FRAMEWORK = {
 }
 
 CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # mailing
 LOGIN_REDIRECT_URL = '/'
-# LOGIN_URL = 'app/admin/login'
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'info alert-info',
@@ -259,21 +256,6 @@ LOGOUT_REDIRECT_URL = "/"
 ## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
 # USE_X_FORWARDED_HOST = True
 
-BATON = {
-    'SITE_HEADER': 'Production Portal',
-    'SITE_TITLE': 'Ensembl!',
-    'INDEX_TITLE': 'Ensembl Production Services portal',
-    'COPYRIGHT': '©2021 <a href="https://ensembl.org">Ensembl.org</a><br/>>>> One portal to rule them all.<<<',
-    'POWERED_BY': 'Production Team',
-    'SUPPORT_HREF': 'https://www.ebi.ac.uk/panda/jira/projects/ENSPROD/issues/',
-    'COLLAPSABLE_USER_AREA': False,
-    'MENU_ALWAYS_COLLAPSED': False,
-    'LOGIN_SPLASH': '/static/portal/img/splash.jpg',
-    'GRAVATAR_DEFAULT_IMG': 'retro',
-    'CHANGELIST_FILTERS_IN_MODAL': True,
-    'CHANGELIST_FILTERS_ALWAYS_OPEN': False,
-    'CHANGELIST_FILTERS_FORM': True,
-}
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "Production Portal",
@@ -288,19 +270,53 @@ JAZZMIN_SETTINGS = {
     # Field name on user model that contains avatar image
     "topmenu_links": [
         # Url that gets reversed (Permissions can be added)
-        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Home", "url": "admin:index"},
         # external url that opens in a new window (Permissions can be added)
         {"name": "Support", "url": "https://www.ebi.ac.uk/panda/jira/projects/ENSPROD/issues/", "new_window": True},
         # model admin to link to (Permissions checked against model)
-        {"model": "auth.User"},
-        # App with dropdown menu to all its models pages (Permissions checked against models)
-        {"app": "ensembl.production.portal"},
+        # {"model": "ensembl_prodinf_portal.AppView"},
+        # short link to Production Apps
+        {"name": "Self-Services", "url": "admin:ensembl_prodinf_portal_appview_changelist", "new_window": False},
+        {"app": "ensembl_prodinf_portal", "permissions": ["auth.is_superuser"]},
     ],
     # Whether to display the side menu
     "show_sidebar": True,
+    "related_modal_active": True,
     # Whether to aut expand the menu
     "navigation_expanded": False,
     # Icons that are used when one is not manually specified
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "ensembl_jira": "fas fa-bug",
+        "ensembl_jira.JiraCredentials": "fas fa-key",
+        "ensembl_jira.KnownBug": "fas fa-viruses",
+        "ensembl_jira.RRBug": "fas fa-viruses",
+        "ensembl_jira.Intention": "fas fa-lightbulb",
+        "ensembl_dbcopy": "fas fa-copyright",
+        "ensembl_dbcopy.RequestJob": "fas fa-copy",
+        "ensembl_dbcopy.Host": "fas fa-server",
+        "ensembl_dbcopy.TargetHostGroup": "fas fa-layer-group",
+        "ensembl_production_db": "fas fa-brain",
+        "ensembl_production_db.AnalysisDescription": "fas fa-microscope",
+        "ensembl_production_db.MasterAttrib": "fas fa-eye-dropper",
+        "ensembl_production_db.MasterAttribSet": "fas fa-capsules",
+        "ensembl_production_db.MasterAttribType": "fas fa-link",
+        "ensembl_production_db.MasterBiotype": "fas fa-dna",
+        "ensembl_production_db.MasterExternalDb": "fas fa-database",
+        "ensembl_production_db.WebData": "fas fa-cloud-meatball",
+        "ensembl_production_db.MetaKey": "fas fa-meteor",
+        "ensembl_website": "fas fa-life-ring",
+        "ensembl_website.HelpLink": "far fa-life-ring",
+        "ensembl_website.FaqRecord": "fas fa-question-circle",
+        "ensembl_website.LookupRecord": "fas fa-search",
+        "ensembl_website.MovieRecord": "fas fa-video",
+        "ensembl_website.ViewRecord": "fas fa-file",
+        "ensembl_prodinf_portal": "fas fa-archway",
+        "ensembl_prodinf_portal.ProductionApp": "fas fa-concierge-bell",
+        "ensembl_prodinf_portal.AppView": "fas fa-dragon"
+    },
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
     "changeform_format_overrides": {
@@ -311,16 +327,16 @@ JAZZMIN_SETTINGS = {
 }
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
-    "footer_small_text": False,
+    "footer_small_text": True,
     "body_small_text": False,
     "brand_small_text": False,
     "brand_colour": False,
     "accent": "accent-primary",
-    "navbar": "navbar-dark",
+    "navbar": "navbar-white navbar-light",
     "no_navbar_border": False,
-    "navbar_fixed": False,
+    "navbar_fixed": True,
     "layout_boxed": False,
-    "footer_fixed": True,
+    "footer_fixed": False,
     "sidebar_fixed": False,
     "sidebar": "sidebar-dark-primary",
     "sidebar_nav_small_text": False,
@@ -329,11 +345,11 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": True,
-    "theme": "darkly",
-    "dark_mode_theme": "slate",
+    "theme": "cerulean",
+    "dark_mode_theme": None,
     "button_classes": {
-        "primary": "btn-primary",
-        "secondary": "btn-secondary",
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
         "info": "btn-outline-info",
         "warning": "btn-outline-warning",
         "danger": "btn-outline-danger",

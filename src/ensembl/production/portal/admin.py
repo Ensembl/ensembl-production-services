@@ -9,18 +9,19 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.import jsonfield
+import random
 
 import jsonfield
 from django.contrib import admin
 # Unregister the provided model admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse, path
 from django.utils.safestring import mark_safe
 from ensembl.production.djcore.admin import ProductionUserAdminMixin, SuperUserAdmin
 
-from ensembl.production.portal.models import ProductionApp
-from ensembl.production.portal.views import ProductionAppView
+from ensembl.production.portal.models import ProductionApp, AppView
 
 admin.site.unregister(User)
 
@@ -48,25 +49,49 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
 
     def app_url_link(self, obj):
         if obj.app_prod_url:
-            url_view = reverse('production_app_view', kwargs={'app_prod_url': obj.app_prod_url})
-            return mark_safe(u"<a href='" + url_view + "' target='_blank'>" + obj.app_prod_url + "</a>")
+            url_view = reverse('admin:ensembl_prodinf_portal_appview_change',
+                               args=(obj.app_id,))
+            return mark_safe(u"<a href='" + url_view + "'>" + obj.app_prod_url + "</a>")
         else:
             return "N/A"
-
-    def get_urls(self):
-        urls = super().get_urls()
-        info = self.model._meta.app_label, self.model._meta.model_name
-        view_name = '%s_%s_appview' % info
-        urls += [
-            path('<path:object_id>/app/', ProductionAppView.as_view(), name=view_name),
-        ]
-        return urls
 
     def img_url(self, obj):
         return obj.img_admin_tag
 
     img_url.short_description = 'App Logo'
     img_url.allow_tags = True
+
+
+@admin.register(AppView)
+class ProductionAppView(admin.ModelAdmin):
+    # TODO change url scheme to keep previous app/<appname>?
+    list_filter = ['app_name', 'app_url']
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_view_permission(self, request, obj=None):
+        # TODO change per user group
+        return True
+
+    def has_add_permission(self, request):
+        return False
+
+    def get_object(self, request, object_id, from_field=None):
+        return super().get_object(request, object_id, from_field)
+
+    def add_view(self, request, form_url='', extra_context=None):
+        return super().add_view(request, form_url, extra_context)
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            queryset = ProductionApp.objects.all()
+        else:
+            queryset = ProductionApp.objects.filter(app_groups__in=request.user.groups.values_list('name', flat=True))
+        return queryset.order_by('app_name')
 
 
 @admin.register(User)

@@ -31,8 +31,8 @@ NOT_PROVIDED = object()
 class ProductionApp(BaseTimestampedModel):
     class Meta:
         app_label = 'ensembl_prodinf_portal'
-        verbose_name = 'Production App'
-        verbose_name_plural = 'Production Apps'
+        verbose_name = 'App Admin'
+        verbose_name_plural = 'Apps Admin'
         db_table = 'flask_app'
 
     def __str__(self):
@@ -77,3 +77,12 @@ class ProductionApp(BaseTimestampedModel):
         super().clean()
         if self.app_is_framed and not self.app_url:
             raise ValidationError('You must set url if app is iframed')
+
+
+class AppView(ProductionApp):
+    class Meta:
+        proxy = True
+        app_label = 'ensembl_prodinf_portal'
+        verbose_name = 'Production Service'
+        verbose_name_plural = 'Production Services'
+

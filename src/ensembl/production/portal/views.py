@@ -9,13 +9,8 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.import random
-import random
-from django.core.exceptions import PermissionDenied
 
 from django.shortcuts import render
-from django.views.generic import DetailView
-
-from ensembl.production.portal.models import ProductionApp
 
 
 def handler404(request, *args, **argv):
@@ -34,27 +29,3 @@ def handler403(request, *args, **argv):
     response = render(request, '403.html', {})
     response.status_code = 403
     return response
-
-
-class ProductionAppView(DetailView):
-    template_name = "app/iframe.html"
-    model = ProductionApp
-    context_object_name = 'flask_app'
-    queryset = ProductionApp.objects.all()
-    slug_field = 'app_prod_url'
-    slug_url_kwarg = "app_prod_url"
-    object = None
-
-    def get_context_data(self, **kwargs):
-        kwargs.update({
-            'url_cache': random.random()
-        })
-        return super().get_context_data(**kwargs)
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if "Production" in self.object.app_groups.values_list('name', flat=True) and not (
-                self.request.user.is_authenticated and self.request.user.is_superuser):
-            raise PermissionDenied()
-        context = self.get_context_data(object=self.object)
-        return self.render_to_response(context)

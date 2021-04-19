@@ -18,21 +18,11 @@ from django.views.generic import RedirectView
 import ensembl.production.portal.views
 
 urlpatterns = [
-    # path('',TemplateView.as_view(template_name='home.html', extra_context={'current_date': datetime.now()}), name='home'),
     path(f'', admin.site.urls),
-    #path(f'baton/', include('baton.urls')),
-    path(f'accounts/', include('django.contrib.auth.urls')),
-    path(f'login/', RedirectView.as_view(url='/admin/login', permanent=True), name='login'),
-    path(f'logout', auth_views.LogoutView.as_view(), name='logout'),
-    # Production apps
-    re_path(r'^app/(?P<app_prod_url>[a-z\-]+)/.*$', ensembl.production.portal.views.ProductionAppView.as_view(),
-            name='production_app_view'),
     # New apps layout urls
     path(f'api/production_db/', include('ensembl.production.masterdb.api.urls')),
     path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),
     # Retro compatibility redirect - obsolete in 1.2.0
-    # path(f'api/production_db/', RedirectView.as_view(url='/masterdb', permanent=True), name='production_db'),
-    # path(f'api/production_db/', RedirectView.as_view(url='/masterdb', permanent=True), name='production_db'),
 ]
 
 handler404 = 'ensembl.production.portal.views.handler404'

@@ -11,5 +11,3 @@
 #   limitations under the License.
 
 
-
-#TODO signal to keep groups table even between DBCopy and auth.group one
