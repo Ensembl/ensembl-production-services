@@ -22,6 +22,7 @@ urlpatterns = [
     # New apps layout urls
     path(f'api/production_db/', include('ensembl.production.masterdb.api.urls')),
     path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
     # Retro compatibility redirect - obsolete in 1.2.0
 ]
 

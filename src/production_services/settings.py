@@ -249,7 +249,7 @@ MESSAGE_TAGS = {
 
 IS_TESTING = sys.argv[1:2] == ['test']
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' if not DEBUG else 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
 EMAIL_HOST = 'localhost'
 LOGOUT_REDIRECT_URL = "/"
@@ -262,12 +262,13 @@ JAZZMIN_SETTINGS = {
     # Title on the brand, and login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     "site_header": "Production",
     # square logo to use for your site, must be present in static files, used for favicon and brand on top left
-    "site_logo": "/portal/img/logo.png",
+    "site_logo": "/portal/img/2020e.svg",
     # Welcome text on the login screen
     "welcome_sign": "Welcome to Production services portal",
     # Copyright on the footer
     "copyright": "<a href=\"https://ensembl.org\">Ensembl.org</a><span>>>>> One portal to rule them all.<<<</span>",
     # Field name on user model that contains avatar image
+    "custom_js": 'portal/js/portal.js',
     "topmenu_links": [
         # Url that gets reversed (Permissions can be added)
         {"name": "Home", "url": "admin:index"},
