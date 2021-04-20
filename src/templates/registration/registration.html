@@ -47,10 +47,23 @@
 <div class="login-box">
     {% block content %}
         <div class="card">
+            {% block registration-header %}
+                <div class="card-header">
+                    {% block registration-header-content %}
+                    {% endblock %}
+                </div>
+            {% endblock %}
             <div class="card-body">
                 {% block registration-content %}
                 {% endblock %}
             </div>
+            {% block registration-footer %}
+                <div class="card-footer bg-transparent border-light text-right">
+                    {% block registration-footer-content %}
+                        <a href="{% url 'admin:index' %}" class="small">Sorry, my mistake!</a>
+                    {% endblock %}
+                </div>
+            {% endblock %}
         </div>
     {% endblock %}
 </div>
