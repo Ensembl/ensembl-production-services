@@ -11,6 +11,29 @@
 #   limitations under the License.import random
 
 from django.shortcuts import render
+from django.views.generic import DetailView
+
+from ensembl.production.portal.models import ProductionApp
+
+
+class AppCssView(DetailView):
+    context_object_name = 'app'
+    queryset = ProductionApp.objects.all()
+    slug_field = 'app_prod_url'
+    template_name = 'css.html'
+    slug_url_kwarg = "app_prod_url"
+
+    def get(self, request, *args, **kwargs):
+        print(kwargs)
+        return super().get(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return super().get_object(queryset)
+
+    def render_to_response(self, context, **response_kwargs):
+        # response = 'text/css'
+        # response['Content-Disposition'] = 'attachment; filename="{}"'.format(self.model.export_file_name)
+        return super().render_to_response(context, **response_kwargs)
 
 
 def handler404(request, *args, **argv):

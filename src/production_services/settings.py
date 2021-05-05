@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     # 'sitetree',
     'corsheaders',
+    'dal'
 ]
 
 MIDDLEWARE = [
@@ -266,7 +267,7 @@ JAZZMIN_SETTINGS = {
     # Welcome text on the login screen
     "welcome_sign": "Welcome to Production services portal",
     # Copyright on the footer
-    "copyright": "<a href=\"https://ensembl.org\">Ensembl.org</a><span>>>>> One portal to rule them all.<<<</span>",
+    "copyright": "Ensembl Production Team (with Jazzmin)",
     # Field name on user model that contains avatar image
     "custom_js": 'portal/js/portal.js',
     "topmenu_links": [
@@ -346,8 +347,8 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": True,
-    "theme": "cerulean",
-    "dark_mode_theme": None,
+    "theme": "pulse",
+    "dark_mode_theme": "superhero",
     "button_classes": {
         "primary": "btn-outline-primary",
         "secondary": "btn-outline-secondary",

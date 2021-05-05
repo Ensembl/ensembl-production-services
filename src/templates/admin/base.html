@@ -1,5 +1,5 @@
 {% extends 'admin/base.html' %}
-{% load static %}
+{% load static jazzmin %}
 {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="{% static "portal/css/portal.css" %}">
 {% endblock %}
@@ -16,4 +16,18 @@
     <link rel="manifest" href="{% static "portal/site.webmanifest" %}" />
 {% endblock %}
 
-
+{% block footer %}
+    {% if not is_popup %}
+        <footer class="main-footer {{ jazzmin_ui.footer_classes }}">
+            <div class="float-right d-none d-sm-inline">
+                <strong>{% now 'Y' %} {{ jazzmin_settings.copyright }}.</strong>
+            </div>
+            {% autoescape off %}
+                <strong>&gt;&gt;&gt;&gt;&gt; One Portal to rule them all &lt;&lt;&lt;&lt;&lt; </strong>
+            {% endautoescape %}
+        </footer>
+        {% if jazzmin_settings.show_ui_builder %}
+            {% include 'jazzmin/includes/ui_builder_panel.html' %}
+        {% endif %}
+    {% endif %}
+{% endblock %}

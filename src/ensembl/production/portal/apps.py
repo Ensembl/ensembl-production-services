@@ -27,7 +27,3 @@ class EnsemblProductionConfig(AppConfig):
         """
         class_prepared.connect(override_logentry)
         pass
-
-
-class PortalAdminConfig(AdminConfig):
-    default_site = 'ensembl.production.portal.admin.PortalAdminSite'

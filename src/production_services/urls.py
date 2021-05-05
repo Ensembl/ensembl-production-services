@@ -15,15 +15,17 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
 from django.views.generic import RedirectView
-import ensembl.production.portal.views
+from ensembl.production.portal.views import AppCssView
+
 
 urlpatterns = [
     path(f'', admin.site.urls),
     # New apps layout urls
     path(f'api/production_db/', include('ensembl.production.masterdb.api.urls')),
     path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path(f'accounts/', include('django.contrib.auth.urls')),
     # Retro compatibility redirect - obsolete in 1.2.0
+    path(f'app/<slug:app_prod_url>.css', AppCssView.as_view())
 ]
 
 handler404 = 'ensembl.production.portal.views.handler404'
