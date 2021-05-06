@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('ensembl_prodinf_portal', '0007_credentials'),
+        ('ensembl_prodinf_portal', '0006_update_admin_menus'),
     ]
 
     operations = [
