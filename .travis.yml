@@ -3,12 +3,12 @@ os: linux
 dist: xenial
 python:
   - "3.7"
-  - "3.6"
-  - "3.5"
+  - "3.8"
+  - "3.9"
 services:
   - mysql
 env:
-  - DJANGO=2.2.13 DB=mysql DEBUG=f
+  - DJANGO=3.2.2 DB=mysql DEBUG=f
 before_script:
   - mysql -u root -e "CREATE USER 'ensembl'@'localhost' IDENTIFIED BY '';"
   - mysql -u root -e "GRANT ALL ON *.* TO 'ensembl'@'localhost';"
