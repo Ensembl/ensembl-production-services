@@ -68,7 +68,7 @@ export $(cut -d= -f1 ./bin/.env)
 ```
 ```
 
- export APP_HOST_URL=http://127.0.0.1:8000  (production service url)
+ export APP_HOST_URL=http://127.0.0.1:8000  (production service django api url)
 ./bin/nginx.sh start
 
 ```
@@ -84,7 +84,7 @@ Launch Production services with docker containers
 cp bin/.env.conf.sample bin/.env
 vi bin/.env  (set required values)
 ```
-- Create Network to access btw services
+- Create Network to access between the services
 ```
     docker network create  production_api 
 
@@ -102,9 +102,24 @@ sudo docker run -it --rm --network=production_api --name productionportal -p 800
  - --add-host <mysqlhost>:<192.1.2.1> (add this param if mysqlhost is in different network)  
 ```
 
-- build nginx docker image to serve static files 
+- Build nginx docker image to serve static files 
 ```
     sudo docker build -t production_service_nginx -f Dockerfile.nginx  .          (its multi stage container with staticfiles)
     sudo docker run -it --rm --network=production_api --name productionnginx -e "APP_HOST_URL=http://productionportal:8000" production_service_nginx:latest
 
+    access production service portal @ http://localhost:80
+```
+
+
+Launch Production services with docker-compose
+================================================
+- Set env variables
+
+```
+cp bin/.env.conf.sample bin/.env
+vi bin/.env  (set required values)
+```
+- Run docker-compose 
+```
+sudo docker-compose up --build  (use -d to run as demon service )
 ```
