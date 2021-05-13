@@ -8,12 +8,7 @@ services:
     ports:
       - '8000:8000'
     extra_hosts:
-      - 'hx-cluster:10.3.15.218'
-      - 'mysql-ens-hive-prod-1:10.42.34.23'
-      - 'mysql-ens-hive-prod-2:10.42.33.112'
-      - 'mysql-ens-general-dev-1:10.32.24.191'
-      - 'mysql-ens-sta-1:10.32.24.198'
-      - 'noah-login-01:10.7.95.60'
+      - 'mysql-ens-general-dev-1:1.1.1.1'
     networks:
       - productionsrv  
   nginx:
