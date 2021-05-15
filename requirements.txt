@@ -3,6 +3,7 @@ django-jazzmin==2.4.7
 django-cors-headers==3.7.0
 django-ckeditor==6.0.0
 django-sitetree==1.16.0
+gunicorn==20.1.0
 ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git#egg=ensembl-prodinf-dbcopy
 ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git#egg=ensembl-prodinf-webhelp
 ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git#egg=ensembl-prodinf-masterdb
