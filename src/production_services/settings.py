@@ -256,6 +256,7 @@ EMAIL_HOST = 'localhost'
 LOGOUT_REDIRECT_URL = "/"
 ## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
 # USE_X_FORWARDED_HOST = True
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
