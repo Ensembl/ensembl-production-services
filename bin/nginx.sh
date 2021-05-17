@@ -17,7 +17,7 @@ PATH=$PATH:/opt/nginx/sbin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
 DAEMON=`command -v nginx`
 DESC="Production DB Service"
 
-DAEMON_OPTS="-q -c $SCRIPT_PATH/nginx.conf -p $SCRIPT_PATH "
+DAEMON_OPTS="-q -c $SCRIPT_PATH/nginx/nginx.conf -p $SCRIPT_PATH/nginx "
 NAME="Run ${DAEMON} ${DAEMON_OPTS}"
 
 command -v nginx > /dev/null 2>&1 || { echo >&2 "no nginx available"; exit 1; }
