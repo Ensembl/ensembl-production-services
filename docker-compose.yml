@@ -23,7 +23,6 @@ services:
       - production_portal_app
     networks:
       - productionsrv
-
 networks:
   productionsrv:
     driver: bridge

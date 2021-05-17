@@ -26,6 +26,7 @@ RUN cp ./bin/gunicorn.conf.py.sample ./bin/gunicorn.conf.py
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip
+RUN pip install gunicorn~=20.1.0
 RUN pip install -r requirements.txt
 
 
