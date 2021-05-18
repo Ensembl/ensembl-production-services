@@ -7,7 +7,7 @@ INSTALL
 2. create a Python 3 virtual env
 ```
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/venv/bin/activate
 pip install -r requirements.txt
 ```
 3. copy config files
@@ -15,7 +15,7 @@ pip install -r requirements.txt
 cp bin/gunicorn.conf.py.sample bin/gunicorn.conf.py
 cp bin/nginx.conf.sample bin/nginx.conf
 ```
-4. Create .env file (a .env.sample is available in checkout)
+4. Create .env file (a .env.dist is available in checkout)
 ```
 cp bin/.env.conf.sample bin/.env
 vi bin/.env
