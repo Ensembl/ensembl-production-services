@@ -24,21 +24,23 @@ DAEMON=`command -v gunicorn`
 NAME=${SCRIPT_PATH}/gunicorn
 DESC="Production DB Service"
 
-DAEMON_OPTS="-c $SCRIPT_PATH/gunicorn.conf.py production_services.wsgi:application --daemon --pid=${PID_FILE}"
+DAEMON_OPTS="-c $SCRIPT_PATH/gunicorn.conf.py production_services.wsgi:application  --daemon  --pid=${PID_FILE}"
 
-PYTHONPATH=${PYTHONPATH}:${SCRIPT_PATH}/../
+PYTHONPATH=${PYTHONPATH}:${APP_PATH}/src
 
 export PYTHONPATH
 
 command -v gunicorn > /dev/null 2>&1 || { echo >&2 "no gunicorn available"; exit 1; }
 
-cd ${SCRIPT_PATH}/../
+cd ${APP_PATH}/
+
+export DJANGO_SETTINGS_MODULE=production_services.settings
 
 function init_django() {
     echo "Check Django Updates / Upgrades"
-    python manage.py makemigrations
-    python manage.py migrate
-    python manage.py collectstatic --no-input
+    python src/manage.py makemigrations
+    python src/manage.py migrate
+    python src/manage.py collectstatic --no-input
 }
 dotenv () {
   set -a
