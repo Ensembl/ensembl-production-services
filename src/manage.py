@@ -13,24 +13,19 @@
 
 import os
 import sys
-import configparser
 
-
-def read_env():
-    """
-    Reads a INI file named .env in the same directory manage.py is invoked and
-    loads it as environment variables.
-    Note: At least one section must be present. If the environment variable
-    DJANGO_ENV is not set then the [DEFAULT] section will be loaded.
-    More info: https://docs.python.org/3/library/configparser.html
-    """
-    config = configparser.ConfigParser()
-    config.optionxform = str
-    config.read('./.env')
-    section = os.environ.get("DJANGO_ENV", "DEFAULT")
-
-    for var, value in config[section].items():
-        os.environ.setdefault(var, value)
+from os import path, getenv
+from os.path import dirname
+from dotenv import load_dotenv
+from pathlib import Path
+# LOAD extra ENV VARS from platform
+base_dir = path.dirname(__file__)
+if path.exists(path.join(base_dir, environ.get('HOSTNAME'), 'env_vars')):
+    SERVICES_CONFIG_FILE = path.join(base_dir, environ.get('HOSTNAME'), 'env_vars')
+else:
+    SERVICES_CONFIG_FILE = path.join(base_dir, 'localhost', 'env_vars')
+# print(path.abspath(SERVICES_CONFIG_FILE))
+environ['SERVICES_CONFIG_FILE'] = path.abspath(SERVICES_CONFIG_FILE)
 
 
 if __name__ == "__main__":
@@ -50,5 +45,5 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
-    read_env()
+
     execute_from_command_line(sys.argv)
