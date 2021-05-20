@@ -13,15 +13,22 @@ import os
 
 import sys
 from django.contrib.messages import constants as messages
+import environ
 
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+environ.Env.read_env(os.environ.get("SERVICES_CONFIG_FILE", os.path.join(os.path.dirname(BASE_DIR), ".env")))
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'l2!hqu2y5o3q7yxfkzfw=ivn(kg_tz!^1l8l%36&$u*eid%4!g')
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+DEBUG = env('DEBUG', default=True)
 
 LOGGING = {
     'version': 1,
@@ -57,13 +64,14 @@ LOGGING = {
 ALLOWED_HOSTS = ['*']
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = [
-    'https://www.ebi.ac.uk',
-]
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://\w+\.ebi\.ac\.uk$",
-    r"^https://\w+\.ensembl.org$",
-]
+if not DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        'https://www.ebi.ac.uk',
+    ]
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^http(s)?://\w+\.ebi\.ac\.uk$",
+        r"^http(s)?://\w+\.ensembl.org$",
+    ]
 
 # Application definition
 
@@ -134,52 +142,10 @@ WSGI_APPLICATION = 'production_services.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('USER_DB_DATABASE', 'ensembl_production_services'),
-        'USER': os.getenv('USER_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('USER_DB_PASSWORD', ''),
-        'HOST': os.getenv('USER_DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('USER_DB_PORT', '3306'),
-        'OPTIONS': {}
-    },
-    'production': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('PROD_DB_DATABASE', 'ensembl_production'),
-        'USER': os.getenv('PROD_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('PROD_DB_PASSWORD', ''),
-        'HOST': os.getenv('PROD_DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('PROD_DB_PORT', '3306'),
-        'OPTIONS': {
-            # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': os.getenv('PROD_DB_CHARSET', 'utf8mb4'),
-            "init_command": "SET default_storage_engine=MYISAM",
-        }
-    },
-    'website': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('WEBSITE_DB_DATABASE', 'ensembl_website'),
-        'USER': os.getenv('WEBSITE_DB_USER', 'ensembl'),
-        'PASSWORD': os.getenv('WEBSITE_DB_PASSWORD', ''),
-        'HOST': os.getenv('WEBSITE_DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('WEBSITE_DB_PORT', '3306'),
-        'OPTIONS': {
-            # Tell MySQLdb to connect with 'utf8mb4' character set
-            'charset': os.getenv('WEBSITE_DB_CHARSET', 'utf8mb4'),
-            "init_command": "SET default_storage_engine=MYISAM",
-        }
-    },
-    'dbcopy': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_COPY_DATABASE', 'ensembl_dbcopy'),
-        'USER': os.getenv('DB_COPY_USER', 'ensembl'),
-        'PASSWORD': os.getenv('DB_COPY_PASSWORD', ''),
-        'HOST': os.getenv('DB_COPY_HOST', '127.0.0.1'),
-        'PORT': os.getenv('DB_COPY_PORT', '3306'),
-        'OPTIONS': {
-            "init_command": "SET default_storage_engine=InnoDB",
-        }
-    },
+    'default': env.db('DATABASE_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_production_services'),
+    'production': env.db('PRODUCTION_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_production'),
+    'website': env.db('WEBHELP_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_website'),
+    'dbcopy': env.db('DBCOPY_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_dbcopy')
 }
 
 DATABASE_ROUTERS = [
@@ -250,10 +216,13 @@ MESSAGE_TAGS = {
 
 IS_TESTING = sys.argv[1:2] == ['test']
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' if not DEBUG else 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = "ensembl-production@ebi.ac.uk"
-EMAIL_HOST = 'localhost'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' \
+    if not DEBUG else 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default="ensembl-production@ebi.ac.uk")
+EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://user:password@localhost:25')
+vars().update(EMAIL_CONFIG)
 LOGOUT_REDIRECT_URL = "/"
+
 ## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
 # USE_X_FORWARDED_HOST = True
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

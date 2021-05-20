@@ -70,3 +70,11 @@ body.jazzmin-login-page {
   max-height: 250px;
   overflow: hidden;
 }
+
+/* CKEditor fixe */
+#cke_id_content {
+  width: auto!important;
+}
+textarea {
+  max-width: 100%
+}
