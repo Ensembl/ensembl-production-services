@@ -1,16 +1,19 @@
 {% extends 'admin/change_form.html' %}
+{% load static %}
 
-{% block content_title %}{% endblock %}
+{% block content_title %}
+    <img class="" src="{% static original.img %}" alt="{{ original.name }}" style="height: 50px">
+{% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
-        <div id="spinner" class="my-5 mx-5">
-            <button class="btn btn-dark" style="background-color: #{{ original.app_theme|default:'343A40' }}">
-                <span class="spinner-border spinner-border-sm"></span>
-                Loading...
-            </button>
-        </div>
+    <div class="container-fluid" style="height: 100%">
         <div class="app-iframe-container {{ original.app_name }}">
+            <div id="spinner" class="my-5 mx-5">
+                <button class="btn btn-dark" style="background-color: #{{ original.app_theme|default:'343A40' }}">
+                    <span class="spinner-border spinner-border-sm"></span>
+                    Loading...
+                </button>
+            </div>
             <iframe id='app-iframe' class="app-iframe" src="{{ original.app_url }}"
                     onload="document.getElementById('spinner').style.display='none';"></iframe>
         </div>

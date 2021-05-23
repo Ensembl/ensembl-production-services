@@ -39,13 +39,13 @@ class ProductionApp(BaseTimestampedModel):
         return self.app_name
 
     color_theme = (
-        ('336', 'Ensembl'),
-        ('707080', 'Bacteria'),
-        ('714486', 'Protists'),
-        ('407253', 'Plants'),
-        ('725A40', 'Fungi'),
-        ('015365', 'Metazoa'),
-        ('800066', 'Datachecks')
+        ('17a2b8', 'Ensembl'),
+        ('007bff', 'Metazoa'),
+        ('6c757d', 'Microbes'),
+        ('28a745', 'Plants'),
+        ('770f31', 'Rapid'),
+        ('17a2b8', 'Vertebrates'),
+        ('8552c0', 'Viruses')
     )
 
     # TODO add menu organisation
@@ -86,3 +86,4 @@ class AppView(ProductionApp):
         verbose_name = 'Production Service'
         verbose_name_plural = 'Production Services'
 
+# TODO single entry point for supervisors

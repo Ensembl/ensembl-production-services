@@ -35,10 +35,10 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
     fields = ('app_name', 'app_prod_url', 'app_url_link',
               'app_is_framed', 'app_url',
               'app_config_params',
-              'app_theme',
+              'app_theme', 'app_groups',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
-
+    ordering = ('app_name',)
     formfield_overrides = {
         jsonfield.JSONField: {'widget': jsonfield.fields.JSONWidget(attrs={'rows': 20, 'cols': 70,
                                                                            'class': 'vLargeTextField'})},
@@ -61,6 +61,10 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
     img_url.short_description = 'App Logo'
     img_url.allow_tags = True
 
+    def clean_app_url(self):
+        # TODO Allow relative url with automatic append of host?
+        pass
+
 
 @admin.register(AppView)
 class ProductionAppView(admin.ModelAdmin):
@@ -80,6 +84,9 @@ class ProductionAppView(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+    def has_module_permission(self, request):
+        return True
+
     def get_object(self, request, object_id, from_field=None):
         return super().get_object(request, object_id, from_field)
 
@@ -90,7 +97,9 @@ class ProductionAppView(admin.ModelAdmin):
         if request.user.is_superuser:
             queryset = ProductionApp.objects.all()
         else:
-            queryset = ProductionApp.objects.filter(app_groups__in=request.user.groups.values_list('name', flat=True))
+            print("select per group", request.user.groups, request.user.groups.values_list('name', flat=True))
+            queryset = ProductionApp.objects.filter(
+                app_groups__name__in=request.user.groups.values_list('name', flat=True))
         return queryset.order_by('app_name')
 
 
