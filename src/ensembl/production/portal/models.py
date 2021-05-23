@@ -33,7 +33,7 @@ class ProductionApp(BaseTimestampedModel):
         app_label = 'ensembl_prodinf_portal'
         verbose_name = 'App Admin'
         verbose_name_plural = 'Apps Admin'
-        db_table = 'flask_app'
+        db_table = 'production_app'
 
     def __str__(self):
         return self.app_name
