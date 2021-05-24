@@ -95,10 +95,9 @@ class ProductionAppView(admin.ModelAdmin):
 
     def get_queryset(self, request):
         if request.user.is_superuser:
-            queryset = ProductionApp.objects.all()
+            queryset = AppView.objects.all()
         else:
-            print("select per group", request.user.groups, request.user.groups.values_list('name', flat=True))
-            queryset = ProductionApp.objects.filter(
+            queryset = AppView.objects.filter(
                 app_groups__name__in=request.user.groups.values_list('name', flat=True))
         return queryset.order_by('app_name')
 
