@@ -33,19 +33,19 @@ class ProductionApp(BaseTimestampedModel):
         app_label = 'ensembl_prodinf_portal'
         verbose_name = 'App Admin'
         verbose_name_plural = 'Apps Admin'
-        db_table = 'flask_app'
+        db_table = 'production_app'
 
     def __str__(self):
         return self.app_name
 
     color_theme = (
-        ('336', 'Ensembl'),
-        ('707080', 'Bacteria'),
-        ('714486', 'Protists'),
-        ('407253', 'Plants'),
-        ('725A40', 'Fungi'),
-        ('015365', 'Metazoa'),
-        ('800066', 'Datachecks')
+        ('17a2b8', 'Ensembl'),
+        ('007bff', 'Metazoa'),
+        ('6c757d', 'Microbes'),
+        ('28a745', 'Plants'),
+        ('770f31', 'Rapid'),
+        ('17a2b8', 'Vertebrates'),
+        ('8552c0', 'Viruses')
     )
 
     # TODO add menu organisation
@@ -86,3 +86,4 @@ class AppView(ProductionApp):
         verbose_name = 'Production Service'
         verbose_name_plural = 'Production Services'
 
+# TODO single entry point for supervisors
