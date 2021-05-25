@@ -18,14 +18,23 @@ from django.core import exceptions
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from ensembl.production.djcore.models import BaseTimestampedModel
 from fernet_fields import EncryptedCharField
 import jsonfield
+from django.contrib.auth.models import AbstractUser
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
 NOT_PROVIDED = object()
+
+
+class AppViewObjects(models.Manager):
+    def user_apps(self, user: AbstractUser):
+        if user.is_superuser:
+            return self.all()
+        return self.filter(app_groups__name__in=user.groups.values_list('name', flat=True))
 
 
 class ProductionApp(BaseTimestampedModel):
@@ -78,6 +87,10 @@ class ProductionApp(BaseTimestampedModel):
         if self.app_is_framed and not self.app_url:
             raise ValidationError('You must set url if app is iframed')
 
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        return reverse("admin:%s_%s_change" % (content_type.app_label, content_type.model), args=(self.app_id,))
+
 
 class AppView(ProductionApp):
     class Meta:
@@ -85,5 +98,12 @@ class AppView(ProductionApp):
         app_label = 'ensembl_prodinf_portal'
         verbose_name = 'Production Service'
         verbose_name_plural = 'Production Services'
+        ordering = ("app_name",)
+
+    objects = AppViewObjects()
+
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(AppView)
+        return reverse("admin:%s_%s_change" % (content_type.app_label, 'appview'), args=(self.app_id,))
 
 # TODO single entry point for supervisors

@@ -248,7 +248,7 @@ JAZZMIN_SETTINGS = {
         # model admin to link to (Permissions checked against model)
         # {"model": "ensembl_prodinf_portal.AppView"},
         # short link to Production Apps
-        {"name": "Self-Services", "url": "admin:ensembl_prodinf_portal_appview_changelist", "new_window": False},
+        # {"name": "Self-Services", "url": "admin:ensembl_prodinf_portal_appview_changelist", "new_window": False},
         {"app": "ensembl_prodinf_portal", "permissions": ["auth.is_superuser"]},
     ],
     # Whether to display the side menu
@@ -298,7 +298,7 @@ JAZZMIN_SETTINGS = {
     "show_ui_builder": DEBUG,
 }
 JAZZMIN_UI_TWEAKS = {
-    "navbar_small_text": False,
+    "navbar_small_text": True,
     "footer_small_text": True,
     "body_small_text": False,
     "brand_small_text": False,
@@ -313,18 +313,19 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar": "sidebar-dark-primary",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": False,
+    "sidebar_nav_child_indent": True,
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
-    "sidebar_nav_flat_style": True,
+    "sidebar_nav_flat_style": False,
     "theme": "pulse",
-    "dark_mode_theme": "superhero",
+    "dark_mode_theme": None,
     "button_classes": {
-        "primary": "btn-outline-primary",
-        "secondary": "btn-outline-secondary",
-        "info": "btn-outline-info",
-        "warning": "btn-outline-warning",
-        "danger": "btn-outline-danger",
-        "success": "btn-outline-success"
-    }
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    },
+    "actions_sticky_top": False
 }

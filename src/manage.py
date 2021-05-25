@@ -14,19 +14,6 @@
 import os
 import sys
 
-from os import path, getenv
-from os.path import dirname
-from dotenv import load_dotenv
-from pathlib import Path
-# LOAD extra ENV VARS from platform
-base_dir = path.dirname(__file__)
-if path.exists(path.join(base_dir, environ.get('HOSTNAME'), 'env_vars')):
-    SERVICES_CONFIG_FILE = path.join(base_dir, environ.get('HOSTNAME'), 'env_vars')
-else:
-    SERVICES_CONFIG_FILE = path.join(base_dir, 'localhost', 'env_vars')
-# print(path.abspath(SERVICES_CONFIG_FILE))
-environ['SERVICES_CONFIG_FILE'] = path.abspath(SERVICES_CONFIG_FILE)
-
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "production_services.settings")
@@ -45,5 +32,4 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
-
     execute_from_command_line(sys.argv)
