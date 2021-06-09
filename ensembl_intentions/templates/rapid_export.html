@@ -1,7 +1,0 @@
-{% for kb in intentions %}
-<h2>{{ kb.summary }}</h2>
-<p><b>Description</b>: {{ kb.description|safe }}</p>
-{% if kb.workaround %}
-<p><b>Workaround</b>: {{ kb.workaround|safe }}</p>
-{% endif %}
-{% endfor %}

@@ -7,7 +7,7 @@ INSTALL
 2. create a Python 3 virtual env
 ```
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/venv/bin/activate
 pip install -r requirements.txt
 ```
 3. copy config files
@@ -15,7 +15,7 @@ pip install -r requirements.txt
 cp bin/gunicorn.conf.py.sample bin/gunicorn.conf.py
 cp bin/nginx.conf.sample bin/nginx.conf
 ```
-4. Create .env file (a .env.sample is available in checkout)
+4. Create .env file (a .env.dist is available in checkout)
 ```
 cp bin/.env.conf.sample bin/.env
 vi bin/.env
@@ -38,6 +38,7 @@ DB_COPY_USER=the_user
 DB_COPY_HOST=the_host
 DB_COPY_PORT=the_port
 DB_COPY_PASSWORD=the_password
+USER_DB_DATABASE=the_database
 USER_DB_USER=the_user_database_user
 USER_DB_PASSWORD=the_user_database_password
 USER_DB_PORT=the_user_database_port
@@ -57,30 +58,68 @@ export $(cut -d= -f1 ./bin/.env)
 ```
 ./bin/gunicorn.sh start
 ```
-8. start nginx with ~/bin/nginx.sh start
+8. start nginx with ~/bin/nginx.sh start (install  nginx-extras for dependency ngx_http_perl_module)
 ```
+        vi ./bin/nginx/nginx.conf 
+
+        location /static/ {
+            alias /usr/src/app/; # set path to static files directory
+        }
+```
+```
+
+ export APP_HOST_URL=http://127.0.0.1:8000  (production service django api url)
 ./bin/nginx.sh start
+
 ```
 
 **All Done** go to `http://your_host/` and see.
 
 
-Default parameter for Angular Apps:
+Launch Production services with docker containers
+================================================ 
+- Set env variables
+
 ```
-angular.module('app.config', [])
-    .constant('CONFIG', {
-	'LIVE_URI': 'mysql://ensro@ensro@127.0.0.1:3306/',
-	'STAGING_URI': 'mysql://ensro@ensro@127.0.0.1:3306/',
-	'COMPARA_URI': 'mysql:///ensro@127.0.0.1:3306/ensembl_compara_master',
-	'PROD_URI': 'mysql://ensro@127.0.0.1:3306/ensembl_production',
-	'HC_SRV_URL': 'http://ensprod-dev-01.ebi.ac.uk:5001/',
-	'DB_SRV_URL': 'http://ensprod-dev-01.ebi.ac.uk:5002/',
-	'URI_USER': 'ensro',
-	'COPY_SOURCE_USER': 'ensro',
-	'COPY_TARGET_USER': 'ensadmin',
-	'DATA_FILES_PATH' : '/nfs/panda/ensembl/production/ensemblftp/data_files/',
-	'METADATA_SRV_URL': 'http://127.0.0.1:5003/',
-	'HANDOVER_SRV_URL': 'http://127.0.0.1:5004/',
-	'WEBSITE_NAME': 'TEST'
-    });
+cp bin/.env.conf.sample bin/.env
+vi bin/.env  (set required values)
+```
+- Create Network to access between the services
+```
+    docker network create  production_api 
+
+```
+
+- Build docker image for production services API  
+
+```
+sudo docker build -t production_service .
+```
+- Run Production service API
+
+```
+sudo docker run -it --rm --network=production_api --name productionportal -p 8000:8000  --env-file ./bin/.env production_service:latest
+ - --add-host <mysqlhost>:<192.1.2.1> (add this param if mysqlhost is in different network)  
+```
+
+- Build nginx docker image to serve static files 
+```
+    sudo docker build -t production_service_nginx -f Dockerfile.nginx  .          (its multi stage container with staticfiles)
+    sudo docker run -it --rm --network=production_api --name productionnginx -e "APP_HOST_URL=http://productionportal:8000" production_service_nginx:latest
+
+    access production service portal @ http://localhost:80
+```
+
+
+Launch Production services with docker-compose
+================================================
+- Set env variables
+
+```
+cp bin/.env.conf.sample bin/.env
+vi bin/.env  (set required values)
+```
+- Run docker-compose 
+```
+sudo docker-compose up --build  (use -d to run as demon service )
 ```

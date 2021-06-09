@@ -1,0 +1,33 @@
+{% extends 'admin/base.html' %}
+{% load static portal %}
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static "portal/css/portal.css" %}">
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <meta name="description" content="Ensembl Production team service portal" />
+    <meta name="author" content="Ensembl Production Team" />
+    <link rel="icon" href="{% static "portal/img/favicon.ico" %}" sizes="48x48" />
+    <link rel="shortcut icon" href="{% static "portal/img/favicon.ico" %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "portal/img/ensembl-apple-touch-icon.png" %}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "portal/img/ensembl-favicon-32.png" %}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "portal/img/ensembl-favicon-16.png" %}" />
+    <link rel="manifest" href="{% static "portal/site.webmanifest" %}" />
+{% endblock %}
+
+{% block footer %}
+    {% if not is_popup %}
+        <footer class="main-footer {{ jazzmin_ui.footer_classes }}" >
+            <div class="float-right d-none d-sm-inline">
+                <strong>{% now 'Y' %} {{ jazzmin_settings.copyright }}.</strong>
+            </div>
+            {% autoescape off %}
+                <strong>&gt;&gt;&gt;&gt;&gt; One Portal to rule them all &lt;&lt;&lt;&lt;&lt; </strong>
+            {% endautoescape %}
+        </footer>
+        {% if jazzmin_settings.show_ui_builder %}
+            {% include 'jazzmin/includes/ui_builder_panel.html' %}
+        {% endif %}
+    {% endif %}
+{% endblock %}

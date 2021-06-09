@@ -1,0 +1,14 @@
+{% extends 'admin/login.html' %}
+{% load static %}
+{% block extrastyle %}
+    <!-- Extra style for cover image -->
+    <link rel="stylesheet" type="text/css" href="{% static "portal/css/portal.css" %}">
+{% endblock %}
+
+{% block extrahead %}
+    <script type="text/html" id="forgot-pass-link">
+        <div class="card-footer bg-transparent border-light text-right">
+            <a href="{% url 'password_reset' %}" class="small">Forgot password</a>
+        </div>
+    </script>
+{% endblock %}

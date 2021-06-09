@@ -1,0 +1,103 @@
+/*.related-widget-wrapper .select2, .vTextField {
+    min-width: 500px;
+}
+
+li input[type=checkbox] {
+    display: inline;
+}
+
+ul.messagelist li.warning{
+    color: #856404;
+    background-color: #ffc107;
+    border-color: #ffeeba;
+}
+
+ul.messagelist li.sucess{
+    color: #856404;
+    background-color: #ffc107;
+    border-color: #ffeeba;
+}
+#select2-id_web_data-container {
+    max-width: 400px;
+}
+
+.field-is_optional img, .field-is_current img, .field-app_is_framed img, .field-displayable img {
+    display: block;
+}
+*/
+body.jazzmin-login-page {
+  background: #333333 url("/static/portal/img/splash.jpg") no-repeat center center;
+  background-size: cover;
+
+}
+.login-logo {
+  display: none;
+}
+
+.select2-container {
+  max-width: 500px;
+}
+.admin_app_logo {
+    max-width: 30px;
+}
+.admin_app_theme_color {
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+.field-division li, .field-db_type li {
+  list-style: none;
+}
+
+
+.app-iframe-container {
+  position: relative;
+  overflow: hidden;
+  padding-top: 56.25%;
+  height: 100%;
+}
+.app-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: #fff;
+}
+
+.card-thumbnail img {
+  max-height: 250px;
+  min-height: 50px;
+  overflow: hidden;
+}
+
+/* CKEditor fixe */
+#cke_id_content {
+  width: auto!important;
+}
+textarea {
+  max-width: 100%
+}
+
+table#result_list td.field-tgt_host,
+table#result_list td.field-src_skip_db,
+table#result_list td.field-src_incl_db {
+  word-break: break-all;
+  max-width:  15%;
+}
+
+.main-footer {
+  opacity:100%;
+  background-color: whitesmoke;
+}
+
+.select2.select2-container.select2-container--default ~ span.select2 {
+  display:none
+}
+
+#requestjob_form .form-group .row p.errornote.alert {
+  display: none
+}

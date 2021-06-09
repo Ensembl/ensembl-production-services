@@ -11,9 +11,45 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+FROM python:3.8.9 AS static_builder
+
+RUN useradd --create-home appuser
+USER appuser
+
+#create virtual env
+RUN python -m venv /home/appuser/venv
+ENV PATH="/home/appuser/venv/bin:$PATH"
+
+# set environment varibles
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV DJANGO_SETTINGS_MODULE=production_services.settings
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy the current directory contents into the container
+COPY --chown=appuser . /usr/src/app
+
+RUN cp ./bin/gunicorn.conf.py.sample ./bin/gunicorn.conf.py
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+#build static files
+ENV PYTHONPATH=$PYTHONPATH:/usr/src/app/src
+RUN python src/manage.py collectstatic --no-input
+
+
 FROM nginx:1.20.0-alpine-perl
 RUN apk add --no-cache nginx-module-perl
 RUN rm /etc/nginx/conf.d/default.conf
 COPY ./bin/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=static_builder /usr/src/app/src/staticfiles /usr/src/app/
 CMD ["/bin/sh", "-c", "exec nginx -g 'daemon off;';"]
 EXPOSE 80
+
+
+
+

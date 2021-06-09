@@ -3,17 +3,18 @@ os: linux
 dist: xenial
 python:
   - "3.7"
-  - "3.6"
-  - "3.5"
+  - "3.8"
+  - "3.9"
 services:
   - mysql
 env:
-  - DJANGO=2.2.13 DB=mysql DEBUG=f
+  - DB=mysql DEBUG=f
 before_script:
   - mysql -u root -e "CREATE USER 'ensembl'@'localhost' IDENTIFIED BY '';"
   - mysql -u root -e "GRANT ALL ON *.* TO 'ensembl'@'localhost';"
+  - cp .env.dist .env
 install:
   - pip install -r requirements.txt
   - pip install coverage==4.5.1
 script:
-  - coverage run --source='.' manage.py test --settings=production_services.settings_tests
+  - coverage run --source='.' ./src/manage.py test ensembl.production.portal.tests
