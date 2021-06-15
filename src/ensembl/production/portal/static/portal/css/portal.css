@@ -82,13 +82,6 @@ textarea {
   max-width: 100%
 }
 
-table#result_list td.field-tgt_host,
-table#result_list td.field-src_skip_db,
-table#result_list td.field-src_incl_db {
-  word-break: break-all;
-  max-width:  15%;
-}
-
 .main-footer {
   opacity:100%;
   background-color: whitesmoke;
