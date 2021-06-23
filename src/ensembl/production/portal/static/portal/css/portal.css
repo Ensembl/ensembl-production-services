@@ -98,3 +98,7 @@ textarea {
 #requestjob_form .form-group .row p.errornote.alert {
   display: none
 }
+
+#id_email_list {
+  width: 420px;
+}
