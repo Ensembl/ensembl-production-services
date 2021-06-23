@@ -91,6 +91,10 @@ textarea {
   display:none
 }
 
+.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+  padding-left:1.5rem;
+}
+
 #requestjob_form .form-group .row p.errornote.alert {
   display: none
 }

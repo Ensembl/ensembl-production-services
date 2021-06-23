@@ -76,8 +76,8 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
     'dal_select2',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -94,13 +94,12 @@ INSTALLED_APPS = [
     'ensembl.production.portal',
     # Required utils
     'django_admin_inline_paginator',
-    # 'multiselectfield',
     'ckeditor',
     'drf_yasg',
-    # 'sitetree',
     'corsheaders',
-    'dal'
+    'dal',
 ]
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -110,7 +109,13 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+]
+
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
 ]
 
 # AUTHENTICATION_BACKENDS = ("django_python3_ldap.auth.LDAPBackend",)
