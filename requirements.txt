@@ -1,13 +1,12 @@
-Django==3.2.2
+Django~=3.2.4
 django-jazzmin==2.4.7
 django-cors-headers==3.7.0
-django-ckeditor==6.0.0
-# django-sitetree==1.16.0
+django-ckeditor>=6.0.0,<=6.1.0
 django-environ==0.4.5
-gunicorn==20.1.0
-ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git#egg=ensembl-prodinf-dbcopy
-ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git#egg=ensembl-prodinf-webhelp
-ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git#egg=ensembl-prodinf-masterdb
-ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git#egg=ensembl-prodinf-jira
+gunicorn~=20.1.0
+ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.1#egg=ensembl-prodinf-dbcopy
+ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1#egg=ensembl-prodinf-webhelp
+ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.1#egg=ensembl-prodinf-masterdb
+ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1.1#egg=ensembl-prodinf-jira
 mysqlclient==2.0.3
-python-dotenv==0.17.1
+python-dotenv==0.18.0

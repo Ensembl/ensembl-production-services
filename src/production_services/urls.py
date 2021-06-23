@@ -12,11 +12,9 @@
 
 from django.conf.urls import include
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
-from django.urls import path, re_path
-from django.views.generic import RedirectView
-from ensembl.production.portal.views import AppCssView
+from django.urls import path
 
+from ensembl.production.portal.views import AppCssView
 
 urlpatterns = [
     # New apps layout urls

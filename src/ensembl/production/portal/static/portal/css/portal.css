@@ -82,13 +82,6 @@ textarea {
   max-width: 100%
 }
 
-table#result_list td.field-tgt_host,
-table#result_list td.field-src_skip_db,
-table#result_list td.field-src_incl_db {
-  word-break: break-all;
-  max-width:  15%;
-}
-
 .main-footer {
   opacity:100%;
   background-color: whitesmoke;
@@ -98,6 +91,14 @@ table#result_list td.field-src_incl_db {
   display:none
 }
 
+.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+  padding-left:1.5rem;
+}
+
 #requestjob_form .form-group .row p.errornote.alert {
   display: none
+}
+
+#id_email_list {
+  width: 420px;
 }
