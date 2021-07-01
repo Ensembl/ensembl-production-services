@@ -1,6 +1,10 @@
 CHANGELOG - Ensembl Production Portal
 =====================================
 
+v4.2
+----
+- Bumped ensembl-prodinf-dbcopy to 1.2
+
 v4.1
 ----
 - Bumped django-admin-inline-paginator version to 0.2
