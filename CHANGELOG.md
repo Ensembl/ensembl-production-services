@@ -1,5 +1,8 @@
 CHANGELOG - Ensembl Production Portal
 =====================================
+v4.2.1
+------
+- Bumped ensembl-dbcopy to 1.2.1 (hotfix)
 
 v4.2
 ----
