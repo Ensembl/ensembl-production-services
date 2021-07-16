@@ -34,7 +34,7 @@ class AppViewObjects(models.Manager):
     def user_apps(self, user: AbstractUser):
         if user.is_superuser:
             return self.all()
-        return self.filter(app_groups__name__in=user.groups.values_list('name', flat=True))
+        return self.filter(app_groups__name__in=user.groups.values_list('name', flat=True)).distinct()
 
 
 class ProductionApp(BaseTimestampedModel):
