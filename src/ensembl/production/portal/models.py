@@ -57,7 +57,6 @@ class ProductionApp(BaseTimestampedModel):
         ('8552c0', 'Viruses')
     )
 
-    # TODO add menu organisation
     app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
     app_is_framed = models.BooleanField('Display app in iframe', default=True, null=True, help_text='Need an url then')

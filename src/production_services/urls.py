@@ -25,6 +25,7 @@ urlpatterns = [
     path(f'app/<slug:app_prod_url>.css', AppCssView.as_view()),
     path(f'', admin.site.urls),
 ]
+
 handler404 = 'ensembl.production.portal.views.handler404'
 handler500 = 'ensembl.production.portal.views.handler500'
 handler403 = 'ensembl.production.portal.views.handler403'
