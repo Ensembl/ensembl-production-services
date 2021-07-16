@@ -52,3 +52,21 @@ class DBRoutingTest(TestCase):
         self.assertEqual('default', m.db)
         p = ProductionApp.objects.all()
         self.assertEqual('default', p.db)
+
+class AppTests(TestCase):
+    fixtures = ('groups', 'init')
+
+    def testDeduplicateMenuEntry(self):
+        from django.contrib.auth import get_user_model
+        from django.contrib.auth.models import Group, User
+        from ensembl.production.portal.models import AppView
+        #user = get_user_model().objects.create(username="user1")
+        user = User.objects.create(username="user1")
+        groups = Group.objects.filter(name__in=['Production', 'Compara'])
+        for group in groups:
+            user.groups.add(group)
+
+        user_apps = AppView.objects.user_apps(user).values_list('app_name')
+        self.assertEqual(len(set(user_apps)), len(user_apps))
+
+
