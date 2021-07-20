@@ -17,6 +17,9 @@
         ],
         [
           "Compara"
+        ],
+        [
+          "Production"
         ]
       ]
     }
@@ -144,5 +147,5 @@
       "app_prod_url": "admin",
       "app_groups": []
     }
-   }
+  }
 ]

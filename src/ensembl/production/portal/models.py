@@ -34,7 +34,7 @@ class AppViewObjects(models.Manager):
     def user_apps(self, user: AbstractUser):
         if user.is_superuser:
             return self.all()
-        return self.filter(app_groups__name__in=user.groups.values_list('name', flat=True))
+        return self.filter(app_groups__name__in=user.groups.values_list('name', flat=True)).distinct()
 
 
 class ProductionApp(BaseTimestampedModel):
@@ -57,7 +57,6 @@ class ProductionApp(BaseTimestampedModel):
         ('8552c0', 'Viruses')
     )
 
-    # TODO add menu organisation
     app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
     app_is_framed = models.BooleanField('Display app in iframe', default=True, null=True, help_text='Need an url then')

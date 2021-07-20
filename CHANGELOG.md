@@ -1,5 +1,11 @@
 CHANGELOG - Ensembl Production Portal
 =====================================
+
+v4.2.2
+------
+- BufFix: User multi group 500 and duplicated menu item list.
+
+
 v4.2.1
 ------
 - Bumped ensembl-dbcopy to 1.2.1 (hotfix)

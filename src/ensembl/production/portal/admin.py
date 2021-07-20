@@ -94,12 +94,7 @@ class ProductionAppView(admin.ModelAdmin):
         return super().add_view(request, form_url, extra_context)
 
     def get_queryset(self, request):
-        if request.user.is_superuser:
-            queryset = AppView.objects.all()
-        else:
-            queryset = AppView.objects.filter(
-                app_groups__name__in=request.user.groups.values_list('name', flat=True))
-        return queryset.order_by('app_name')
+        return AppView.objects.user_apps(request.user)
 
 
 @admin.register(User)
