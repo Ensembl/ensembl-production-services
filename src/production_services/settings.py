@@ -133,6 +133,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'ensembl.production.portal.context_processors.portal'
             ],
             'libraries': {
                 # make your file entry here.
@@ -227,6 +228,8 @@ DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default="ensembl-production@e
 EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://user:password@localhost:25')
 vars().update(EMAIL_CONFIG)
 LOGOUT_REDIRECT_URL = "/"
+with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
+    PORTAL_VERSION = f.read()
 
 ## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
 # USE_X_FORWARDED_HOST = True
@@ -254,6 +257,7 @@ JAZZMIN_SETTINGS = {
         # {"model": "ensembl_prodinf_portal.AppView"},
         # short link to Production Apps
         # {"name": "Self-Services", "url": "admin:ensembl_prodinf_portal_appview_changelist", "new_window": False},
+        {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
         {"app": "ensembl_prodinf_portal", "permissions": ["auth.is_superuser"]},
     ],
     # Whether to display the side menu
@@ -306,11 +310,11 @@ JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": True,
     "footer_small_text": True,
     "body_small_text": False,
-    "brand_small_text": False,
+    "brand_small_text": True,
     "brand_colour": False,
     "accent": "accent-primary",
     "navbar": "navbar-white navbar-light",
-    "no_navbar_border": True,
+    "no_navbar_border": False,
     "navbar_fixed": False,
     "layout_boxed": False,
     "footer_fixed": True,
@@ -319,13 +323,13 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True,
-    "sidebar_nav_compact_style": False,
+    "sidebar_nav_compact_style": True,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
     "theme": "sandstone",
     "dark_mode_theme": None,
     "button_classes": {
-        "primary": "btn-outline-primary",
+        "primary": "btn-primary",
         "secondary": "btn-outline-secondary",
         "info": "btn-info",
         "warning": "btn-warning",
