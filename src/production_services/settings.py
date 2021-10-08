@@ -228,10 +228,8 @@ DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default="ensembl-production@e
 EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://user:password@localhost:25')
 vars().update(EMAIL_CONFIG)
 LOGOUT_REDIRECT_URL = "/"
-PORTAL_VERSION='000000'
 with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
     PORTAL_VERSION = f.read()
-print(PORTAL_VERSION)
 
 ## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
 # USE_X_FORWARDED_HOST = True

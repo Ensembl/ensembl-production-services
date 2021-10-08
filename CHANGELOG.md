@@ -6,6 +6,10 @@ v4.2.3
 - Added shortcut "New DBCopy Job" on top menu bar
 - Integrated latest version of DBCopy (1.4.0) 
 - Tweak UI - Main Layout
+- Bumped dependencies versions
+  - django-environ 0.4.5 => 0.7.0
+  - django-cors-header 3.7.0 => 3.10.0
+  - python-dotenv 0.18.0 => 0.19.0
 
 v4.2.2
 ------
