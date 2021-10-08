@@ -1,6 +1,12 @@
 CHANGELOG - Ensembl Production Portal
 =====================================
 
+v4.2.3
+------
+- Added shortcut "New DBCopy Job" on top menu bar
+- Integrated latest version of DBCopy (1.4.0) 
+- Tweak UI - Main Layout
+
 v4.2.2
 ------
 - BufFix: User multi group 500 and duplicated menu item list.

@@ -21,10 +21,7 @@ from typing import List, Dict
 
 from ensembl.production.portal.models import AppView
 
-User = get_user_model()
 logger = logging.getLogger(__name__)
-
-old_top_menu = jazzmin.get_top_menu
 
 
 @register.simple_tag
@@ -35,7 +32,7 @@ def get_top_menu(user: AbstractUser, admin_site: str = "admin") -> List[Dict]:
     options = get_settings()
     menu = make_menu(user, options.get("topmenu_links", []), options, admin_site=admin_site)
     children = [
-        {"name": child.app_name, "url": child.get_admin_url(), "children": None}
+        {"name": child.app_name, "url": child.get_admin_url(), "children": None, "icon": "portal/img/logo.png"}
         for child in AppView.objects.user_apps(user)
     ]
     menu.append(
@@ -47,5 +44,3 @@ def get_top_menu(user: AbstractUser, admin_site: str = "admin") -> List[Dict]:
         }
     )
     return menu
-
-# jazzmin.get_top_menu = get_ens_top_menu
