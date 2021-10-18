@@ -1,6 +1,11 @@
 CHANGELOG - Ensembl Production Portal
 =====================================
 
+v4.2.4
+------
+- bugfix: pop-up opening
+- home page widget for accessing CHANGELOG from included modules
+
 v4.2.3
 ------
 - Added shortcut "New DBCopy Job" on top menu bar
