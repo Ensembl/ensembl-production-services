@@ -14,15 +14,17 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 
-from ensembl.production.portal.views import AppCssView
+from ensembl.production.portal.views import AppCssView, schema_view
+
 
 urlpatterns = [
     # New apps layout urls
     path(f'api/production_db/', include('ensembl.production.masterdb.api.urls')),
-    path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),
     path(f'api/dbcopy/', include('ensembl.production.dbcopy.api.urls')),
-    path(f'accounts/', include('django.contrib.auth.urls')),
+    path(f'apidocs/', admin.site.admin_view(schema_view.with_ui(cache_timeout=10)), name='rest_api_docs'),
     path(f'app/<slug:app_prod_url>.css', AppCssView.as_view()),
+    path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),
+    path(f'accounts/', include('django.contrib.auth.urls')),
     path(f'', admin.site.urls),
 ]
 

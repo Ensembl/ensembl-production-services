@@ -102,3 +102,12 @@ textarea {
 #id_email_list {
   width: 420px;
 }
+
+.main-footer {
+  opacity: 90%!important;
+  background-color: azure!important;
+}
+
+.scheme-container {
+  background: unset !important;
+}

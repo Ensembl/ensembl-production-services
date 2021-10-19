@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'drf-yasg/style.css' %}"/>
+{% endblock %}
+
+{% block content %}
+
+    <div id="redoc-placeholder"></div>
+
+    <script id="redoc-settings" type="application/json">{{ redoc_settings | safe }}</script>
+
+    {% block main_scripts %}
+        <script src="{% static 'drf-yasg/insQ.min.js' %}"></script>
+        <script src="{% static 'drf-yasg/url-polyfill.min.js' %}"></script>
+        <script src="{% static 'drf-yasg/redoc-init.js' %}"></script>
+        <script src="{% static 'drf-yasg/redoc/redoc.min.js' %}"></script>
+    {% endblock %}
+
+{% endblock %}
