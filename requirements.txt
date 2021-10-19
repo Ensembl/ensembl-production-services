@@ -4,6 +4,7 @@ django-cors-headers==3.10.0
 django-ckeditor>=6.0.0,<=6.1.0
 django-environ==0.7.0
 gunicorn~=20.1.0
+django-admin-inline-paginator==0.2.0
 ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.4.0#egg=ensembl-prodinf-dbcopy
 ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1#egg=ensembl-prodinf-webhelp
 ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.1#egg=ensembl-prodinf-masterdb
