@@ -100,6 +100,7 @@ INSTALLED_APPS = [
     'dal',
 ]
 
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -110,8 +111,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
-
-X_FRAME_OPTIONS = "SAMEORIGIN"
 
 INTERNAL_IPS = [
     # ...
