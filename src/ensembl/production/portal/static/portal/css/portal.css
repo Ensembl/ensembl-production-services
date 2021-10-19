@@ -87,27 +87,30 @@ textarea {
   background-color: whitesmoke;
 }
 
-.select2.select2-container.select2-container--default ~ span.select2 {
+#requestjob_form .select2.select2-container.select2-container--default ~ span.select2 {
   display:none
 }
 
-.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
-  padding-left:1.5rem;
+.select2-container {
+  width: auto !important;
 }
 
 #requestjob_form .form-group .row p.errornote.alert {
   display: none
 }
 
-#id_email_list {
+#requestjob_form #id_email_list {
   width: 420px;
 }
 
-.main-footer {
-  opacity: 90%!important;
-  background-color: azure!important;
+#requestjob_form input[type='text'] {
+  min-height: 37px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding-left: 10px;
 }
-
 .scheme-container {
   background: unset !important;
 }
+
+
