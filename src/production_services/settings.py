@@ -78,6 +78,7 @@ if not DEBUG:
 INSTALLED_APPS = [
     'dal_select2',
     'jazzmin',
+    'django.contrib.admindocs',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -97,7 +98,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'drf_yasg',
     'corsheaders',
-    'dal',
+    'dal'
 ]
 
 MIDDLEWARE = [
@@ -255,10 +256,9 @@ JAZZMIN_SETTINGS = {
         {"name": "Home", "url": "admin:index"},
         # external url that opens in a new window (Permissions can be added)
         {"name": "Support", "url": "https://www.ebi.ac.uk/panda/jira/projects/ENSPROD/issues/", "new_window": True},
-        {"name": "Api docs", "url": "rest_api_docs", "new_window": False},
         # model admin to link to (Permissions checked against model)
-        # {"model": "ensembl_prodinf_portal.AppView"},
-        {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
+        {"name": "Api docs", "url": "rest_api_docs", "new_window": False},
+            {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
         {"app": "ensembl_prodinf_portal", "permissions": ["auth.is_superuser"]},
     ],
     # Whether to display the side menu

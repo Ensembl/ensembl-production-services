@@ -11,3 +11,4 @@ ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb
 ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1.1#egg=ensembl-prodinf-jira
 mysqlclient==2.0.3
 python-dotenv==0.19.1
+docutils~=0.17.1

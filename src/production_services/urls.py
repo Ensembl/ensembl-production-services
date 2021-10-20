@@ -25,6 +25,7 @@ urlpatterns = [
     path(f'app/<slug:app_prod_url>.css', AppCssView.as_view()),
     path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),
     path(f'accounts/', include('django.contrib.auth.urls')),
+    path(f'admin/doc/', include('django.contrib.admindocs.urls')),
     path(f'', admin.site.urls),
 ]
 

@@ -4,7 +4,10 @@ CHANGELOG - Ensembl Production Portal
 v4.2.4
 ------
 - bugfix: pop-up opening
-- home page widget for accessing CHANGELOG from included modules
+- Top Menu: 
+  - Production REST endpoints swagger docs (ProductionDB and DBCopy)
+  - models docs link (top right corner)
+- CHANGELOG github link added. 
 
 v4.2.3
 ------
