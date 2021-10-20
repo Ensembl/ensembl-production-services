@@ -78,6 +78,7 @@ if not DEBUG:
 INSTALLED_APPS = [
     'dal_select2',
     'jazzmin',
+    'django.contrib.admindocs',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -87,19 +88,18 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_swagger',
     # Ensembl production apps
+    'ensembl.production.portal',
     'ensembl.production.dbcopy',
     'ensembl.production.webhelp',
     'ensembl.production.masterdb',
     'ensembl.production.jira',
-    'ensembl.production.portal',
     # Required utils
     'django_admin_inline_paginator',
     'ckeditor',
     'drf_yasg',
     'corsheaders',
-    'dal',
+    'dal'
 ]
-
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -111,6 +111,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
+
+X_FRAME_OPTIONS = "SAMEORIGIN"
 
 INTERNAL_IPS = [
     # ...
@@ -248,16 +250,15 @@ JAZZMIN_SETTINGS = {
     "copyright": "Ensembl Production Team (with Jazzmin)",
     # Field name on user model that contains avatar image
     "custom_js": 'portal/js/portal.js',
+    "custom_css": 'portal/css/portal.css',
     "topmenu_links": [
         # Url that gets reversed (Permissions can be added)
         {"name": "Home", "url": "admin:index"},
         # external url that opens in a new window (Permissions can be added)
         {"name": "Support", "url": "https://www.ebi.ac.uk/panda/jira/projects/ENSPROD/issues/", "new_window": True},
         # model admin to link to (Permissions checked against model)
-        # {"model": "ensembl_prodinf_portal.AppView"},
-        # short link to Production Apps
-        # {"name": "Self-Services", "url": "admin:ensembl_prodinf_portal_appview_changelist", "new_window": False},
-        {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
+        {"name": "Api docs", "url": "rest_api_docs", "new_window": False},
+            {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
         {"app": "ensembl_prodinf_portal", "permissions": ["auth.is_superuser"]},
     ],
     # Whether to display the side menu
@@ -327,7 +328,7 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
     "theme": "sandstone",
-    "dark_mode_theme": None,
+    "dark_mode_theme": "darkly",
     "button_classes": {
         "primary": "btn-primary",
         "secondary": "btn-outline-secondary",

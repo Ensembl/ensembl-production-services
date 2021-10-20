@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+{% load static jazzmin %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'drf-yasg/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'drf-yasg/swagger-ui-dist/swagger-ui.css' %}">
+{% endblock %}
+
+{% block page_content %}
+    <div id="swagger-ui"></div>
+
+    <script id="swagger-settings" type="application/json">{{ swagger_settings | safe }}</script>
+    <script id="oauth2-config" type="application/json">{{ oauth2_config | safe }}</script>
+
+{% endblock %}
+
+{% block extrajs %}
+    <script src="{% static 'drf-yasg/swagger-ui-dist/swagger-ui-bundle.js' %}"></script>
+    <script src="{% static 'drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js' %}"></script>
+    <script src="{% static 'drf-yasg/insQ.min.js' %}"></script>
+    <script src="{% static 'drf-yasg/immutable.min.js' %}"></script>
+    <script src="{% static 'drf-yasg/url-polyfill.min.js' %}"></script>
+    <script src="{% static 'drf-yasg/swagger-ui-init.js' %}"></script>
+{% endblock %}
