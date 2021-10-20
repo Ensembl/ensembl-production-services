@@ -7,7 +7,8 @@ v4.2.4
 - Top Menu: 
   - Production REST endpoints swagger docs (ProductionDB and DBCopy)
   - models docs link (top right corner)
-- CHANGELOG github link added. 
+- CHANGELOG github link added.
+- bugfix: prodinf-jira bumped to 1.1.1 to fix issue with intentions retrieval
 
 v4.2.3
 ------

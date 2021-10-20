@@ -8,7 +8,7 @@ django-admin-inline-paginator==0.2.0
 ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.4.0#egg=ensembl-prodinf-dbcopy
 ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1#egg=ensembl-prodinf-webhelp
 ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.1#egg=ensembl-prodinf-masterdb
-ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1.1#egg=ensembl-prodinf-jira
+ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1.1.1#egg=ensembl-prodinf-jira
 mysqlclient==2.0.3
 python-dotenv==0.19.1
 docutils~=0.17.1
