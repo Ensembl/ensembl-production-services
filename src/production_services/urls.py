@@ -15,12 +15,25 @@ from django.contrib import admin
 from django.urls import path
 
 from ensembl.production.portal.views import AppCssView, schema_view
+from ensembl.production.eventmonitor.views import WorkflowView
+_admin_site_get_urls = admin.site.get_urls
 
+def get_urls():
+    from django.conf.urls import url
+    urls = _admin_site_get_urls()
+    urls += [
+        url(r'^my_custom_view/$',
+            admin.site.admin_view(WorkflowView.as_view()))
+    ]
+    return urls
+
+admin.site.get_urls = get_urls
 
 urlpatterns = [
     # New apps layout urls
     path(f'api/production_db/', include('ensembl.production.masterdb.api.urls')),
     path(f'api/dbcopy/', include('ensembl.production.dbcopy.api.urls')),
+    path(f'api/workflows/', include('ensembl.production.eventmonitor.api.urls')),
     path(f'apidocs/', admin.site.admin_view(schema_view.with_ui(cache_timeout=10)), name='rest_api_docs'),
     path(f'app/<slug:app_prod_url>.css', AppCssView.as_view()),
     path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),

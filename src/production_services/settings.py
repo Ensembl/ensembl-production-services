@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     'ensembl.production.webhelp',
     'ensembl.production.masterdb',
     'ensembl.production.jira',
+    'ensembl.production.eventmonitor',
     # Required utils
     'django_admin_inline_paginator',
     'ckeditor',
@@ -214,14 +215,6 @@ CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
 # mailing
 LOGIN_REDIRECT_URL = '/'
 
-MESSAGE_TAGS = {
-    messages.DEBUG: 'info alert-info',
-    messages.INFO: 'info alert-info',
-    messages.SUCCESS: 'success alert-success',
-    messages.WARNING: 'warning alert-warning',
-    messages.ERROR: 'danger alert-danger',
-}
-
 IS_TESTING = sys.argv[1:2] == ['test']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' \
@@ -237,6 +230,23 @@ with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
 # USE_X_FORWARDED_HOST = True
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
+# PRODINF EVENT MONITOR CONFIG
+#relase versions details
+ENS_VERSION = os.getenv('ENS_VERSION', 105)
+RR_VERSION = os.getenv('RR_VERSION', 105)
+
+#elastic search details
+ELASTICSEARCH_HOST  = os.getenv("ELASTICSEARCH_HOST", 'localhost')
+ELASTICSEARCH_PORT  = os.getenv("ELASTICSEARCH_PORT", 9200)
+ELASTICSEARCH_INDEX = os.getenv("ELASTICSEARCH_INDEX", 'reports_workflow')
+ES_ALLOWED_QUER_PARAMS = os.getenv("ES_ALLOWED_QUER_PARAMS", ['release_version', 'handover_token', 'db_division', 'databases', 'db_type', 'source', 'workflow'])
+ES_FILTER_DIVISION = os.getenv("ES_FILTER_DIVISION", ['vertebrates', 'plants', 'metazoa', 'microbes'])
+ES_FILTER_STATUS = os.getenv("ES_FILTER_STATUS", ['Done', 'Running', 'Failed', 'Cancled'])
+ES_FILTER_ENS_RELEASE = os.getenv("ES_FILTER_ENS_RELEASE", [ i for i in range(ENS_VERSION,ENS_VERSION-3, -1)])
+ES_FILTER_SOURCE = os.getenv("ES_FILTER_SOURCE", [ 'Rapid', 'Handover'])
+EVENT_FLASK_URL = os.getenv("EVENT_FLASK_URL", 'http://localhost:5001/workflows')
+
+# JAZZMIN CONFIG
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "Production Portal",
