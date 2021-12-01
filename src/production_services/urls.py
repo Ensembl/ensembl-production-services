@@ -15,19 +15,7 @@ from django.contrib import admin
 from django.urls import path
 
 from ensembl.production.portal.views import AppCssView, schema_view
-from ensembl.production.eventmonitor.views import WorkflowView
-_admin_site_get_urls = admin.site.get_urls
 
-def get_urls():
-    from django.conf.urls import url
-    urls = _admin_site_get_urls()
-    urls += [
-        url(r'^my_custom_view/$',
-            admin.site.admin_view(WorkflowView.as_view()))
-    ]
-    return urls
-
-admin.site.get_urls = get_urls
 
 urlpatterns = [
     # New apps layout urls

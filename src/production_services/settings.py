@@ -231,20 +231,23 @@ with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # PRODINF EVENT MONITOR CONFIG
-#relase versions details
+# relase versions details
+# relase versions details
 ENS_VERSION = os.getenv('ENS_VERSION', 105)
 RR_VERSION = os.getenv('RR_VERSION', 105)
 
-#elastic search details
-ELASTICSEARCH_HOST  = os.getenv("ELASTICSEARCH_HOST", 'localhost')
-ELASTICSEARCH_PORT  = os.getenv("ELASTICSEARCH_PORT", 9200)
-ELASTICSEARCH_INDEX = os.getenv("ELASTICSEARCH_INDEX", 'reports_workflow')
-ES_ALLOWED_QUER_PARAMS = os.getenv("ES_ALLOWED_QUER_PARAMS", ['release_version', 'handover_token', 'db_division', 'databases', 'db_type', 'source', 'workflow'])
-ES_FILTER_DIVISION = os.getenv("ES_FILTER_DIVISION", ['vertebrates', 'plants', 'metazoa', 'microbes'])
-ES_FILTER_STATUS = os.getenv("ES_FILTER_STATUS", ['Done', 'Running', 'Failed', 'Cancled'])
-ES_FILTER_ENS_RELEASE = os.getenv("ES_FILTER_ENS_RELEASE", [ i for i in range(ENS_VERSION,ENS_VERSION-3, -1)])
-ES_FILTER_SOURCE = os.getenv("ES_FILTER_SOURCE", [ 'Rapid', 'Handover'])
-EVENT_FLASK_URL = os.getenv("EVENT_FLASK_URL", 'http://localhost:5001/workflows')
+# elastic search details
+ELASTICSEARCH_HOST = env.str("ELASTICSEARCH_HOST", default='localhost')
+ELASTICSEARCH_PORT = env.int("ELASTICSEARCH_PORT", default=9200)
+ELASTICSEARCH_INDEX = env.str("ELASTICSEARCH_INDEX", default='reports_workflow')
+ES_ALLOWED_QUERY_PARAMS = env.str("ES_ALLOWED_QUERY_PARAMS",
+                                  default=['release_version', 'handover_token', 'db_division', 'databases', 'db_type',
+                                           'source', 'workflow'])
+ES_FILTER_DIVISION = env.str("ES_FILTER_DIVISION", default=['vertebrates', 'plants', 'metazoa', 'microbes'])
+ES_FILTER_STATUS = env.str("ES_FILTER_STATUS", default=['Done', 'Running', 'Failed', 'Cancled'])
+ES_FILTER_ENS_RELEASE = env.str("ES_FILTER_ENS_RELEASE", default=[os.getenv('ENS_VERSION')])
+ES_FILTER_SOURCE = env.str("ES_FILTER_SOURCE", default=['Rapid', 'Handover'])
+EVENT_FLASK_URL = env.str("EVENT_FLASK_URL", default='http://localhost:5001/workflows')
 
 # JAZZMIN CONFIG
 JAZZMIN_SETTINGS = {
@@ -268,7 +271,7 @@ JAZZMIN_SETTINGS = {
         {"name": "Support", "url": "https://www.ebi.ac.uk/panda/jira/projects/ENSPROD/issues/", "new_window": True},
         # model admin to link to (Permissions checked against model)
         {"name": "Api docs", "url": "rest_api_docs", "new_window": False},
-            {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
+        {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
         {"app": "ensembl_prodinf_portal", "permissions": ["auth.is_superuser"]},
     ],
     # Whether to display the side menu
