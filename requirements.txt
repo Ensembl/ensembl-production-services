@@ -1,14 +1,17 @@
 Django~=3.2.4
 django-jazzmin~=2.4.7
 django-cors-headers==3.10.0
+djangorestframework~=3.12.2
+django-autocomplete-light==3.8.2
 django-ckeditor>=6.0.0,<=6.1.0
-django-environ==0.8.0
+django-environ==0.8.1
 gunicorn~=20.1.0
 django-admin-inline-paginator==0.2.0
+# ensembl-prodinf-djcore@git+https://github.com/Ensembl/ensembl-prodinf-djcore.git#egg=ensembl-prodinf-djcore
 ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.4.0#egg=ensembl-prodinf-dbcopy
 ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1#egg=ensembl-prodinf-webhelp
 ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.1#egg=ensembl-prodinf-masterdb
 ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1.1.1#egg=ensembl-prodinf-jira
-mysqlclient==2.0.3
-python-dotenv==0.19.1
-docutils~=0.17.1
+mysqlclient==2.1.0
+python-dotenv==0.19.2
+docutils==0.18.1

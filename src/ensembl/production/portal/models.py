@@ -60,7 +60,7 @@ class ProductionApp(BaseTimestampedModel):
     app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
     app_is_framed = models.BooleanField('Display app in iframe', default=True, null=True, help_text='Need an url then')
-    app_url = models.URLField("App flask url", max_length=255, null=True, blank=True)
+    app_url = models.CharField("App flask url", max_length=255, null=False, blank=False)
     app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)
     app_groups = models.ManyToManyField(Group, blank=True)
     app_prod_url = models.CharField('App Url', max_length=200, null=False, unique=True)
