@@ -54,7 +54,9 @@ class ProductionApp(BaseTimestampedModel):
         ('28a745', 'Plants'),
         ('770f31', 'Rapid'),
         ('17a2b8', 'Vertebrates'),
-        ('8552c0', 'Viruses')
+        ('8552c0', 'Viruses'),
+        ('ff9900', 'Gifts'),
+        ('17a2b8', 'Production'),
     )
 
     app_id = models.AutoField(primary_key=True)

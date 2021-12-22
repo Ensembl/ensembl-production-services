@@ -25,6 +25,7 @@ ul.messagelist li.sucess{
     display: block;
 }
 */
+
 body.jazzmin-login-page {
   background: #333333 url("/static/portal/img/splash.jpg") no-repeat center center;
   background-size: cover;
@@ -113,4 +114,7 @@ textarea {
   background: unset !important;
 }
 
-
+.breadcrumb {
+  background-color: ghostwhite!important;
+  padding: 2px 5px!important;
+}
