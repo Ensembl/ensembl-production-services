@@ -5,6 +5,12 @@
     <img class="" src="{% static original.img %}" alt="{{ original.name }}" style="height: 50px">
 {% endblock %}
 
+{% block page_content %}
+    <div style="background-color:#{{ original.app_theme }};">
+        {{ block.super }}
+    </div>
+{% endblock %}
+
 {% block content %}
     <div class="container-fluid" style="height: 100%">
         <div class="app-iframe-container {{ original.app_name }}">

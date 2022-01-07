@@ -1,6 +1,12 @@
 CHANGELOG - Ensembl Production Portal
 =====================================
 
+v4.3.0
+------
+- Updated dependencies version in requirements.txt
+- New Version of DBCopy app
+- App can now have relative path based on portal base url http://ensembl-services.ensembl.org 
+
 v4.2.4
 ------
 - bugfix: pop-up opening
