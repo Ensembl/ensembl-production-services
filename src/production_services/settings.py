@@ -11,9 +11,9 @@
 #   limitations under the License.import os
 import os
 
+import environ
 import sys
 from django.contrib.messages import constants as messages
-import environ
 
 env = environ.Env(
     # set casting, default value
@@ -227,13 +227,14 @@ IS_TESTING = sys.argv[1:2] == ['test']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' \
     if not DEBUG else 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default="ensembl-production@ebi.ac.uk")
+MASTER_DB_ALERTS_EMAIL = env.str('MASTER_DB_ALERTS_EMAIL', default="ensembl-production@ebi.ac.uk")
+
 EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://user:password@localhost:25')
 vars().update(EMAIL_CONFIG)
 LOGOUT_REDIRECT_URL = "/"
 with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
     PORTAL_VERSION = f.read()
 
-## Set to have request.get_host() give precedence to X-Forwarded-Host over Host
 # USE_X_FORWARDED_HOST = True
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
@@ -258,7 +259,7 @@ JAZZMIN_SETTINGS = {
         {"name": "Support", "url": "https://www.ebi.ac.uk/panda/jira/projects/ENSPROD/issues/", "new_window": True},
         # model admin to link to (Permissions checked against model)
         {"name": "Api docs", "url": "rest_api_docs", "new_window": False},
-            {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
+        {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
         {"app": "ensembl_prodinf_portal", "permissions": ["auth.is_superuser"]},
     ],
     # Whether to display the side menu
