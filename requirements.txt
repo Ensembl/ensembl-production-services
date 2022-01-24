@@ -103,19 +103,19 @@ drf-yasg==1.20.0
     #   ensembl-prodinf-masterdb
 ensembl-prodinf-core==2.0.2
     # via ensembl-prodinf-dbcopy
-ensembl-prodinf-dbcopy @ git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.5.1
+ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.5.1
     # via -r requirements.in
-ensembl-prodinf-djcore @ git+https://github.com/Ensembl/ensembl-prodinf-djcore.git@1.1
+ensembl-prodinf-djcore@git+https://github.com/Ensembl/ensembl-prodinf-djcore.git@1.1
     # via
     #   ensembl-prodinf-dbcopy
     #   ensembl-prodinf-jira
     #   ensembl-prodinf-masterdb
     #   ensembl-prodinf-webhelp
-ensembl-prodinf-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1.1.1
+ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1.1.1
     # via -r requirements.in
-ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.1
+ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.1
     # via -r requirements.in
-ensembl-prodinf-webhelp @ git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1
+ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1
     # via -r requirements.in
 greenlet==1.1.2
     # via sqlalchemy

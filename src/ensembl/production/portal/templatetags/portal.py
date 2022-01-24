@@ -10,14 +10,14 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 import logging
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AbstractUser
-from django.template import Library
-from jazzmin.settings import get_settings
-from jazzmin.utils import make_menu
-from jazzmin.templatetags import jazzmin
-from jazzmin.templatetags.jazzmin import register
 from typing import List, Dict
+
+import pkg_resources
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from jazzmin.settings import get_settings
+from jazzmin.templatetags.jazzmin import register
+from jazzmin.utils import make_menu
 
 from ensembl.production.portal.models import AppView
 
@@ -35,12 +35,25 @@ def get_top_menu(user: AbstractUser, admin_site: str = "admin") -> List[Dict]:
         {"name": child.app_name, "url": child.get_admin_url(), "children": None, "icon": "portal/img/logo.png"}
         for child in AppView.objects.user_apps(user)
     ]
-    menu.append(
-        {
-            "name": "Self Services",
-            "url": "#",
-            "children": children,
-            "icon": options["default_icon_children"],
-        }
-    )
+    menu.insert(len(menu) - 2 if len(menu) > 2 else 1,
+                {
+                    "name": "Self Services",
+                    "url": "#",
+                    "children": children,
+                    "icon": options["default_icon_children"],
+                }
+                )
     return menu
+
+
+@register.simple_tag
+def app_version(app):
+    print(app['app_label'])
+    if app['app_label'] in settings.APP_LABEL_MAP:
+        try:
+            package = pkg_resources.get_distribution(settings.APP_LABEL_MAP[app['app_label']])
+            return f"v{package.version}"
+        except pkg_resources.DistributionNotFound:
+            print("not Found", app['app_label'])
+            pass
+    return ""

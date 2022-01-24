@@ -101,6 +101,15 @@ INSTALLED_APPS = [
     'dal'
 ]
 
+# Display Models APPs version in home page.
+APP_LABEL_MAP = {
+    'ensembl_dbcopy': 'ensembl-prodinf-dbcopy',
+    'ensembl_website': 'ensembl-prodinf-webhelp ',
+    'ensembl_production_db': 'ensembl-prodinf-masterdb',
+    'ensembl_jira': 'ensembl-prodinf-jira',
+    'ensembl_prodinf_portal': 'ensembl.prodinf.portal'
+}
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -129,7 +138,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'ensembl', 'production', 'portal', 'templates'),
+                 os.path.join(BASE_DIR, 'templates')],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
