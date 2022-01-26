@@ -105,7 +105,7 @@ drf-yasg==1.20.0
     #   ensembl-prodinf-masterdb
 ensembl-prodinf-core==2.0.3
     # via ensembl-prodinf-dbcopy
-ensembl-prodinf-dbcopy @ git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.5.1
+ensembl-prodinf-dbcopy @ git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.6.0
     # via -r requirements.in
 ensembl-prodinf-djcore @ git+https://github.com/Ensembl/ensembl-prodinf-djcore.git@1.1
     # via
