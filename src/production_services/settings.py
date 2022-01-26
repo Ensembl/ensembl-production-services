@@ -80,7 +80,8 @@ INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admindocs',
     'django.contrib.admin',
-    'django.contrib.auth',
+    'ensembl.production.portal.apps.ProdAuthConfig',
+    #'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -106,8 +107,7 @@ APP_LABEL_MAP = {
     'ensembl_dbcopy': 'ensembl-prodinf-dbcopy',
     'ensembl_website': 'ensembl-prodinf-webhelp ',
     'ensembl_production_db': 'ensembl-prodinf-masterdb',
-    'ensembl_jira': 'ensembl-prodinf-jira',
-    'ensembl_prodinf_portal': 'ensembl.prodinf.portal'
+    'ensembl_jira': 'ensembl-prodinf-jira'
 }
 
 MIDDLEWARE = [

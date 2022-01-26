@@ -13,6 +13,7 @@ import logging
 from django.apps import AppConfig
 from django.db.models.signals import class_prepared
 from ensembl.production.djcore.config import override_logentry
+from django.contrib.auth.apps import AuthConfig
 
 
 class EnsemblProductionConfig(AppConfig):
@@ -27,3 +28,7 @@ class EnsemblProductionConfig(AppConfig):
         """
         class_prepared.connect(override_logentry)
         pass
+
+
+class ProdAuthConfig(AuthConfig):
+    verbose_name = "Users/Groups"

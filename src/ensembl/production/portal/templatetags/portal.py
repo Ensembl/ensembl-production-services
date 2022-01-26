@@ -13,8 +13,8 @@ import logging
 from typing import List, Dict
 
 import pkg_resources
-from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from jazzmin.settings import get_settings
 from jazzmin.templatetags.jazzmin import register
 from jazzmin.utils import make_menu
@@ -48,12 +48,17 @@ def get_top_menu(user: AbstractUser, admin_site: str = "admin") -> List[Dict]:
 
 @register.simple_tag
 def app_version(app):
-    print(app['app_label'])
+    # TODO Use instead a version attribute to set in corresponding AppConfigs
+    # from django.apps import apps
+    # print(apps.get_app_config(app['app_label']).path)
     if app['app_label'] in settings.APP_LABEL_MAP:
         try:
-            package = pkg_resources.get_distribution(settings.APP_LABEL_MAP[app['app_label']])
-            return f"v{package.version}"
+            pkg_name = settings.APP_LABEL_MAP[app['app_label']].strip()
+            package = pkg_resources.get_distribution(pkg_name)
+            return f'v{package.version}'
+            # Activate link when retrieved from AppConfig.
+            # return mark_safe(f"<a href='https://github.com/Ensembl/{pkg_name}/blob/{package.version}/CHANGELOG.md'" \
+            #       f" target='_blank'>v{package.version}</a>")
         except pkg_resources.DistributionNotFound:
-            print("not Found", app['app_label'])
             pass
     return ""
