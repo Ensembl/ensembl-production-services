@@ -43,11 +43,11 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
     }
 
     @staticmethod
-    def app_theme_color(self, obj):
+    def app_theme_color(obj):
         return mark_safe(u"<div class='admin_app_theme_color' style='background:#" + obj.app_theme + "'/>")
 
     @staticmethod
-    def app_url_link(self, obj):
+    def app_url_link(obj):
         if obj.app_prod_url:
             url_view = reverse('admin:ensembl_prodinf_portal_appview_change',
                                args=(obj.app_id,))
