@@ -32,7 +32,6 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
                        'modified_by')
     fields = ('app_name', 'app_prod_url', 'app_url_link',
               'app_is_framed', 'app_url',
-              'app_config_params',
               'app_theme', 'app_groups',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
