@@ -268,7 +268,7 @@ JAZZMIN_SETTINGS = {
         {"name": "Support", "url": "https://www.ebi.ac.uk/panda/jira/projects/ENSPROD/issues/", "new_window": True},
         # model admin to link to (Permissions checked against model)
         {"name": "Api docs", "url": "rest_api_docs", "new_window": False},
-            {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
+        {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
         {"app": "ensembl_prodinf_portal", "permissions": ["auth.is_superuser"]},
     ],
     # Whether to display the side menu

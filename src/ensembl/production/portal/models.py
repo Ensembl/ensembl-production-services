@@ -101,3 +101,6 @@ class AppView(ProductionApp):
     objects = AppViewObjects()
 
     # TODO single entry point for supervisors
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(AppView)
+        return reverse("admin:%s_%s_change" % (content_type.app_label, 'appview'), args=(self.app_id,))
