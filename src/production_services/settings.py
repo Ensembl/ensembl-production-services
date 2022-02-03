@@ -258,7 +258,7 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to Production services portal",
     # Copyright on the footer
     "copyright": "Ensembl Production Team (with Jazzmin)",
-    # Field name on user model that contains avatar image
+    # Field names on user model that contains avatar image
     "custom_js": 'portal/js/portal.js',
     "custom_css": 'portal/css/portal.css',
     "topmenu_links": [
@@ -331,7 +331,7 @@ JAZZMIN_UI_TWEAKS = {
     "footer_fixed": True,
     "sidebar_fixed": False,
     "sidebar": "sidebar-dark-primary",
-    "sidebar_nav_small_text": False,
+    "sidebar_nav_small_text": True,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True,
     "sidebar_nav_compact_style": True,
