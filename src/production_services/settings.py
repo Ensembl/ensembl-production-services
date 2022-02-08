@@ -238,6 +238,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' \
     if not DEBUG else 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default="ensembl-production@ebi.ac.uk")
 EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://user:password@localhost:25')
+MASTER_DB_ALERTS_EMAIL="ensembl-production@ebi.ac.uk"
 vars().update(EMAIL_CONFIG)
 LOGOUT_REDIRECT_URL = "/"
 with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
