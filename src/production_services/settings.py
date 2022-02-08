@@ -252,6 +252,7 @@ JAZZMIN_SETTINGS = {
     "site_title": "Production Portal",
     # Title on the brand, and login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     "site_header": "Production",
+    "site_brand": "Service portal",
     # square logo to use for your site, must be present in static files, used for favicon and brand on top left
     "site_logo": "/portal/img/2020e.svg",
     # Welcome text on the login screen
