@@ -35,8 +35,7 @@ def get_top_menu(user: AbstractUser, admin_site: str = "admin") -> List[Dict]:
         {"name": child.app_name, "url": child.get_admin_url(), "children": None, "icon": "portal/img/logo.png"}
         for child in AppView.objects.user_apps(user)
     ]
-    menu.insert(len(menu) - 2 if len(menu) > 2 else 1,
-                {
+    menu.append({
                     "name": "Self Services",
                     "url": "#",
                     "children": children,
