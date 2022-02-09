@@ -1,13 +1,23 @@
 CHANGELOG - Ensembl Production Portal
 =====================================
 
-v4.3.0
+4.4.0
+-----
+- Display apps version for Ensembl managed modules
+- Removed obsolete view
+- Bumped `ensembl-prodinf-dbcopy` to 1.6.0
+- Copyright updates
+- Updates App stylesheets
+- Removed obsolete field in FlaskApps table `app_config_params`
+- Renamed `django.contrib.auth` verbose name (better display in left menu)
+
+4.3.0
 ------
 - Updated dependencies version in requirements.txt
 - New Version of DBCopy app
 - App can now have relative path based on portal base url http://ensembl-services.ensembl.org 
 
-v4.2.4
+4.2.4
 ------
 - bugfix: pop-up opening
 - Top Menu: 
@@ -16,7 +26,7 @@ v4.2.4
 - CHANGELOG github link added.
 - bugfix: prodinf-jira bumped to 1.1.1 to fix issue with intentions retrieval
 
-v4.2.3
+4.2.3
 ------
 - Added shortcut "New DBCopy Job" on top menu bar
 - Integrated latest version of DBCopy (1.4.0) 
@@ -26,20 +36,20 @@ v4.2.3
   - django-cors-header 3.7.0 => 3.10.0
   - python-dotenv 0.18.0 => 0.19.0
 
-v4.2.2
+4.2.2
 ------
 - BufFix: User multi group 500 and duplicated menu item list.
 
 
-v4.2.1
+4.2.1
 ------
 - Bumped ensembl-dbcopy to 1.2.1 (hotfix)
 
-v4.2
+4.2
 ----
 - Bumped ensembl-prodinf-dbcopy to 1.2
 
-v4.1
+4.1
 ----
 - Bumped django-admin-inline-paginator version to 0.2
 - Bumped ensembl-prodinf-dbcopy to 1.1
@@ -47,7 +57,7 @@ v4.1
 - Bumped ensembl-prodinf-masterdb to 1.1
 - Bumped ensembl-prodinf-jira to 1.1
 
-v4.0
+4.0
 ----
 - Moved from initial production services monolithic application
 - Added portables apps as modules

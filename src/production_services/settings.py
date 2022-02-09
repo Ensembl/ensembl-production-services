@@ -80,7 +80,8 @@ INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admindocs',
     'django.contrib.admin',
-    'django.contrib.auth',
+    'ensembl.production.portal.apps.ProdAuthConfig',
+    #'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -100,6 +101,14 @@ INSTALLED_APPS = [
     'corsheaders',
     'dal'
 ]
+
+# Display Models APPs version in home page.
+APP_LABEL_MAP = {
+    'ensembl_dbcopy': 'ensembl-prodinf-dbcopy',
+    'ensembl_website': 'ensembl-prodinf-webhelp ',
+    'ensembl_production_db': 'ensembl-prodinf-masterdb',
+    'ensembl_jira': 'ensembl-prodinf-jira'
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -129,7 +138,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'ensembl', 'production', 'portal', 'templates'),
+                 os.path.join(BASE_DIR, 'templates')],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -230,6 +240,7 @@ DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default="ensembl-production@e
 MASTER_DB_ALERTS_EMAIL = env.str('MASTER_DB_ALERTS_EMAIL', default="ensembl-production@ebi.ac.uk")
 
 EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://user:password@localhost:25')
+MASTER_DB_ALERTS_EMAIL="ensembl-production@ebi.ac.uk"
 vars().update(EMAIL_CONFIG)
 LOGOUT_REDIRECT_URL = "/"
 with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
@@ -243,13 +254,14 @@ JAZZMIN_SETTINGS = {
     "site_title": "Production Portal",
     # Title on the brand, and login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
     "site_header": "Production",
+    "site_brand": "Service portal",
     # square logo to use for your site, must be present in static files, used for favicon and brand on top left
     "site_logo": "/portal/img/2020e.svg",
     # Welcome text on the login screen
     "welcome_sign": "Welcome to Production services portal",
     # Copyright on the footer
     "copyright": "Ensembl Production Team (with Jazzmin)",
-    # Field name on user model that contains avatar image
+    # Field names on user model that contains avatar image
     "custom_js": 'portal/js/portal.js',
     "custom_css": 'portal/css/portal.css',
     "topmenu_links": [
@@ -322,7 +334,7 @@ JAZZMIN_UI_TWEAKS = {
     "footer_fixed": True,
     "sidebar_fixed": False,
     "sidebar": "sidebar-dark-primary",
-    "sidebar_nav_small_text": False,
+    "sidebar_nav_small_text": True,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True,
     "sidebar_nav_compact_style": True,

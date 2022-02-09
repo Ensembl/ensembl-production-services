@@ -9,21 +9,19 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.import jsonfield
-from django.contrib.auth import get_user_model
+import jsonfield
+from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.staticfiles import finders
-from django.templatetags.static import static
-from django.core import exceptions
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
-from django.urls import reverse
+from django.templatetags.static import static
+from django.urls import reverse, path
 from django.utils.safestring import mark_safe
+
 from ensembl.production.djcore.models import BaseTimestampedModel
-from fernet_fields import EncryptedCharField
-import jsonfield
-from django.contrib.auth.models import AbstractUser
 
 connections = ConnectionHandler()
 router = ConnectionRouter()
@@ -66,7 +64,6 @@ class ProductionApp(BaseTimestampedModel):
     app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)
     app_groups = models.ManyToManyField(Group, blank=True)
     app_prod_url = models.CharField('App Url', max_length=200, null=False, unique=True)
-    app_config_params = jsonfield.JSONField('Configuration parameters', null=True, blank=True)
 
     @property
     def img(self):
@@ -103,8 +100,7 @@ class AppView(ProductionApp):
 
     objects = AppViewObjects()
 
+    # TODO single entry point for supervisors
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(AppView)
         return reverse("admin:%s_%s_change" % (content_type.app_label, 'appview'), args=(self.app_id,))
-
-# TODO single entry point for supervisors

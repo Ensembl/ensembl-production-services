@@ -9,18 +9,16 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.import jsonfield
-import random
 
 import jsonfield
 from django.contrib import admin
 # Unregister the provided model admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
-from django.urls import reverse, path
+from django.urls import reverse
 from django.utils.safestring import mark_safe
-from ensembl.production.djcore.admin import ProductionUserAdminMixin, SuperUserAdmin
 
+from ensembl.production.djcore.admin import ProductionUserAdminMixin, SuperUserAdmin
 from ensembl.production.portal.models import ProductionApp, AppView
 
 admin.site.unregister(User)
@@ -34,7 +32,6 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
                        'modified_by')
     fields = ('app_name', 'app_prod_url', 'app_url_link',
               'app_is_framed', 'app_url',
-              'app_config_params',
               'app_theme', 'app_groups',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
@@ -44,10 +41,12 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
                                                                            'class': 'vLargeTextField'})},
     }
 
-    def app_theme_color(self, obj):
+    @staticmethod
+    def app_theme_color(obj):
         return mark_safe(u"<div class='admin_app_theme_color' style='background:#" + obj.app_theme + "'/>")
 
-    def app_url_link(self, obj):
+    @staticmethod
+    def app_url_link(obj):
         if obj.app_prod_url:
             url_view = reverse('admin:ensembl_prodinf_portal_appview_change',
                                args=(obj.app_id,))
@@ -95,6 +94,7 @@ class ProductionAppView(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return AppView.objects.user_apps(request.user)
+
 
 
 @admin.register(User)

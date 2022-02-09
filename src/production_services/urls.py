@@ -22,7 +22,6 @@ urlpatterns = [
     path(f'api/production_db/', include('ensembl.production.masterdb.api.urls')),
     path(f'api/dbcopy/', include('ensembl.production.dbcopy.api.urls')),
     path(f'apidocs/', admin.site.admin_view(schema_view.with_ui(cache_timeout=10)), name='rest_api_docs'),
-    path(f'app/<slug:app_prod_url>.css', AppCssView.as_view()),
     path(f'dbcopy/', include('ensembl.production.dbcopy.urls')),
     path(f'accounts/', include('django.contrib.auth.urls')),
     path(f'admin/doc/', include('django.contrib.admindocs.urls')),
