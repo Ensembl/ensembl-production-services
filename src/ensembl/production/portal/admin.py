@@ -36,10 +36,6 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     ordering = ('app_name',)
-    formfield_overrides = {
-        jsonfield.JSONField: {'widget': jsonfield.fields.JSONWidget(attrs={'rows': 20, 'cols': 70,
-                                                                           'class': 'vLargeTextField'})},
-    }
 
     @staticmethod
     def app_theme_color(obj):

@@ -4,7 +4,6 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import ensembl.production.djcore.models
-import jsonfield.fields
 
 
 class Migration(migrations.Migration):
@@ -28,7 +27,7 @@ class Migration(migrations.Migration):
                 ('app_url', models.URLField(blank=True, max_length=255, null=True, verbose_name='App flask url')),
                 ('app_theme', models.CharField(choices=[('336', 'Ensembl'), ('707080', 'Bacteria'), ('714486', 'Protists'), ('407253', 'Plants'), ('725A40', 'Fungi'), ('015365', 'Metazoa'), ('800066', 'Datachecks')], default='FFFFFF', max_length=6)),
                 ('app_prod_url', models.CharField(max_length=200, unique=True, verbose_name='App Url')),
-                ('app_config_params', jsonfield.fields.JSONField(blank=True, null=True, verbose_name='Configuration parameters')),
+                ('app_config_params', models.JSONField(blank=True, null=True, verbose_name='Configuration parameters')),
                 ('app_groups', models.ManyToManyField(blank=True, to='auth.Group')),
                 ('created_by', ensembl.production.djcore.models.SpanningForeignKey(blank=True, db_column='created_by', db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='productionapp_created_by', related_query_name='productionapp_creates', to=settings.AUTH_USER_MODEL)),
                 ('modified_by', ensembl.production.djcore.models.SpanningForeignKey(blank=True, db_column='modified_by', db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='productionapp_modified_by', related_query_name='productionapp_updates', to=settings.AUTH_USER_MODEL)),
