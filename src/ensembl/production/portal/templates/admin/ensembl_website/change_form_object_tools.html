@@ -1,0 +1,17 @@
+{% extends 'admin/change_form_object_tools.html' %}
+{% load i18n admin_urls webhelp_extra %}
+
+{% block object-tools-items %}
+    {{ block.super }}
+    {% with original|to_class_name|lower as class_lower %}
+        {% if class_lower != "helplink" %}
+            {% url 'admin:ensembl_website_'|add:class_lower|add:'_preview' original.pk|admin_urlquote as preview_url %}
+            <a class="btn btn-block btn-success btn-sm"
+               href="#"
+               onclick="window.open('{% add_preserved_filters preview_url %}', '_blank',
+                       'popup=yes,toolbar=no,scrollbars=yes,resizable=yes,top=50,left=50,width=800,height=1024')">
+            {% trans 'Preview' %}
+            </a>
+        {% endif %}
+    {% endwith %}
+{% endblock %}
