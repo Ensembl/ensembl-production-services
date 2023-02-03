@@ -2,7 +2,7 @@ ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git
 ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1#egg=ensembl-prodinf-webhelp
 ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.1#egg=ensembl-prodinf-masterdb
 ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1.1.1#egg=ensembl-prodinf-jira
-Django~=3.2.10
+Django~=3.2.17
 django-jazzmin~=2.4.7
 django-cors-headers==3.10.1
 djangorestframework~=3.12.2
