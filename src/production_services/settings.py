@@ -60,13 +60,9 @@ LOGGING = {
     }
 
 }
-
-ALLOWED_HOSTS = ['*']
-
-# CORS settings
 if not DEBUG:
-    CORS_ALLOWED_ORIGINS = [
-        'https://www.ebi.ac.uk',
+    ALLOWED_HOSTS = [
+        '.ensembl-production.ebi.ac.uk'
     ]
     CORS_ALLOWED_ORIGIN_REGEXES = [
         r"^http(s)?://\w+\.ebi\.ac\.uk$",
@@ -94,6 +90,7 @@ INSTALLED_APPS = [
     'ensembl.production.webhelp',
     'ensembl.production.masterdb',
     'ensembl.production.jira',
+    'ensembl.production.metadata.admin',
     # Required utils
     'django_admin_inline_paginator',
     'ckeditor',
@@ -122,12 +119,6 @@ MIDDLEWARE = [
 ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
-
-INTERNAL_IPS = [
-    # ...
-    '127.0.0.1',
-    # ...
-]
 
 # AUTHENTICATION_BACKENDS = ("django_python3_ldap.auth.LDAPBackend",)
 APPEND_SLASH = True
@@ -163,7 +154,9 @@ DATABASES = {
     'default': env.db('DATABASE_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_production_services'),
     'production': env.db('PRODUCTION_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_production'),
     'website': env.db('WEBHELP_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_website'),
-    'dbcopy': env.db('DBCOPY_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_dbcopy')
+    'dbcopy': env.db('DBCOPY_DB_URL', default='mysql://ensembl@127.0.0.1:3306/db_copy'),
+    'metadata': env.db('METADATA_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_metadata_2020'),
+    'ncbi': env.db('NCBI_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ncbi_taxonomy'),
 }
 
 DATABASE_ROUTERS = [
@@ -171,6 +164,8 @@ DATABASE_ROUTERS = [
     'ensembl.production.portal.routers.WebhelpRouter',
     'ensembl.production.portal.routers.DbCopyRouter',
     'ensembl.production.portal.routers.ProductionPortalRouter',
+    'ensembl.production.portal.routers.NcbiTaxonomyRouter',
+    'ensembl.production.portal.routers.MetadataRouter',
 ]
 
 # Password validation
@@ -302,6 +297,13 @@ JAZZMIN_SETTINGS = {
         "ensembl_production_db.MasterExternalDb": "fas fa-database",
         "ensembl_production_db.WebData": "fas fa-cloud-meatball",
         "ensembl_production_db.MetaKey": "fas fa-meteor",
+        "ensembl_metadata": "fas fa-microchip",
+        "ensembl_metadata.Assembly": "fas fa-id-card",
+        "ensembl_metadata.Attribute": "fas fa-paperclip",
+        "ensembl_metadata.Dataset": "fas fa-database",
+        "ensembl_metadata.Release": "fas fa-retweet",
+        "ensembl_metadata.Organism": "fas fa-paw",
+        "ensembl_metadata.OrganismGroup": "fas fa-users",
         "ensembl_website": "fas fa-life-ring",
         "ensembl_website.HelpLink": "far fa-life-ring",
         "ensembl_website.FaqRecord": "fas fa-question-circle",
@@ -320,6 +322,7 @@ JAZZMIN_SETTINGS = {
     },
     "show_ui_builder": DEBUG,
 }
+
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": True,
     "footer_small_text": True,
@@ -327,11 +330,11 @@ JAZZMIN_UI_TWEAKS = {
     "brand_small_text": True,
     "brand_colour": False,
     "accent": "accent-primary",
-    "navbar": "navbar-white navbar-light",
+    "navbar": "navbar-dark",
     "no_navbar_border": False,
     "navbar_fixed": False,
     "layout_boxed": False,
-    "footer_fixed": True,
+    "footer_fixed": False,
     "sidebar_fixed": False,
     "sidebar": "sidebar-dark-primary",
     "sidebar_nav_small_text": True,
@@ -340,11 +343,11 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": True,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "sandstone",
-    "dark_mode_theme": "darkly",
+    "theme": "cerulean",
+    "dark_mode_theme": "superhero",
     "button_classes": {
         "primary": "btn-primary",
-        "secondary": "btn-outline-secondary",
+        "secondary": "btn-secondary",
         "info": "btn-info",
         "warning": "btn-warning",
         "danger": "btn-danger",
