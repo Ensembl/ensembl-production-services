@@ -36,6 +36,7 @@ RUN pip install -r requirements.txt
 
 #build static files
 ENV PYTHONPATH=$PYTHONPATH:/usr/src/app/src
+ENV SECRET_KEY="nginxFakeSecretKey"
 RUN python src/manage.py collectstatic --no-input
 
 
