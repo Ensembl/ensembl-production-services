@@ -6,7 +6,7 @@ CHANGELOG - Ensembl Production Portal
 
 - Updated apps to latest version
   - ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.7.0
-  - ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.0
+  - ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.1
   - ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.0
   - ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1.1.1
 - Added new metadata-admin apps:
