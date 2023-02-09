@@ -132,7 +132,7 @@ ensembl-prodinf-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1
     # via -r requirements.in
 ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.0
     # via -r requirements.in
-ensembl-prodinf-webhelp @ git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.0
+ensembl-prodinf-webhelp @ git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.1
     # via -r requirements.in
 greenlet==2.0.2
     # via sqlalchemy
