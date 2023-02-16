@@ -15,8 +15,10 @@
 #       Must be a positive integer. Generally set in the 64-2048
 #       range.
 #
+import os
+bind = os.getenv("GUNICORN_BIND", "0.0.0.0:8000")
+backlog = int(os.getenv("GUNICORN_BACKLOG", "2048"))
 
-backlog = 2048
 #
 # Worker processes
 #
