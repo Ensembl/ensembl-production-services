@@ -40,7 +40,7 @@ defusedxml==0.7.1
     # via jira
 deprecation==2.1.0
     # via ensembl-prodinf-core
-django==3.2.17
+django==3.2.18
     # via
     #   -r requirements.in
     #   django-admin-inline-paginator
