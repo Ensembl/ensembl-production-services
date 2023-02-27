@@ -98,6 +98,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'dal'
 ]
+# Override Metadata Verbose Name
+# TODO remove this with updating the EnsemblMetadataConfig apps with proper label.
+from ensembl.production.metadata.admin.apps import EnsemblMetadataConfig
+EnsemblMetadataConfig. verbose_name = "Genome Metadata"
+
 
 # Display Models APPs version in home page.
 APP_LABEL_MAP = {
@@ -235,7 +240,6 @@ DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default="ensembl-production@e
 MASTER_DB_ALERTS_EMAIL = env.str('MASTER_DB_ALERTS_EMAIL', default="ensembl-production@ebi.ac.uk")
 
 EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://user:password@localhost:25')
-MASTER_DB_ALERTS_EMAIL="ensembl-production@ebi.ac.uk"
 vars().update(EMAIL_CONFIG)
 LOGOUT_REDIRECT_URL = "/"
 with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
@@ -324,30 +328,30 @@ JAZZMIN_SETTINGS = {
 }
 
 JAZZMIN_UI_TWEAKS = {
-    "navbar_small_text": True,
-    "footer_small_text": True,
+    "navbar_small_text": False,
+    "footer_small_text": False,
     "body_small_text": False,
-    "brand_small_text": True,
+    "brand_small_text": False,
     "brand_colour": False,
     "accent": "accent-primary",
-    "navbar": "navbar-dark",
-    "no_navbar_border": False,
+    "navbar": "navbar-white navbar-light",
+    "no_navbar_border": True,
     "navbar_fixed": False,
     "layout_boxed": False,
-    "footer_fixed": False,
+    "footer_fixed": True,
     "sidebar_fixed": False,
     "sidebar": "sidebar-dark-primary",
-    "sidebar_nav_small_text": True,
+    "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": True,
+    "sidebar_nav_child_indent": False,
     "sidebar_nav_compact_style": True,
     "sidebar_nav_legacy_style": False,
-    "sidebar_nav_flat_style": False,
+    "sidebar_nav_flat_style": True,
     "theme": "cerulean",
-    "dark_mode_theme": "superhero",
+    "dark_mode_theme": "darkly",
     "button_classes": {
-        "primary": "btn-primary",
-        "secondary": "btn-secondary",
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
         "info": "btn-info",
         "warning": "btn-warning",
         "danger": "btn-danger",
