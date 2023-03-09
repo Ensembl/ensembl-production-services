@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;500&display=swap");
+
+.iframe-container {
+    position: relative;
+    height: 100%;
+    min-height: 100vh;
+}
+
+.iframe-container iframe {
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    border: none;
+}
+
+.iframe-container iframe body, .iframe-container iframe html {
+    height: 100%;
+    overflow: hidden;
+    background: transparent;
+}
+
+#spinner {
+    top: 10%;
+    left: 50%;
+    position: absolute;
+}
+
+@keyframes rotation {
+    from {
+        -webkit-transform: rotate(359deg);
+    }
+    to {
+        -webkit-transform: rotate(0deg);
+    }
+}
+
+svg * {
+    -webkit-transform-origin: 50% 50%;
+    -ms-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+}
+
+.circle {
+    -webkit-animation: rotation 8s infinite linear;
+}
+
+.circle_s {
+    -webkit-animation: rotation 4s infinite linear;
+}

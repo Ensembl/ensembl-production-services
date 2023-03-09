@@ -64,6 +64,10 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
 class ProductionAppView(admin.ModelAdmin):
     # TODO change url scheme to keep previous app/<appname>?
     list_filter = ['app_name', 'app_url']
+    class Media:
+        css = {
+            'all': ('portal/css/apps.css',)
+        }
 
     def has_change_permission(self, request, obj=None):
         return False
