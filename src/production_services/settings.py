@@ -222,15 +222,6 @@ CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
 
 # mailing
 LOGIN_REDIRECT_URL = '/'
-# 
-# MESSAGE_TAGS = {
-#     messages.DEBUG: 'info alert-info',
-#     messages.INFO: 'info alert-info',
-#     messages.SUCCESS: 'success alert-success',
-#     messages.WARNING: 'warning alert-warning',
-#     messages.ERROR: 'danger alert-danger',
-# }
-# 
 IS_TESTING = sys.argv[1:2] == ['test']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' \
@@ -238,7 +229,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' \
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default="ensembl-production@ebi.ac.uk")
 MASTER_DB_ALERTS_EMAIL = env.str('MASTER_DB_ALERTS_EMAIL', default="ensembl-production@ebi.ac.uk")
 
-EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://user:password@localhost:25')
+EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://localhost:25')
 vars().update(EMAIL_CONFIG)
 LOGOUT_REDIRECT_URL = "/"
 with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
@@ -358,3 +349,7 @@ JAZZMIN_UI_TWEAKS = {
     },
     "actions_sticky_top": False
 }
+
+# DEFAULT READONLY USERS for DB introspect DBCOPY SERVICE
+DBCOPY_RO_USER=os.getenv('DBCOPY_RO_USER', 'ensembl')
+DBCOPY_RO_PASSWORD=os.getenv('DBCOPY_RO_PASSWORD', '')
