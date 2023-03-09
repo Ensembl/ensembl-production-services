@@ -77,7 +77,6 @@ INSTALLED_APPS = [
     'django.contrib.admindocs',
     'django.contrib.admin',
     'ensembl.production.portal.apps.ProdAuthConfig',
-    #'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -223,15 +222,15 @@ CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
 
 # mailing
 LOGIN_REDIRECT_URL = '/'
-
-MESSAGE_TAGS = {
-    messages.DEBUG: 'info alert-info',
-    messages.INFO: 'info alert-info',
-    messages.SUCCESS: 'success alert-success',
-    messages.WARNING: 'warning alert-warning',
-    messages.ERROR: 'danger alert-danger',
-}
-
+# 
+# MESSAGE_TAGS = {
+#     messages.DEBUG: 'info alert-info',
+#     messages.INFO: 'info alert-info',
+#     messages.SUCCESS: 'success alert-success',
+#     messages.WARNING: 'warning alert-warning',
+#     messages.ERROR: 'danger alert-danger',
+# }
+# 
 IS_TESTING = sys.argv[1:2] == ['test']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' \
@@ -347,7 +346,7 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": True,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "sandstone",
+    "theme": "lux",
     "dark_mode_theme": "darkly",
     "button_classes": {
         "primary": "btn-primary",
