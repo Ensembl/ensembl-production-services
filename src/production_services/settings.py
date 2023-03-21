@@ -60,14 +60,15 @@ LOGGING = {
     }
 
 }
-if not DEBUG:
-    ALLOWED_HOSTS = [
-        '.ensembl-production.ebi.ac.uk'
-    ]
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        r"^http(s)?://\w+\.ebi\.ac\.uk$",
-        r"^http(s)?://\w+\.ensembl.org$",
-    ]
+ALLOWED_HOSTS = [
+    '.ensembl-production.ebi.ac.uk',
+    'localhost'
+]
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http(s)?://\w+\.ebi\.ac\.uk$",
+    r"^http(s)?://\w+\.ensembl.org$",
+    r"^http(s)?://localhost$",
+]
 
 # Application definition
 
@@ -100,15 +101,16 @@ INSTALLED_APPS = [
 # Override Metadata Verbose Name
 # TODO remove this with updating the EnsemblMetadataConfig apps with proper label.
 from ensembl.production.metadata.admin.apps import EnsemblMetadataConfig
-EnsemblMetadataConfig. verbose_name = "Genome Metadata"
 
+EnsemblMetadataConfig.verbose_name = "Genome Metadata"
 
 # Display Models APPs version in home page.
 APP_LABEL_MAP = {
     'ensembl_dbcopy': 'ensembl-prodinf-dbcopy',
     'ensembl_website': 'ensembl-prodinf-webhelp ',
     'ensembl_production_db': 'ensembl-prodinf-masterdb',
-    'ensembl_jira': 'ensembl-prodinf-jira'
+    'ensembl_jira': 'ensembl-prodinf-jira',
+    'ensembl_metadata': 'ensembl-metadata-admin'
 }
 
 MIDDLEWARE = [
@@ -351,5 +353,5 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 # DEFAULT READONLY USERS for DB introspect DBCOPY SERVICE
-DBCOPY_RO_USER=os.getenv('DBCOPY_RO_USER', 'ensembl')
-DBCOPY_RO_PASSWORD=os.getenv('DBCOPY_RO_PASSWORD', '')
+DBCOPY_RO_USER = os.getenv('DBCOPY_RO_USER', 'ensro')
+DBCOPY_RO_PASSWORD = os.getenv('DBCOPY_RO_PASSWORD', '')
