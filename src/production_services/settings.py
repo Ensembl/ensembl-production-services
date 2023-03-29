@@ -62,7 +62,9 @@ LOGGING = {
 }
 ALLOWED_HOSTS = [
     '.ensembl-production.ebi.ac.uk',
-    'localhost'
+    'localhost',
+    '127.0.0.1',
+    '.svc.cluster.local'
 ]
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^http(s)?://\w+\.ebi\.ac\.uk$",

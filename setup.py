@@ -24,7 +24,7 @@ def import_requirements():
 
 setup(
     name='ensembl-production-services',
-    version=version,
+    version=os.getenv('CI_COMMIT_TAG', version),
     description='Ensembl Production Database Application',
     long_description=readme,
     author='Marc Chakiachvili,James Allen,Luca Da Rin Fioretto,Vinay Kaikala',
