@@ -31,7 +31,7 @@ coreschema==0.0.4
     # via
     #   coreapi
     #   drf-yasg
-cryptography==39.0.2
+cryptography==40.0.1
     # via
     #   django-fernet-fields
     #   django-mirage-field
@@ -119,7 +119,7 @@ ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.g
     # via -r requirements.in
 ensembl-prodinf-core==2.0.4
     # via ensembl-prodinf-dbcopy
-ensembl-prodinf-dbcopy @ git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.7.1rc1
+ensembl-prodinf-dbcopy @ git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.7.1rc2
     # via -r requirements.in
 ensembl-prodinf-djcore @ git+https://github.com/Ensembl/ensembl-prodinf-djcore.git@1.1
     # via
@@ -169,7 +169,7 @@ oauthlib==3.2.2
     # via requests-oauthlib
 openapi-codec==1.3.2
     # via django-rest-swagger
-packaging==23.0
+packaging==23.1
     # via
     #   deprecation
     #   drf-yasg
@@ -207,13 +207,13 @@ ruamel-yaml==0.17.21
     # via drf-yasg
 ruamel-yaml-clib==0.2.7
     # via ruamel-yaml
-simplejson==3.18.3
+simplejson==3.19.1
     # via django-rest-swagger
 six==1.15.0
     # via
     #   django-autocomplete-light
     #   ensembl-prodinf-core
-sqlalchemy==1.4.46
+sqlalchemy==1.4.47
     # via
     #   ensembl-prodinf-core
     #   sqlalchemy-utils
@@ -233,7 +233,7 @@ uritemplate==4.1.1
     #   drf-spectacular
     #   drf-yasg
     #   ensembl-metadata-admin
-urllib3==1.26.14
+urllib3==1.26.15
     # via requests
 vine==5.0.0
     # via amqp
