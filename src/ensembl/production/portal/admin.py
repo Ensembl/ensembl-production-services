@@ -19,9 +19,17 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from ensembl.production.djcore.admin import ProductionUserAdminMixin, SuperUserAdmin
-from ensembl.production.portal.models import ProductionApp, AppView
+from ensembl.production.portal.models import ProductionApp, AllowedDatabaseModel, AppView
 
 admin.site.unregister(User)
+
+
+@admin.register(AllowedDatabaseModel)
+class AllowedDatabaseModelAdmin(ProductionUserAdminMixin, SuperUserAdmin):
+    list_display = ('name', 'created_by', 'modified_at', 'modified_by')
+    readonly_fields = ('created_by', 'modified_at', 'modified_by')
+    fields = ('name',)
+    ordering = ('name',)
 
 
 @admin.register(ProductionApp)
@@ -33,6 +41,7 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
     fields = ('app_name', 'app_prod_url', 'app_url_link',
               'app_is_framed', 'app_url',
               'app_theme', 'app_groups',
+              'allowed_data_types',
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     ordering = ('app_name',)
@@ -40,6 +49,7 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
         jsonfield.JSONField: {'widget': jsonfield.fields.JSONWidget(attrs={'rows': 20, 'cols': 70,
                                                                            'class': 'vLargeTextField'})},
     }
+      
 
     @staticmethod
     def app_theme_color(obj):
