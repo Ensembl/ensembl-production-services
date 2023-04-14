@@ -34,6 +34,14 @@ class AppViewObjects(models.Manager):
             return self.all()
         return self.filter(app_groups__name__in=user.groups.values_list('name', flat=True)).distinct()
 
+class AllowedDatabaseModel(BaseTimestampedModel):
+    name = models.CharField(max_length=20)
+    class Meta:
+        db_table = 'allowed_databases'  
+        
+    def __str__(self):
+        return self.name      
+
 
 class ProductionApp(BaseTimestampedModel):
     class Meta:
@@ -57,6 +65,16 @@ class ProductionApp(BaseTimestampedModel):
         ('17a2b8', 'Production'),
     )
 
+    allowed_data_types = (
+                          ('core','Core DB'),
+                          ('rnaseq','RnaSeq DB'),
+                          ('cdna', 'CDNA DB'),
+                          ('otherfeatures', 'OtherFeatures DB'),
+                          ('variation', 'Variation DB'), 
+                          ('funcgen', 'Funcgen DB'), 
+                          ('compara', 'Compara DB'), 
+                          ('ancestral', 'Ancestral DB')
+    )
     app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
     app_is_framed = models.BooleanField('Display app in iframe', default=True, null=True, help_text='Need an url then')
@@ -64,6 +82,7 @@ class ProductionApp(BaseTimestampedModel):
     app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)
     app_groups = models.ManyToManyField(Group, blank=True)
     app_prod_url = models.CharField('App Url', max_length=200, null=False, unique=True)
+    allowed_data_types =  models.ManyToManyField(AllowedDatabaseModel, blank=True)
 
     @property
     def img(self):
