@@ -65,16 +65,6 @@ class ProductionApp(BaseTimestampedModel):
         ('17a2b8', 'Production'),
     )
 
-    allowed_data_types = (
-                          ('core','Core DB'),
-                          ('rnaseq','RnaSeq DB'),
-                          ('cdna', 'CDNA DB'),
-                          ('otherfeatures', 'OtherFeatures DB'),
-                          ('variation', 'Variation DB'), 
-                          ('funcgen', 'Funcgen DB'), 
-                          ('compara', 'Compara DB'), 
-                          ('ancestral', 'Ancestral DB')
-    )
     app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
     app_is_framed = models.BooleanField('Display app in iframe', default=True, null=True, help_text='Need an url then')
