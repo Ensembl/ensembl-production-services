@@ -191,7 +191,7 @@ sqlalchemy==1.4.31
     #   sqlalchemy-utils
 sqlalchemy-utils==0.37.9
     # via ensembl-prodinf-core
-sqlparse==0.4.2
+sqlparse==0.4.4
     # via django
 tqdm==4.62.3
     # via django-mirage-field
