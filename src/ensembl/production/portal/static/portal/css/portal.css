@@ -23,6 +23,9 @@ body.jazzmin-login-page {
   font-weight: bolder!important;
   color: darkred !important;
 }
+.select2-results__option {
+  background: whitesmoke;
+}
 
 .admin_app_logo {
     max-width: 30px;
@@ -57,11 +60,11 @@ textarea {
   opacity:100%;
   background-color: whitesmoke;
 }
-
+/*
 #requestjob_form .select2.select2-container.select2-container--default ~ span.select2 {
   display:none
 }
-
+*/
 .select2-container {
   width: auto !important;
 }
