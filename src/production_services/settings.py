@@ -111,7 +111,7 @@ APP_LABEL_MAP = {
     'ensembl_dbcopy': 'ensembl-prodinf-dbcopy',
     'ensembl_website': 'ensembl-prodinf-webhelp ',
     'ensembl_production_db': 'ensembl-prodinf-masterdb',
-    'ensembl_ensprod_jira': 'ensembl-prodinf-ensprod_jira',
+    'ensembl_jira': 'ensembl-prodinf-jira',
     'ensembl_metadata': 'ensembl-metadata-admin'
 }
 
