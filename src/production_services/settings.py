@@ -91,7 +91,7 @@ INSTALLED_APPS = [
     'ensembl.production.dbcopy',
     'ensembl.production.webhelp',
     'ensembl.production.masterdb',
-    'ensembl.production.jira',
+    'ensembl.production.ensprod_jira',
     'ensembl.production.metadata.admin',
     # Required utils
     'django_admin_inline_paginator',
@@ -111,7 +111,7 @@ APP_LABEL_MAP = {
     'ensembl_dbcopy': 'ensembl-prodinf-dbcopy',
     'ensembl_website': 'ensembl-prodinf-webhelp ',
     'ensembl_production_db': 'ensembl-prodinf-masterdb',
-    'ensembl_jira': 'ensembl-prodinf-ensprod_jira',
+    'ensembl_ensprod_jira': 'ensembl-prodinf-ensprod_jira',
     'ensembl_metadata': 'ensembl-metadata-admin'
 }
 
