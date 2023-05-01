@@ -119,7 +119,7 @@ ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.g
     # via -r requirements.in
 ensembl-prodinf-core==2.0.4
     # via ensembl-prodinf-dbcopy
-ensembl-prodinf-dbcopy @ git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.7.1rc2
+ensembl-prodinf-dbcopy @ git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.7.1rc4
     # via -r requirements.in
 ensembl-prodinf-djcore @ git+https://github.com/Ensembl/ensembl-prodinf-djcore.git@1.1
     # via
