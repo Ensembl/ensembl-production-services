@@ -103,7 +103,6 @@ INSTALLED_APPS = [
 # Override Metadata Verbose Name
 # TODO remove this with updating the EnsemblMetadataConfig apps with proper label.
 from ensembl.production.metadata.admin.apps import EnsemblMetadataConfig
-
 EnsemblMetadataConfig.verbose_name = "Genome Metadata"
 
 # Display Models APPs version in home page.
@@ -111,7 +110,7 @@ APP_LABEL_MAP = {
     'ensembl_dbcopy': 'ensembl-prodinf-dbcopy',
     'ensembl_website': 'ensembl-prodinf-webhelp ',
     'ensembl_production_db': 'ensembl-prodinf-masterdb',
-    'ensembl_jira': 'ensembl-prodinf-jira',
+    'ensembl_jira': 'ensembl-prodinf-ensprod-jira',
     'ensembl_metadata': 'ensembl-metadata-admin'
 }
 

@@ -127,7 +127,7 @@ ensembl-prodinf-djcore @ git+https://github.com/Ensembl/ensembl-prodinf-djcore.g
     #   ensembl-prodinf-ensprod-jira
     #   ensembl-prodinf-masterdb
     #   ensembl-prodinf-webhelp
-ensembl-prodinf-ensprod-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.0rc1
+ensembl-prodinf-ensprod-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.0rc2
     # via -r requirements.in
 ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.0
     # via -r requirements.in
