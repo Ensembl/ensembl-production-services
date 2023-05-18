@@ -1,7 +1,7 @@
-ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.7.1rc6
+ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.7.1
 ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.1
-ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.0
-ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.0rc2
+ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.1
+ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.0
 ensembl-metadata-admin@git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.2
 Django~=3.2
 django-jazzmin~=2.6
