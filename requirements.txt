@@ -131,7 +131,7 @@ ensembl-prodinf-ensprod-jira @ git+https://github.com/Ensembl/ensembl-prodinf-ji
     # via -r requirements.in
 ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.1
     # via -r requirements.in
-ensembl-prodinf-webhelp @ git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.1
+ensembl-prodinf-webhelp @ git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.2
     # via -r requirements.in
 greenlet==2.0.2
     # via sqlalchemy
@@ -233,7 +233,7 @@ uritemplate==4.1.1
     #   drf-spectacular
     #   drf-yasg
     #   ensembl-metadata-admin
-urllib3==1.26.15
+urllib3==2.0.2
     # via requests
 vine==5.0.0
     # via amqp
