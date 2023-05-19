@@ -233,8 +233,10 @@ uritemplate==4.1.1
     #   drf-spectacular
     #   drf-yasg
     #   ensembl-metadata-admin
-urllib3==2.0.2
-    # via requests
+urllib3==1.26.15
+    # via
+    #   -r requirements.in
+    #   requests
 vine==5.0.0
     # via amqp
 
