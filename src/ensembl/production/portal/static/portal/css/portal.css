@@ -19,6 +19,10 @@ body.jazzmin-login-page {
   color:#0b2c29 !important;
 }
 
+#requestjob_form input[type="search"] {
+  color: black !important;
+}
+
 #requestjob_form span.select2-selection__choice__remove {
   font-weight: bolder!important;
   color: darkred !important;
