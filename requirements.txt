@@ -127,7 +127,7 @@ ensembl-prodinf-djcore @ git+https://github.com/Ensembl/ensembl-prodinf-djcore.g
     #   ensembl-prodinf-ensprod-jira
     #   ensembl-prodinf-masterdb
     #   ensembl-prodinf-webhelp
-ensembl-prodinf-ensprod-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.0
+ensembl-prodinf-ensprod-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.2
     # via -r requirements.in
 ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.1
     # via -r requirements.in
@@ -234,9 +234,7 @@ uritemplate==4.1.1
     #   drf-yasg
     #   ensembl-metadata-admin
 urllib3==1.26.15
-    # via
-    #   ensembl-prodinf-ensprod-jira
-    #   requests
+    # via requests
 vine==5.0.0
     # via amqp
 
