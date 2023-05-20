@@ -76,3 +76,11 @@ class WebhelpRouter(ProductionPortalRouter):
     """
     route_app_labels = {'ensembl_website'}
     db_entry = 'website'
+
+class NcbiTaxonomyRouter(ProductionPortalRouter):
+    route_app_labels = {'ncbi_taxonomy'}
+    db_entry = 'ncbi'
+
+class MetadataRouter(ProductionPortalRouter):
+    route_app_labels = {'ensembl_metadata'}
+    db_entry = 'metadata'

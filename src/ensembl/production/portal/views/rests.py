@@ -39,5 +39,5 @@ schema_view = get_schema_view(
         path(f'api/production_db/', include(router_attrib.urls)),
         path(f'api/production_db/', include(prod_db_router.urls)),
     ],
-    permission_classes=(permissions.IsAuthenticated,),
+    permission_classes=[permissions.IsAuthenticated,],
 )

@@ -46,7 +46,7 @@ class DBRoutingTest(TestCase):
         self.assertEqual('production', m.db)
 
     def testPortalRouting(self):
-        from ensembl.production.jira.models import JiraCredentials
+        from ensembl.production.ensprod_jira.models import JiraCredentials
         from ensembl.production.portal.models import ProductionApp
         m = JiraCredentials.objects.all()
         self.assertEqual('default', m.db)

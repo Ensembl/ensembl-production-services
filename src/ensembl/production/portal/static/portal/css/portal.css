@@ -19,9 +19,16 @@ body.jazzmin-login-page {
   color:#0b2c29 !important;
 }
 
+#requestjob_form input[type="search"] {
+  color: black !important;
+}
+
 #requestjob_form span.select2-selection__choice__remove {
   font-weight: bolder!important;
   color: darkred !important;
+}
+.select2-results__option {
+  background: whitesmoke;
 }
 
 .admin_app_logo {
@@ -38,22 +45,6 @@ body.jazzmin-login-page {
   list-style: none;
 }
 
-
-.app-iframe-container {
-  position: relative;
-  overflow: hidden;
-  padding-top: 56.25%;
-  height: 100%;
-}
-.app-iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background-color: #fff;
-}
 
 .card-thumbnail img {
   max-height: 250px;
@@ -73,11 +64,11 @@ textarea {
   opacity:100%;
   background-color: whitesmoke;
 }
-
+/*
 #requestjob_form .select2.select2-container.select2-container--default ~ span.select2 {
   display:none
 }
-
+*/
 .select2-container {
   width: auto !important;
 }

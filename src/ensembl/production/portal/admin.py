@@ -8,9 +8,8 @@
 #   distributed under the License is distributed on an "AS IS" BASIS,
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
-#   limitations under the License.import jsonfield
+#   limitations under the License.
 
-import jsonfield
 from django.contrib import admin
 # Unregister the provided model admin
 from django.contrib.auth.admin import UserAdmin
@@ -36,10 +35,6 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
               ('created_by', 'created_at'),
               ('modified_by', 'modified_at'))
     ordering = ('app_name',)
-    formfield_overrides = {
-        jsonfield.JSONField: {'widget': jsonfield.fields.JSONWidget(attrs={'rows': 20, 'cols': 70,
-                                                                           'class': 'vLargeTextField'})},
-    }
 
     @staticmethod
     def app_theme_color(obj):
@@ -69,6 +64,10 @@ class ProductionAppAdmin(ProductionUserAdminMixin, SuperUserAdmin):
 class ProductionAppView(admin.ModelAdmin):
     # TODO change url scheme to keep previous app/<appname>?
     list_filter = ['app_name', 'app_url']
+    class Media:
+        css = {
+            'all': ('portal/css/apps.css',)
+        }
 
     def has_change_permission(self, request, obj=None):
         return False

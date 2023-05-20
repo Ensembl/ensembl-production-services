@@ -8,8 +8,7 @@
 #   distributed under the License is distributed on an "AS IS" BASIS,
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
-#   limitations under the License.import jsonfield
-import jsonfield
+#   limitations under the License.
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
@@ -18,7 +17,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.utils import ConnectionHandler, ConnectionRouter
 from django.templatetags.static import static
-from django.urls import reverse, path
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from ensembl.production.djcore.models import BaseTimestampedModel
@@ -60,7 +59,7 @@ class ProductionApp(BaseTimestampedModel):
     app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
     app_is_framed = models.BooleanField('Display app in iframe', default=True, null=True, help_text='Need an url then')
-    app_url = models.CharField("App flask url", max_length=255, null=False, blank=False)
+    app_url = models.URLField("App flask url", max_length=255, null=True, blank=True)
     app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)
     app_groups = models.ManyToManyField(Group, blank=True)
     app_prod_url = models.CharField('App Url', max_length=200, null=False, unique=True)
