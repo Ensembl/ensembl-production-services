@@ -240,6 +240,11 @@ with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
 
 # USE_X_FORWARDED_HOST = True
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+# DEFAULT READONLY USERS for DB introspect DBCOPY SERVICE
+DBCOPY_RO_USER = os.getenv('DBCOPY_RO_USER', 'ensro')
+DBCOPY_RO_PASSWORD = os.getenv('DBCOPY_RO_PASSWORD', '')
+DBCOPY_RO_ANONYMOUS = os.getenv('DBCOPY_RO_ANONYMOUS', '')
+
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
@@ -317,9 +322,8 @@ JAZZMIN_SETTINGS = {
         "auth.user": "vertical_tabs",
         "auth.group": "vertical_tabs",
     },
-    "show_ui_builder": True
+    "show_ui_builder": DEBUG
 }
-
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": True,
     "footer_small_text": True,
@@ -352,7 +356,3 @@ JAZZMIN_UI_TWEAKS = {
     }
 }
 
-# DEFAULT READONLY USERS for DB introspect DBCOPY SERVICE
-DBCOPY_RO_USER = os.getenv('DBCOPY_RO_USER', 'ensro')
-DBCOPY_RO_PASSWORD = os.getenv('DBCOPY_RO_PASSWORD', '')
-DBCOPY_RO_ANONYMOUS = os.getenv('DBCOPY_RO_ANONYMOUS', '')
