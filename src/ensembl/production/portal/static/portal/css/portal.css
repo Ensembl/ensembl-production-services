@@ -12,6 +12,9 @@ body.jazzmin-login-page {
   max-width: 75%;
 }
 
+option {
+  color: black;
+}
 #requestjob_form li.select2-selection__choice {
   padding-left: 1.7rem !important;
   padding-right: 0.5rem !important;

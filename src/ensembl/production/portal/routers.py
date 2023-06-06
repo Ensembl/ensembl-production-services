@@ -14,7 +14,7 @@ class ProductionPortalRouter:
     A router to control all database operations on models in the
     auth application.
     """
-    route_app_labels = {'auth', 'contenttypes', 'jet', 'sitetree', 'ensembl_prodinf_portal', 'ensembl_jira'}
+    route_app_labels = {'auth', 'contenttypes', 'ensembl_prodinf_portal', 'ensembl_jira'}
     db_entry = 'default'
 
     def db_for_read(self, model, **hints):
@@ -77,9 +77,11 @@ class WebhelpRouter(ProductionPortalRouter):
     route_app_labels = {'ensembl_website'}
     db_entry = 'website'
 
+
 class NcbiTaxonomyRouter(ProductionPortalRouter):
     route_app_labels = {'ncbi_taxonomy'}
     db_entry = 'ncbi'
+
 
 class MetadataRouter(ProductionPortalRouter):
     route_app_labels = {'ensembl_metadata'}

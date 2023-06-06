@@ -30,6 +30,32 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=True)
 
+INSTALLED_APPS = [
+    'dal_select2',
+    'jazzmin',
+    'django.contrib.admindocs',
+    'django.contrib.admin',
+    'ensembl.production.portal.apps.ProdAuthConfig',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_swagger',
+    # Ensembl production apps
+    'ensembl.production.portal',
+    'ensembl.production.dbcopy',
+    'ensembl.production.webhelp',
+    'ensembl.production.masterdb',
+    'ensembl.production.ensprod_jira',
+    'ensembl.production.metadata.admin',
+    # Required utils
+    'django_admin_inline_paginator',
+    'ckeditor',
+    'drf_yasg',
+    'corsheaders',
+    'dal'
+]
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -73,37 +99,6 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 
 # Application definition
-
-INSTALLED_APPS = [
-    'dal_select2',
-    'jazzmin',
-    'django.contrib.admindocs',
-    'django.contrib.admin',
-    'ensembl.production.portal.apps.ProdAuthConfig',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework_swagger',
-    # Ensembl production apps
-    'ensembl.production.portal',
-    'ensembl.production.dbcopy',
-    'ensembl.production.webhelp',
-    'ensembl.production.masterdb',
-    'ensembl.production.ensprod_jira',
-    'ensembl.production.metadata.admin',
-    # Required utils
-    'django_admin_inline_paginator',
-    'ckeditor',
-    'drf_yasg',
-    'corsheaders',
-    'dal'
-]
-# Override Metadata Verbose Name
-# TODO remove this with updating the EnsemblMetadataConfig apps with proper label.
-from ensembl.production.metadata.admin.apps import EnsemblMetadataConfig
-EnsemblMetadataConfig.verbose_name = "Genome Metadata"
 
 # Display Models APPs version in home page.
 APP_LABEL_MAP = {
