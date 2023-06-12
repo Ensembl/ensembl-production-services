@@ -156,8 +156,8 @@ DATABASES = {
     'default': env.db('DATABASE_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_production_services'),
     'production': env.db('PRODUCTION_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_production'),
     'website': env.db('WEBHELP_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_website'),
-    'dbcopy': env.db('DBCOPY_DB_URL', default='mysql://ensembl@127.0.0.1:3306/db_copy'),
-    'metadata': env.db('METADATA_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_metadata_2020'),
+    'dbcopy': env.db('DBCOPY_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_db_copy'),
+    'metadata': env.db('METADATA_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_genome_metadata'),
     'ncbi': env.db('NCBI_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ncbi_taxonomy'),
 }
 
