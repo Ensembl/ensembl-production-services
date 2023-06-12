@@ -30,6 +30,32 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=True)
 
+INSTALLED_APPS = [
+    'dal_select2',
+    'jazzmin',
+    'django.contrib.admindocs',
+    'django.contrib.admin',
+    'ensembl.production.portal.apps.ProdAuthConfig',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_swagger',
+    # Ensembl production apps
+    'ensembl.production.portal',
+    'ensembl.production.dbcopy',
+    'ensembl.production.webhelp',
+    'ensembl.production.masterdb',
+    'ensembl.production.ensprod_jira',
+    'ensembl.production.metadata.admin',
+    # Required utils
+    'django_admin_inline_paginator',
+    'ckeditor',
+    'drf_yasg',
+    'corsheaders',
+    'dal'
+]
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -73,37 +99,6 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 
 # Application definition
-
-INSTALLED_APPS = [
-    'dal_select2',
-    'jazzmin',
-    'django.contrib.admindocs',
-    'django.contrib.admin',
-    'ensembl.production.portal.apps.ProdAuthConfig',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework_swagger',
-    # Ensembl production apps
-    'ensembl.production.portal',
-    'ensembl.production.dbcopy',
-    'ensembl.production.webhelp',
-    'ensembl.production.masterdb',
-    'ensembl.production.ensprod_jira',
-    'ensembl.production.metadata.admin',
-    # Required utils
-    'django_admin_inline_paginator',
-    'ckeditor',
-    'drf_yasg',
-    'corsheaders',
-    'dal'
-]
-# Override Metadata Verbose Name
-# TODO remove this with updating the EnsemblMetadataConfig apps with proper label.
-from ensembl.production.metadata.admin.apps import EnsemblMetadataConfig
-EnsemblMetadataConfig.verbose_name = "Genome Metadata"
 
 # Display Models APPs version in home page.
 APP_LABEL_MAP = {
@@ -240,6 +235,11 @@ with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
 
 # USE_X_FORWARDED_HOST = True
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+# DEFAULT READONLY USERS for DB introspect DBCOPY SERVICE
+DBCOPY_RO_USER = os.getenv('DBCOPY_RO_USER', 'ensro')
+DBCOPY_RO_PASSWORD = os.getenv('DBCOPY_RO_PASSWORD', '')
+DBCOPY_RO_ANONYMOUS = os.getenv('DBCOPY_RO_ANONYMOUS', '')
+
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
@@ -260,10 +260,10 @@ JAZZMIN_SETTINGS = {
         # Url that gets reversed (Permissions can be added)
         {"name": "Home", "url": "admin:index"},
         # external url that opens in a new window (Permissions can be added)
-        {"name": "Support", "url": "https://www.ebi.ac.uk/panda/jira/projects/ENSPROD/issues/", "new_window": True},
+        {"name": "Bug Report", "url": "https://www.ebi.ac.uk/panda/jira/CreateIssue.jspa?issuetype=1&pid=10431", "new_window": True},
         # model admin to link to (Permissions checked against model)
         {"name": "Api docs", "url": "rest_api_docs", "new_window": False},
-        {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
+        {"name": "DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
         {"app": "ensembl_prodinf_portal", "permissions": ["auth.is_superuser"]},
     ],
     # Whether to display the side menu
@@ -317,9 +317,8 @@ JAZZMIN_SETTINGS = {
         "auth.user": "vertical_tabs",
         "auth.group": "vertical_tabs",
     },
-    "show_ui_builder": DEBUG,
+    "show_ui_builder": DEBUG
 }
-
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": True,
     "footer_small_text": True,
@@ -352,7 +351,3 @@ JAZZMIN_UI_TWEAKS = {
     }
 }
 
-# DEFAULT READONLY USERS for DB introspect DBCOPY SERVICE
-DBCOPY_RO_USER = os.getenv('DBCOPY_RO_USER', 'ensro')
-DBCOPY_RO_PASSWORD = os.getenv('DBCOPY_RO_PASSWORD', '')
-DBCOPY_RO_ANONYMOUS = os.getenv('DBCOPY_RO_ANONYMOUS', '')

@@ -5,11 +5,11 @@
     {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
     <div class="form-group">
         <a href="{% url 'admin:ensembl_dbcopy_requestjob_change' original.job_id %}"
-           class="btn btn-outline-light form-control" role="button">Refresh</a>
+           class="btn btn-outline form-control" role="button">Refresh</a>
     </div>
     <div class="form-group">
         <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}"
-           class="btn btn-outline-light form-control" role="button">Submit a new copy</a>
+           class="btn btn-outline form-control" role="button">Submit a new copy</a>
     </div>
     <div class="form-group">
         <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}?from_request_job={{ original.pk }}"
