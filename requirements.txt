@@ -82,7 +82,7 @@ django-filter==23.2
     # via ensembl-metadata-admin
 django-jazzmin==2.6.0
     # via -r requirements.in
-django-js-asset==2.1.0
+django-js-asset==2.0.0
     # via django-ckeditor
 django-mirage-field==1.1.8
     # via ensembl-prodinf-djcore
@@ -215,7 +215,7 @@ requests-oauthlib==1.3.1
     # via jira
 requests-toolbelt==1.0.0
     # via jira
-ruamel-yaml==0.17.32
+ruamel-yaml==0.17.31
     # via drf-yasg
 ruamel-yaml-clib==0.2.7
     # via ruamel-yaml
