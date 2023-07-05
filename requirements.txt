@@ -115,7 +115,7 @@ drf-yasg==1.20.3
     # via
     #   ensembl-prodinf-dbcopy
     #   ensembl-prodinf-masterdb
-ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.3a3
+ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.4
     # via -r requirements.in
 ensembl-prodinf-core==2.0.6
     # via ensembl-prodinf-dbcopy

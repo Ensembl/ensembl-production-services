@@ -19,6 +19,7 @@ from ensembl.production.portal.views import AppCssView, schema_view
 
 urlpatterns = [
     # New apps layout urls
+    path(f'api/genome_metadata/', include('ensembl.production.metadata.admin.api.urls')),
     path(f'api/production_db/', include('ensembl.production.masterdb.api.urls')),
     path(f'api/dbcopy/', include('ensembl.production.dbcopy.api.urls')),
     path(f'apidocs/', admin.site.admin_view(schema_view.with_ui(cache_timeout=10)), name='rest_api_docs'),
