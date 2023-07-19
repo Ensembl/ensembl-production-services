@@ -31,6 +31,7 @@ ENV PATH="/home/portal/.local/bin:${PATH}"
 COPY --chown=portal:portal requirements.txt requirements.txt
 RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools
+RUN pip install --user --no-build-isolation --no-cache-dir pyyaml==6.0
 RUN pip install --user -r requirements.txt
 
 # Copy project files
