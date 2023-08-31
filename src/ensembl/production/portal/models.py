@@ -9,6 +9,7 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+import re
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
@@ -59,7 +60,7 @@ class ProductionApp(BaseTimestampedModel):
     app_id = models.AutoField(primary_key=True)
     app_name = models.CharField("App display name", max_length=255, null=False)
     app_is_framed = models.BooleanField('Display app in iframe', default=True, null=True, help_text='Need an url then')
-    app_url = models.URLField("App flask url", max_length=255, null=True, blank=True)
+    app_url = models.CharField("App flask url", max_length=255, null=True, blank=True)
     app_theme = models.CharField(max_length=6, default='FFFFFF', choices=color_theme)
     app_groups = models.ManyToManyField(Group, blank=True)
     app_prod_url = models.CharField('App Url', max_length=200, null=False, unique=True)
@@ -83,6 +84,11 @@ class ProductionApp(BaseTimestampedModel):
         super().clean()
         if self.app_is_framed and not self.app_url:
             raise ValidationError('You must set url if app is iframed')
+        
+        #regex to check given app url is absolute path 
+        absolute_path_regex = r'^[\/\w]+$' 
+        if not re.match(absolute_path_regex, self.app_name):
+            raise ValidationError('App name should match the format of an absolute path.')
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)
