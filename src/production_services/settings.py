@@ -30,6 +30,32 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=True)
 
+INSTALLED_APPS = [
+    'dal_select2',
+    'jazzmin',
+    'django.contrib.admindocs',
+    'django.contrib.admin',
+    'ensembl.production.portal.apps.ProdAuthConfig',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_swagger',
+    # Ensembl production apps
+    'ensembl.production.portal',
+    'ensembl.production.dbcopy',
+    'ensembl.production.webhelp',
+    'ensembl.production.masterdb',
+    'ensembl.production.ensprod_jira',
+    'ensembl.production.metadata.admin',
+    # Required utils
+    'django_admin_inline_paginator',
+    'ckeditor',
+    'drf_yasg',
+    'corsheaders',
+    'dal'
+]
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -60,54 +86,27 @@ LOGGING = {
     }
 
 }
-
-ALLOWED_HOSTS = ['*']
-
-# CORS settings
-if not DEBUG:
-    CORS_ALLOWED_ORIGINS = [
-        'https://www.ebi.ac.uk',
-    ]
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        r"^http(s)?://\w+\.ebi\.ac\.uk$",
-        r"^http(s)?://\w+\.ensembl.org$",
-    ]
+ALLOWED_HOSTS = [
+    '.ensembl-production.ebi.ac.uk',
+    'localhost',
+    '127.0.0.1',
+    '.svc.cluster.local'
+]
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http(s)?://\w+\.ebi\.ac\.uk$",
+    r"^http(s)?://\w+\.ensembl.org$",
+    r"^http(s)?://localhost$",
+]
 
 # Application definition
-
-INSTALLED_APPS = [
-    'dal_select2',
-    'jazzmin',
-    'django.contrib.admindocs',
-    'django.contrib.admin',
-    'ensembl.production.portal.apps.ProdAuthConfig',
-    #'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework_swagger',
-    # Ensembl production apps
-    'ensembl.production.portal',
-    'ensembl.production.dbcopy',
-    'ensembl.production.webhelp',
-    'ensembl.production.masterdb',
-    'ensembl.production.jira',
-    # Required utils
-    'django_admin_inline_paginator',
-    'ckeditor',
-    'drf_yasg',
-    'corsheaders',
-    'dal'
-]
 
 # Display Models APPs version in home page.
 APP_LABEL_MAP = {
     'ensembl_dbcopy': 'ensembl-prodinf-dbcopy',
     'ensembl_website': 'ensembl-prodinf-webhelp ',
     'ensembl_production_db': 'ensembl-prodinf-masterdb',
-    'ensembl_jira': 'ensembl-prodinf-jira'
+    'ensembl_jira': 'ensembl-prodinf-ensprod-jira',
+    'ensembl_metadata': 'ensembl-metadata-admin'
 }
 
 MIDDLEWARE = [
@@ -122,12 +121,6 @@ MIDDLEWARE = [
 ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
-
-INTERNAL_IPS = [
-    # ...
-    '127.0.0.1',
-    # ...
-]
 
 # AUTHENTICATION_BACKENDS = ("django_python3_ldap.auth.LDAPBackend",)
 APPEND_SLASH = True
@@ -163,7 +156,9 @@ DATABASES = {
     'default': env.db('DATABASE_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_production_services'),
     'production': env.db('PRODUCTION_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_production'),
     'website': env.db('WEBHELP_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_website'),
-    'dbcopy': env.db('DBCOPY_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_dbcopy')
+    'dbcopy': env.db('DBCOPY_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_db_copy'),
+    'metadata': env.db('METADATA_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_genome_metadata'),
+    'ncbi': env.db('NCBI_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ncbi_taxonomy'),
 }
 
 DATABASE_ROUTERS = [
@@ -171,6 +166,8 @@ DATABASE_ROUTERS = [
     'ensembl.production.portal.routers.WebhelpRouter',
     'ensembl.production.portal.routers.DbCopyRouter',
     'ensembl.production.portal.routers.ProductionPortalRouter',
+    'ensembl.production.portal.routers.NcbiTaxonomyRouter',
+    'ensembl.production.portal.routers.MetadataRouter',
 ]
 
 # Password validation
@@ -223,15 +220,6 @@ CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
 
 # mailing
 LOGIN_REDIRECT_URL = '/'
-
-MESSAGE_TAGS = {
-    messages.DEBUG: 'info alert-info',
-    messages.INFO: 'info alert-info',
-    messages.SUCCESS: 'success alert-success',
-    messages.WARNING: 'warning alert-warning',
-    messages.ERROR: 'danger alert-danger',
-}
-
 IS_TESTING = sys.argv[1:2] == ['test']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' \
@@ -239,8 +227,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' \
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default="ensembl-production@ebi.ac.uk")
 MASTER_DB_ALERTS_EMAIL = env.str('MASTER_DB_ALERTS_EMAIL', default="ensembl-production@ebi.ac.uk")
 
-EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://user:password@localhost:25')
-MASTER_DB_ALERTS_EMAIL="ensembl-production@ebi.ac.uk"
+EMAIL_CONFIG = env.email_url('EMAIl_URL', default='smtp://localhost:25')
 vars().update(EMAIL_CONFIG)
 LOGOUT_REDIRECT_URL = "/"
 with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
@@ -248,6 +235,11 @@ with open(os.path.join(os.path.dirname(BASE_DIR), 'VERSION')) as f:
 
 # USE_X_FORWARDED_HOST = True
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+# DEFAULT READONLY USERS for DB introspect DBCOPY SERVICE
+DBCOPY_RO_USER = os.getenv('DBCOPY_RO_USER', 'ensro')
+DBCOPY_RO_PASSWORD = os.getenv('DBCOPY_RO_PASSWORD', '')
+DBCOPY_RO_ANONYMOUS = os.getenv('DBCOPY_RO_ANONYMOUS', '')
+
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
@@ -268,10 +260,10 @@ JAZZMIN_SETTINGS = {
         # Url that gets reversed (Permissions can be added)
         {"name": "Home", "url": "admin:index"},
         # external url that opens in a new window (Permissions can be added)
-        {"name": "Support", "url": "https://www.ebi.ac.uk/panda/jira/projects/ENSPROD/issues/", "new_window": True},
+        {"name": "Bug Report", "url": "https://www.ebi.ac.uk/panda/jira/CreateIssue.jspa?issuetype=1&pid=10431", "new_window": True},
         # model admin to link to (Permissions checked against model)
         {"name": "Api docs", "url": "rest_api_docs", "new_window": False},
-        {"name": "New DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
+        {"name": "DBCopy Job", "url": "admin:ensembl_dbcopy_requestjob_add"},
         {"app": "ensembl_prodinf_portal", "permissions": ["auth.is_superuser"]},
     ],
     # Whether to display the side menu
@@ -302,6 +294,13 @@ JAZZMIN_SETTINGS = {
         "ensembl_production_db.MasterExternalDb": "fas fa-database",
         "ensembl_production_db.WebData": "fas fa-cloud-meatball",
         "ensembl_production_db.MetaKey": "fas fa-meteor",
+        "ensembl_metadata": "fas fa-microchip",
+        "ensembl_metadata.Assembly": "fas fa-id-card",
+        "ensembl_metadata.Attribute": "fas fa-paperclip",
+        "ensembl_metadata.Dataset": "fas fa-database",
+        "ensembl_metadata.Release": "fas fa-retweet",
+        "ensembl_metadata.Organism": "fas fa-paw",
+        "ensembl_metadata.OrganismGroup": "fas fa-users",
         "ensembl_website": "fas fa-life-ring",
         "ensembl_website.HelpLink": "far fa-life-ring",
         "ensembl_website.FaqRecord": "fas fa-question-circle",
@@ -318,16 +317,16 @@ JAZZMIN_SETTINGS = {
         "auth.user": "vertical_tabs",
         "auth.group": "vertical_tabs",
     },
-    "show_ui_builder": DEBUG,
+    "show_ui_builder": DEBUG
 }
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": True,
     "footer_small_text": True,
     "body_small_text": False,
-    "brand_small_text": True,
+    "brand_small_text": False,
     "brand_colour": False,
     "accent": "accent-primary",
-    "navbar": "navbar-white navbar-light",
+    "navbar": "navbar-dark",
     "no_navbar_border": False,
     "navbar_fixed": False,
     "layout_boxed": False,
@@ -337,18 +336,18 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_small_text": True,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True,
-    "sidebar_nav_compact_style": True,
+    "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "sandstone",
-    "dark_mode_theme": "darkly",
+    "theme": "cyborg",
+    # "dark_mode_theme": "cyborg",
     "button_classes": {
         "primary": "btn-primary",
-        "secondary": "btn-outline-secondary",
+        "secondary": "btn-secondary",
         "info": "btn-info",
         "warning": "btn-warning",
         "danger": "btn-danger",
         "success": "btn-success"
-    },
-    "actions_sticky_top": False
+    }
 }
+

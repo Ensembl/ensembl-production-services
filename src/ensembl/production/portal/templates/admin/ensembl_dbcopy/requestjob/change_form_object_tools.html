@@ -1,0 +1,29 @@
+{% extends 'admin/change_form_object_tools.html' %}
+
+{% load i18n admin_urls %}
+{% block object-tools-items %}
+    {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
+    <div class="form-group">
+        <a href="{% url 'admin:ensembl_dbcopy_requestjob_change' original.job_id %}"
+           class="btn btn-outline form-control" role="button">Refresh</a>
+    </div>
+    <div class="form-group">
+        <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}"
+           class="btn btn-outline form-control" role="button">Submit a new copy</a>
+    </div>
+    <div class="form-group">
+        <a href="{% url 'admin:ensembl_dbcopy_requestjob_add' %}?from_request_job={{ original.pk }}"
+           class="btn btn-outline-light form-control" role="button">Resubmit job</a>
+    </div>
+    {% if user.is_superuser %}
+        <div class="form-group">
+            <a href="{% url 'ensembl_dbcopy:reset_failed_jobs' original.job_id %}"
+               class="btn btn-warning form-control" role="button">Reset failed jobs</a>
+        </div>
+    {% endif %}
+    {% if has_absolute_url %}
+        <div class="form-group">
+            <a href="{{ absolute_url }}" class="viewsitelink form-control">{% trans "View on site" %}</a>
+        </div>
+    {% endif %}
+{% endblock %}

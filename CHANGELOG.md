@@ -1,6 +1,32 @@
 CHANGELOG - Ensembl Production Portal
 =====================================
 
+4.4.3
+-----
+
+- Updated apps to latest version
+  - ensembl-metadata-admin@git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.4
+  - ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.3
+  - ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.3
+
+- Added api endpoint to access new production metadata 
+   - api/genome_metadata/
+  
+- Fix for analysis description API, default JSON EXTRACT fails to filter with json object
+
+4.4.1
+-----
+
+- Updated apps to latest version
+  - ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.7.0
+  - ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.1
+  - ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.0
+  - ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@1.1.1
+- Added new metadata-admin apps:
+  - ensembl-metadata-admin@git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.2
+- Updated Jazzmin to latest
+- Updated Django to latest 3.2.17
+
 4.4.0
 -----
 - Display apps version for Ensembl managed modules
