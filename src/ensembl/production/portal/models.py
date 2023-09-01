@@ -85,9 +85,9 @@ class ProductionApp(BaseTimestampedModel):
         if self.app_is_framed and not self.app_url:
             raise ValidationError('You must set url if app is iframed')
         
-        #regex to check given app url is absolute path 
-        absolute_path_regex = r'^[\/\w]+$' 
-        if not re.match(absolute_path_regex, self.app_name):
+        #regex to check given app url is absolute  
+        absolute_path_regex = r'^\/([\w-]+\/)*[\w-]+$' 
+        if not re.match(absolute_path_regex, self.app_url):
             raise ValidationError('App name should match the format of an absolute path.')
 
     def get_admin_url(self):
