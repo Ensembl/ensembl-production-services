@@ -31,7 +31,7 @@ coreschema==0.0.4
     # via
     #   coreapi
     #   drf-yasg
-cryptography==41.0.2
+cryptography==41.0.3
     # via
     #   django-fernet-fields
     #   django-mirage-field
@@ -118,7 +118,7 @@ drf-yasg==1.20.3
     # via
     #   ensembl-prodinf-dbcopy
     #   ensembl-prodinf-masterdb
-ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.6.dev1
+ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.7.dev1
     # via -r requirements.in
 ensembl-prodinf-core==2.0.6
     # via ensembl-prodinf-dbcopy
@@ -234,7 +234,7 @@ sqlparse==0.4.4
     #   -r requirements.in
     #   django
     #   ensembl-metadata-admin
-tqdm==4.65.0
+tqdm==4.66.1
     # via django-mirage-field
 typing-extensions==4.6.3
     # via
