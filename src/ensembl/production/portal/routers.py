@@ -35,7 +35,7 @@ class ProductionPortalRouter:
 
     def allow_relation(self, obj1, obj2, **hints):
         """
-        Allow relations if a model in the auth is involved.
+        Allow relations if a model in defined route_app_labels is involved.
         """
         if obj1._meta.app_label in self.route_app_labels or obj2._meta.app_label in self.route_app_labels:
             return True
@@ -50,6 +50,8 @@ class ProductionPortalRouter:
             return hints['target_db'] == self.db_entry
         if app_label in self.route_app_labels:
             return db == self.db_entry
+        #if db != "default":
+        #    return False
         return None
 
 

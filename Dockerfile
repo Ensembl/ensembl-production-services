@@ -39,5 +39,4 @@ COPY --chown=portal:portal . .
 ENV PYTHONPATH=$PYTHONPATH:/home/portal/src
 
 EXPOSE 8000
-CMD ["/home/portal/bin/entrypoint.sh"]
-# CMD ["sh"]
+CMD ["gunicorn", "-c",  "/home/portal/gunicorn.conf.py", "production_services.wsgi:application"]
