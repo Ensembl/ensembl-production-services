@@ -50,7 +50,7 @@ django==3.2.19
     #   django-js-asset
     #   django-jsonfield
     #   django-multiselectfield
-    #   django-mysqlmetadata-api/pull/55#pullrequestreview-1775655858
+    #   django-mysql
     #   djangorestframework
     #   drf-nested-routers
     #   drf-spectacular
