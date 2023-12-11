@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-amqp==5.1.1
+amqp==5.2.0
     # via kombu
 asgiref==3.7.2
     # via
@@ -18,9 +18,9 @@ certifi==2020.12.5
     # via
     #   ensembl-prodinf-core
     #   requests
-cffi==1.15.1
+cffi==1.16.0
     # via cryptography
-charset-normalizer==3.2.0
+charset-normalizer==3.3.2
     # via requests
 coreapi==2.3.3
     # via
@@ -31,7 +31,7 @@ coreschema==0.0.4
     # via
     #   coreapi
     #   drf-yasg
-cryptography==41.0.2
+cryptography==41.0.7
     # via
     #   django-fernet-fields
     #   django-mirage-field
@@ -50,7 +50,7 @@ django==3.2.19
     #   django-js-asset
     #   django-jsonfield
     #   django-multiselectfield
-    #   django-mysql
+    #   django-mysqlmetadata-api/pull/55#pullrequestreview-1775655858
     #   djangorestframework
     #   drf-nested-routers
     #   drf-spectacular
@@ -72,6 +72,7 @@ django-autocomplete-light==3.8.2
 django-ckeditor==6.0.0
     # via
     #   -r requirements.in
+    #   ensembl-prodinf-masterdb
     #   ensembl-prodinf-webhelp
 django-cors-headers==3.10.1
     # via -r requirements.in
@@ -118,9 +119,9 @@ drf-yasg==1.20.3
     # via
     #   ensembl-prodinf-dbcopy
     #   ensembl-prodinf-masterdb
-ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.6.dev1
+ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.8
     # via -r requirements.in
-ensembl-prodinf-core==2.0.6
+ensembl-prodinf-core==2.0.7
     # via ensembl-prodinf-dbcopy
 ensembl-prodinf-dbcopy @ git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@1.7.1
     # via -r requirements.in
@@ -132,15 +133,15 @@ ensembl-prodinf-djcore @ git+https://github.com/Ensembl/ensembl-prodinf-djcore.g
     #   ensembl-prodinf-webhelp
 ensembl-prodinf-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.3
     # via -r requirements.in
-ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.3
+ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.4
     # via -r requirements.in
 ensembl-prodinf-webhelp @ git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.3
     # via -r requirements.in
-greenlet==2.0.2
+greenlet==3.0.1
     # via sqlalchemy
 gunicorn==20.1.0
     # via -r requirements.in
-idna==3.4
+idna==3.6
     # via requests
 importlib-metadata==6.6.0
     # via ensembl-metadata-admin
@@ -176,7 +177,7 @@ oauthlib==3.2.2
     # via requests-oauthlib
 openapi-codec==1.3.2
     # via django-rest-swagger
-packaging==23.1
+packaging==23.2
     # via
     #   deprecation
     #   drf-yasg
@@ -212,18 +213,19 @@ requests-oauthlib==1.3.1
     # via jira
 requests-toolbelt==1.0.0
     # via jira
-ruamel-yaml==0.17.32
+ruamel-yaml==0.18.5
     # via drf-yasg
-ruamel-yaml-clib==0.2.7
+ruamel-yaml-clib==0.2.8
     # via ruamel-yaml
-simplejson==3.19.1
+simplejson==3.19.2
     # via django-rest-swagger
 six==1.15.0
     # via
     #   django-autocomplete-light
     #   django-jsonfield
     #   ensembl-prodinf-core
-sqlalchemy==1.4.49
+
+sqlalchemy==1.4.50
     # via
     #   ensembl-prodinf-core
     #   sqlalchemy-utils
@@ -234,11 +236,10 @@ sqlparse==0.4.4
     #   -r requirements.in
     #   django
     #   ensembl-metadata-admin
-tqdm==4.65.0
+tqdm==4.66.1
     # via django-mirage-field
 typing-extensions==4.6.3
     # via
-    #   asgiref
     #   ensembl-metadata-admin
     #   jira
 uritemplate==4.1.1
@@ -247,12 +248,12 @@ uritemplate==4.1.1
     #   drf-spectacular
     #   drf-yasg
     #   ensembl-metadata-admin
-urllib3==1.26.16
+urllib3==1.26.18
     # via
     #   -r requirements.in
     #   ensembl-prodinf-core
     #   requests
-vine==5.0.0
+vine==5.1.0
     # via amqp
 zipp==3.15.0
     # via
