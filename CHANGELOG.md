@@ -1,5 +1,16 @@
 CHANGELOG - Ensembl Production Portal
 =====================================
+4.4.5
+-----
+- Updated apps to latest version
+  - ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.5 (new fields)
+- 
+
+4.4.4
+-----
+- Updated apps to latest version
+  - ensembl-metadata-admin@git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.8
+  - ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.4 (new fields)
 
 4.4.3
 -----

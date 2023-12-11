@@ -43,12 +43,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_swagger',
     # Ensembl production apps
-    'ensembl.production.portal',
     'ensembl.production.dbcopy',
+    'ensembl.production.metadata.admin',
     'ensembl.production.webhelp',
     'ensembl.production.masterdb',
     'ensembl.production.ensprod_jira',
-    'ensembl.production.metadata.admin',
+    'ensembl.production.portal.apps.EnsemblProductionConfig',
     # Required utils
     'django_admin_inline_paginator',
     'ckeditor',
@@ -105,7 +105,7 @@ APP_LABEL_MAP = {
     'ensembl_dbcopy': 'ensembl-prodinf-dbcopy',
     'ensembl_website': 'ensembl-prodinf-webhelp ',
     'ensembl_production_db': 'ensembl-prodinf-masterdb',
-    'ensembl_jira': 'ensembl-prodinf-ensprod-jira',
+    'ensembl_jira': 'ensembl-prodinf-jira',
     'ensembl_metadata': 'ensembl-metadata-admin'
 }
 
