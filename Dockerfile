@@ -9,7 +9,7 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-FROM python:3.8.9-alpine
+FROM python:3.8.13-alpine
 
 # Install git
 RUN apk update
@@ -31,8 +31,8 @@ ENV PATH="/home/portal/.local/bin:${PATH}"
 COPY --chown=portal:portal requirements.txt requirements.txt
 RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools
-RUN pip install --user --no-build-isolation --no-cache-dir pyyaml==6.0
-RUN pip install --user -r requirements.txt
+RUN echo "cython<3" > /tmp/constraint.txt
+RUN PIP_CONSTRAINT=/tmp/constraint.txt pip install --user -r requirements.txt
 
 # Copy project files
 COPY --chown=portal:portal . .
