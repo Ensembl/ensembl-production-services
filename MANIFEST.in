@@ -1,0 +1,6 @@
+include LICENSE
+include VERSION
+include NOTICE
+include requirements.txt
+recursive-include src/ensembl/production *
+recursive-include src/ensembl/production *
