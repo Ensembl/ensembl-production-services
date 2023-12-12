@@ -4,7 +4,11 @@ CHANGELOG - Ensembl Production Portal
 -----
 - Updated apps to latest version
   - ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.5 (new fields)
-- 
+- Updated Docker Container:
+  - Finalize migration automation on startup (ENTRYPOINT=/home/portal/bin/entrypoint.sh)
+  - Accept CMD extra param CMD=["TEST"] (local test or unreleased dependencies)
+    - Load extra "requirement-test.txt" requirements on startup. (unreleased)
+    - run manage.py runserver 0.0.0.0:8000 with loaded CSS / Javasacripts.  
 
 4.4.4
 -----
