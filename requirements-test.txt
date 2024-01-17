@@ -1,0 +1,1 @@
+ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.5.dev1

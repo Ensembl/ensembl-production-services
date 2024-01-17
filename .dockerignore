@@ -4,14 +4,12 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 .ash_history
 .cache
-.env.dev1
-.env.dist
 .git
 .gitignore
 .idea
 .local
 .travis.yml
-
+docker-compose.yml
 
 # User-specific stuff
 .idea/**
@@ -88,7 +86,6 @@ htmlcov/
 .tox/
 .coverage
 .coverage.*
-.cache
 nosetests.xml
 coverage.xml
 *.cover
@@ -132,6 +129,7 @@ celerybeat-schedule
 # Environments
 .env
 .venv
+.env.*
 env/
 venv/
 ENV/
