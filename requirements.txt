@@ -133,7 +133,7 @@ ensembl-prodinf-djcore==1.2.0a1
     #   ensembl-prodinf-webhelp
 ensembl-prodinf-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.5
     # via -r requirements.in
-ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.6a1
+ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.6a2
     # via -r requirements.in
 ensembl-prodinf-webhelp @ git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.4
     # via -r requirements.in
