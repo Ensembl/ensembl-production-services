@@ -139,7 +139,7 @@ ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.g
     # via -r requirements.in
 ensembl-metadata-api @ git+https://github.com/Ensembl/ensembl-metadata-api.git@2.0.1.dev2
     # via ensembl-metadata-admin
-ensembl-prodinf-core @ git+https://github.com/Ensembl/ensembl-prodinf-core.git@release/2.0.8
+ensembl-prodinf-core==2.0.8
     # via
     #   -r requirements.in
     #   ensembl-prodinf-dbcopy
@@ -151,7 +151,7 @@ ensembl-prodinf-djcore==1.2.0a1
     #   ensembl-prodinf-jira
     #   ensembl-prodinf-masterdb
     #   ensembl-prodinf-webhelp
-ensembl-prodinf-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.5rc1
+ensembl-prodinf-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.5
     # via -r requirements.in
 ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.6rc1
     # via -r requirements.in
