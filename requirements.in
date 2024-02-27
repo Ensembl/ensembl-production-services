@@ -2,7 +2,8 @@ ensembl-prodinf-dbcopy@git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git
 ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.4
 ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.6rc1
 ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.5rc1
-ensembl-metadata-admin@git+https://github.com/Ensembl/ensembl-metadata-admin.git@0.0.9
+ensembl-metadata-admin@git+https://github.com/Ensembl/ensembl-metadata-admin.git@1.0.0a2
+ensembl-prodinf-core@git+https://github.com/Ensembl/ensembl-prodinf-core.git@release/2.0.8
 Django~=3.2
 django-jazzmin~=2.6
 django-cors-headers==3.10.1
@@ -14,6 +15,7 @@ gunicorn~=20.1.0
 django-admin-inline-paginator~=0.2.0
 mysqlclient~=2.1.0
 python-dotenv~=0.19.2
-docutils~=0.18.1
-urllib3~=1.26.18
+docutils
+urllib3
 sqlparse~=0.4.4
+certifi>=2020.12.5
