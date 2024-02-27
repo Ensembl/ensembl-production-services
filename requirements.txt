@@ -135,7 +135,7 @@ ensembl-hive @ git+https://github.com/Ensembl/ensembl-hive.git
     #   ensembl-metadata-admin
     #   ensembl-metadata-api
     #   ensembl-py
-ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.git@1.0.0a2
+ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.git@1.0.0a3
     # via -r requirements.in
 ensembl-metadata-api @ git+https://github.com/Ensembl/ensembl-metadata-api.git@2.0.1.dev2
     # via ensembl-metadata-admin
