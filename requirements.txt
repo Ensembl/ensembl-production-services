@@ -31,7 +31,7 @@ coreschema==0.0.4
     # via
     #   coreapi
     #   drf-yasg
-cryptography==42.0.4
+cryptography==42.0.5
     # via
     #   django-fernet-fields
     #   django-mirage-field
@@ -131,9 +131,9 @@ ensembl-prodinf-djcore==1.2.0a1
     #   ensembl-prodinf-jira
     #   ensembl-prodinf-masterdb
     #   ensembl-prodinf-webhelp
-ensembl-prodinf-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.5
+ensembl-prodinf-jira @ git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.5rc1
     # via -r requirements.in
-ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.6a2
+ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.6rc1
     # via -r requirements.in
 ensembl-prodinf-webhelp @ git+https://github.com/Ensembl/ensembl-prodinf-webhelp.git@1.1.4
     # via -r requirements.in
