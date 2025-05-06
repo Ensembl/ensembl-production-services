@@ -3,6 +3,7 @@ ensembl-prodinf-webhelp@git+https://github.com/Ensembl/ensembl-prodinf-webhelp.g
 ensembl-prodinf-masterdb@git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@1.2.6rc1
 ensembl-prodinf-jira@git+https://github.com/Ensembl/ensembl-prodinf-jira.git@2.0.5
 ensembl-metadata-admin@git+https://github.com/Ensembl/ensembl-metadata-admin.git@1.0.0a3
+ensembl-prodinf-prod-db@https://gitlab.ebi.ac.uk/ensembl-production/ensembl-prodinf-prod-db
 ensembl-prodinf-core~=2.0.8
 Django~=3.2
 django-jazzmin~=2.6

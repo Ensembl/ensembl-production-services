@@ -88,3 +88,7 @@ class NcbiTaxonomyRouter(ProductionPortalRouter):
 class MetadataRouter(ProductionPortalRouter):
     route_app_labels = {'ensembl_metadata'}
     db_entry = 'metadata'
+
+class MetadataRouter(ProductionPortalRouter):
+    route_app_labels = {'ensembl_metadata'}
+    db_entry = 'metadata'

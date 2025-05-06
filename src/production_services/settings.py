@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # Ensembl production apps
     'ensembl.production.dbcopy',
     'ensembl.production.metadata.admin',
+    'ensembl.production.production_db.admin',
     'ensembl.production.webhelp',
     'ensembl.production.masterdb',
     'ensembl.production.ensprod_jira',
@@ -106,7 +107,8 @@ APP_LABEL_MAP = {
     'ensembl_website': 'ensembl-prodinf-webhelp ',
     'ensembl_production_db': 'ensembl-prodinf-masterdb',
     'ensembl_jira': 'ensembl-prodinf-jira',
-    'ensembl_metadata': 'ensembl-metadata-admin'
+    'ensembl_metadata': 'ensembl-metadata-admin',
+    'mvp_production_db': 'ensembl-prodinf-prod-db',
 }
 
 MIDDLEWARE = [
