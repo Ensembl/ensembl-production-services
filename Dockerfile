@@ -9,7 +9,7 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-FROM python:3.8.13-alpine
+FROM python:3.10.12-alpine
 
 # Install git
 RUN apk update
@@ -39,5 +39,5 @@ COPY --chown=portal:portal . .
 ENV PYTHONPATH=$PYTHONPATH:/home/portal/src
 
 EXPOSE 8000
-ENTRYPOINT ["/home/portal/bin/entrypoint.sh"]
+ENTRYPOINT ["/home/portal/bin/entrypoint.sh TEST"]
 CMD [""]

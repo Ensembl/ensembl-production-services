@@ -10,7 +10,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-FROM python:3.8.9 AS static_builder
+FROM python:3.10.12 AS static_builder
 
 RUN useradd --create-home appuser
 USER appuser
