@@ -23,8 +23,8 @@ USER portal
 WORKDIR /home/portal
 
 ENV PIP_ROOT_USER_ACTION=ignore
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=production_services.settings
 ENV PATH="/home/portal/.local/bin:${PATH}"
 
@@ -36,8 +36,8 @@ RUN PIP_CONSTRAINT=/tmp/constraint.txt pip install --user -r requirements.txt
 
 # Copy project files
 COPY --chown=portal:portal . .
-ENV PYTHONPATH=$PYTHONPATH:/home/portal/src
+ENV PYTHONPATH="${PYTHONPATH:-}:/home/portal/src"
 
 EXPOSE 8000
-ENTRYPOINT ["/home/portal/bin/entrypoint.sh TEST"]
+ENTRYPOINT ["/home/portal/bin/entrypoint.sh", "TEST"]
 CMD [""]
