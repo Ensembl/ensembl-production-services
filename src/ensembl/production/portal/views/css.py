@@ -22,7 +22,6 @@ class AppCssView(DetailView):
     slug_url_kwarg = "app_prod_url"
 
     def get(self, request, *args, **kwargs):
-        print(kwargs)
         return super().get(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
