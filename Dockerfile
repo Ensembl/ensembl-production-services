@@ -9,7 +9,7 @@
 #    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
-FROM python:3.8.13-alpine
+FROM python:3.12-alpine
 
 # Install git
 RUN apk update
@@ -18,6 +18,7 @@ RUN apk add --no-cache mariadb-dev
 RUN apk add --no-cache musl-dev
 RUN apk add --no-cache gcc
 RUN apk add --no-cache libffi-dev
+RUN apk add --no-cache pkgconfig
 RUN adduser -D portal
 USER portal
 WORKDIR /home/portal
@@ -28,14 +29,11 @@ ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE=production_services.settings
 ENV PATH="/home/portal/.local/bin:${PATH}"
 
-COPY --chown=portal:portal requirements.txt requirements.txt
-RUN pip install --upgrade pip
-RUN pip install --upgrade setuptools
-RUN echo "cython<3" > /tmp/constraint.txt
-RUN PIP_CONSTRAINT=/tmp/constraint.txt pip install --user -r requirements.txt
+RUN pip install --upgrade pip setuptools wheel
 
 # Copy project files
 COPY --chown=portal:portal . .
+RUN pip install --user .
 ENV PYTHONPATH=$PYTHONPATH:/home/portal/src
 
 EXPOSE 8000

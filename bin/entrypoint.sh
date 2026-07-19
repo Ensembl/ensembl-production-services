@@ -3,7 +3,7 @@
 # Collect static files
 echo "CMD PARAM: '$1'"
 if [ "$1" = "TEST" ]; then
-  pip install -r /home/portal/requirements-test.txt
+  pip install --user '/home/portal[test]'
   echo "Collect static files"
   python /home/portal/src/manage.py collectstatic --noinput
 fi

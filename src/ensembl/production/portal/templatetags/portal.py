@@ -10,9 +10,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 import logging
+from importlib import metadata
 from typing import List, Dict
 
-import pkg_resources
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from jazzmin.settings import get_settings
@@ -53,11 +53,11 @@ def app_version(app):
     if app['app_label'] in settings.APP_LABEL_MAP:
         try:
             pkg_name = settings.APP_LABEL_MAP[app['app_label']].strip()
-            package = pkg_resources.get_distribution(pkg_name)
-            return f'v{package.version}'
+            version = metadata.version(pkg_name)
+            return f'v{version}'
             # Activate link when retrieved from AppConfig.
             # return mark_safe(f"<a href='https://github.com/Ensembl/{pkg_name}/blob/{package.version}/CHANGELOG.md'" \
             #       f" target='_blank'>v{package.version}</a>")
-        except pkg_resources.DistributionNotFound:
+        except metadata.PackageNotFoundError:
             pass
     return ""

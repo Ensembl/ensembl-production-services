@@ -1,0 +1,142 @@
+# .. See the NOTICE file distributed with this work for additional information
+#    regarding copyright ownership.
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#        http://www.apache.org/licenses/LICENSE-2.0
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools",
+    "wheel",
+]
+
+[project]
+name = "ensembl-production-services"
+description = "Ensembl Production Database Application"
+requires-python = ">=3.12,<3.13"
+dynamic = ["version", "readme"]
+authors = [
+    { name = "Marc Chakiachvili", email = "mchakiachvili@ebi.ac.uk" },
+    { name = "James Allen", email = "jallen@ebi.ac.uk" },
+    { name = "Luca Da Rin Fioretto", email = "ldrf@ebi.ac.uk" },
+    { name = "Vinay Kaikala", email = "vinay@ebi.ac.uk" },
+]
+maintainers = [
+    { name = "Ensembl Production Team", email = "ensembl-production@ebi.ac.uk" },
+]
+license = { text = "Apache License 2.0" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+# mysqlclient>=2.2.0 is the first line to ship wheels/behaviour validated against
+# MySQL Server 8.0.32-24; Django is pinned to the 5.2 LTS line for Python 3.12 support.
+dependencies = [
+   "ensembl-prodinf-dbcopy @ git+https://github.com/Ensembl/ensembl-prodinf-dbcopy.git@5.2.0.dev1",
+   "ensembl-prodinf-masterdb @ git+https://github.com/Ensembl/ensembl-prodinf-masterdb.git@5.2.0.dev1",
+   "ensembl-metadata-admin @ git+https://github.com/Ensembl/ensembl-metadata-admin.git@5.2.0.dev1",   
+    "ensembl-prodinf-core @ git+https://github.com/Ensembl/ensembl-prodinf-core.git@5.2.0dev1",
+    "Django>=5.2,<5.3",
+    "django-jazzmin==3.0.5",
+    "django-cors-headers>=4.3.0",
+    "djangorestframework>=3.15.1",
+    "drf-yasg>=1.21.7",
+    "django-autocomplete-light>=3.11.0",
+    "django-ckeditor-5>=0.2.20",
+    "django-environ>=0.11.2",
+    "gunicorn>=22.0.0",
+    "django-admin-inline-paginator-plus==0.1.5",
+    "mysqlclient>=2.2.4",
+    "python-dotenv>=1.0.1",
+    "docutils",
+    "urllib3>=2.2.0",
+    "sqlparse>=0.5.0",
+    "certifi>=2024.7.2",
+]
+
+[project.urls]
+Homepage = "https://www.ensembl.org"
+Repository = "https://github.com/Ensembl/production_services"
+Issues = "https://github.com/Ensembl/production_services/issues"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-django",
+    "coverage[toml]",
+    "pytest-cov",
+    "pytest-mock",
+    "factory-boy",
+    "requests-mock",
+]
+dev = [
+    "ensembl-production-services[test]", # Include test dependencies
+    "black",
+    "pylint",
+    "mypy",
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["ensembl.production.*"]
+
+[tool.setuptools.dynamic]
+version = { file = "VERSION" }
+readme = { file = ["README.md"] }
+
+[tool.black]
+line-length = 110
+
+[tool.pylint.main]
+max-line-length = 110
+disable = [
+    "invalid-name",
+    "logging-fstring-interpolation",
+    "similarities",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-locals",
+    "too-many-statements",
+    "unspecified-encoding",
+    "wildcard-import",
+]
+
+[tool.mypy]
+mypy_path = "src/ensembl"
+explicit_package_bases = true
+ignore_missing_imports = true
+show_error_codes = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "production_services.settings"
+testpaths = ["src/ensembl/production/portal/tests"]
+log_cli_level = "DEBUG"
+addopts = [
+    "--import-mode=importlib",
+    "--tb=native",
+]
+norecursedirs = ["docs", "*.egg_info"]
+
+[tool.coverage.run]
+source = ["src"]

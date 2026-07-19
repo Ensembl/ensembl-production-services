@@ -41,18 +41,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_swagger',
+    'drf_yasg',
     # Ensembl production apps
     'ensembl.production.dbcopy',
     'ensembl.production.metadata.admin',
-    'ensembl.production.webhelp',
+#    'ensembl.production.webhelp',
     'ensembl.production.masterdb',
-    'ensembl.production.ensprod_jira',
+#    'ensembl.production.ensprod_jira',
     'ensembl.production.portal.apps.EnsemblProductionConfig',
     # Required utils
-    'django_admin_inline_paginator',
-    'ckeditor',
-    'drf_yasg',
+    'django_admin_inline_paginator_plus',
+    'django_ckeditor_5',
     'corsheaders',
     'dal'
 ]
@@ -153,12 +152,12 @@ WSGI_APPLICATION = 'production_services.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_production_services'),
-    'production': env.db('PRODUCTION_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_production'),
-    'website': env.db('WEBHELP_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_website'),
-    'dbcopy': env.db('DBCOPY_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_db_copy'),
-    'metadata': env.db('METADATA_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ensembl_genome_metadata'),
-    'ncbi': env.db('NCBI_DB_URL', default='mysql://ensembl@127.0.0.1:3306/ncbi_taxonomy'),
+    'default': env.db('DATABASE_URL', default='mysql://mysqlserver/ensembl_production_services'),
+    'production': env.db('PRODUCTION_DB_URL', default='mysql://mysqlserver/ensembl_production'),
+    'website': env.db('WEBHELP_DB_URL', default='mysql://mysqlserver/ensembl_website'),
+    'dbcopy': env.db('DBCOPY_DB_URL', default='mysql://mysqlserver/ensembl_dbcopy'),
+    'metadata': env.db('METADATA_DB_URL', default='mysql://mysqlserver/ensembl_genome_metadata'),
+    'ncbi': env.db('NCBI_DB_URL', default='mysql://mysqlserver/ncbi_taxonomy'),
 }
 
 DATABASE_ROUTERS = [
@@ -216,7 +215,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100
 }
 
-CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
+                   'bulletedList', 'numberedList', 'blockQuote'],
+    },
+}
 
 # mailing
 LOGIN_REDIRECT_URL = '/'
@@ -317,7 +321,11 @@ JAZZMIN_SETTINGS = {
         "auth.user": "vertical_tabs",
         "auth.group": "vertical_tabs",
     },
-    "show_ui_builder": DEBUG
+    # The UI builder's ".control-sidebar" panel has no CSS at all in this jazzmin
+    # version's bundled AdminLTE build - it renders as unstyled, normal-flow content
+    # below the footer instead of an off-canvas panel, which is what was causing the
+    # page to keep scrolling past the footer. Disabled rather than left DEBUG-gated.
+    "show_ui_builder": False
 }
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": True,
@@ -340,7 +348,7 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
     "theme": "cyborg",
-    # "dark_mode_theme": "cyborg",
+    "default_theme_mode": "dark",
     "button_classes": {
         "primary": "btn-primary",
         "secondary": "btn-secondary",

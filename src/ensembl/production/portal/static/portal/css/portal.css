@@ -1,4 +1,13 @@
 
+/* Keep the sidebar always visible - the sidebar-toggle button in the navbar
+   should not hide or icon-collapse it, regardless of the sidebar-collapse
+   class AdminLTE's JS toggles on <body> when it's clicked. */
+body.sidebar-collapse .app-sidebar {
+  margin-left: 0 !important;
+  min-width: var(--lte-sidebar-width) !important;
+  max-width: var(--lte-sidebar-width) !important;
+}
+
 body.jazzmin-login-page {
   background: #333333 url("/static/portal/img/splash.jpg") no-repeat center center;
   background-size: cover;
@@ -94,6 +103,61 @@ textarea {
 }
 
 .breadcrumb {
-  background-color: ghostwhite!important;
   padding: 2px 5px!important;
+}
+
+/* jazzmin's app-content-header puts the title and breadcrumb in two separate
+   col-sm-6 columns, which pushes the breadcrumb to the far right on wide
+   screens. Shrink both to their content width so the breadcrumb sits right
+   next to the title instead. */
+.app-content-header .row > .col-sm-6 {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+/* Changelist filter dropdowns (User/Status/etc): wider box, and restyled to
+   look like Bootstrap 5's native .form-select (border, radius, chevron arrow)
+   instead of the generic select2 look. The width is !important since select2
+   sets an inline "width" style via JS that would otherwise win over plain CSS.
+   Background/text colour are explicit since the dark theme's default light
+   text would be invisible against the white .form-select background. */
+#change-list-filters .select2-container {
+  width: 220px !important;
+}
+#change-list-filters .select2-selection--single {
+  box-sizing: border-box;
+  display: block;
+  height: calc(1.5em + .75rem + 2px) !important;
+  padding: .375rem 2.25rem .375rem .75rem !important;
+  font-size: 1rem;
+  color: #212529 !important;
+  background-color: #fff !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right .75rem center;
+  background-size: 16px 12px;
+  border: 1px solid #ced4da !important;
+  border-radius: .375rem !important;
+}
+#change-list-filters .select2-selection--single .select2-selection__rendered {
+  color: #212529 !important;
+  padding: 0;
+  line-height: 1.5;
+}
+#change-list-filters .select2-selection--single .select2-selection__arrow {
+  display: none;
+}
+#change-list-filters .select2-container {
+  vertical-align: middle;
+}
+
+/* All search boxes: the changelist "q" search field, and select2's own
+   internal search inputs (shown inside an opened dropdown, or the typing
+   box on multi-select "tags" fields) - white background, readable dark text,
+   overriding the dark theme's default dark-input styling. */
+#change-list-filters input.form-control,
+.select2-search__field,
+.select2-search--dropdown .select2-search__field {
+  background-color: #fff !important;
+  color: #212529 !important;
 }
